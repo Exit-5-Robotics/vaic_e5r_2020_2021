@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sstream>
+#include <deque>
 
 #include "v5.h"
 #include "v5_vcs.h"

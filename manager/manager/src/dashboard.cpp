@@ -81,19 +81,16 @@ dashboardJetson( int ox, int oy, int width, int height ) {
 
       std::string info = x + ' ' + y + ' ' + w + ' ' + h;
       double bonk = atof(info.c_str());
-      Brain.Screen.printAt( ox + 10, oy += 12, "box %d: x:%4d y:%4d combined:%.1f", i,
+      Brain.Screen.printAt(ox + 10, oy += 12, "box %d: x:%4d y:%4d combined:%.1f", i,
                            local_map.boxobj[i].x,
                            local_map.boxobj[i].y,
-                           bonk
-                           );
+                           bonk);
       // Brain.Screen.printAt( ox + 10, oy += 12, "box %d: x:%4d y:%4d w:%4d h:%4d d:%.1f",i,
       //                      local_map.boxobj[i].x,
       //                      local_map.boxobj[i].y,
       //                      local_map.boxobj[i].width,
       //                      local_map.boxobj[i].height,
-      //                      bonk
-      //                     //  local_map.boxobj[i].depth 
-      //                      );
+      //                      local_map.boxobj[i].depth );
 
       LinkA.send("object", local_map.boxobj[i].x);
     }
