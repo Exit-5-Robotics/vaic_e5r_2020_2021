@@ -9,8 +9,8 @@
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // LinkA - PORT11
-// 
-// 
+// bottomRollers - PORT
+// topRollers - PORT
 // 
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
