@@ -1,4 +1,4 @@
-# vaic_e5r_2020_2021
+# VAIC E5R 2020-2021
  Both manager and worker projects are in here, so this is the main repo for VAIC.
 
 # Documentation
