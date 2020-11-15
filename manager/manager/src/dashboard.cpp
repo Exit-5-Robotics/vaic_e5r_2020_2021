@@ -22,9 +22,7 @@ namespace patch
     }
 }
 
-//
 // Display various useful information about the Jetson
-//
 static void
 dashboardJetson( int ox, int oy, int width, int height ) {
   static int32_t     last_data = 0;
@@ -115,9 +113,7 @@ dashboardJetson( int ox, int oy, int width, int height ) {
 
 }
 
-//
 // Display various useful information about VEXlink
-//
 static void
 dashboardVexlink( int ox, int oy, int width, int height ) {
   static int32_t last_data = 0;
@@ -191,6 +187,29 @@ dashboardVexlink( int ox, int oy, int width, int height ) {
   Brain.Screen.printAt( ox + 10, oy += 15, " H:   %.2f", heading);
 }
 
+static void
+dashboardSensors( int ox, int oy, int width, int height ) {
+  color grey = vex::color(0x404040);
+
+  Brain.Screen.setClipRegion( ox, oy, width, height);
+  Brain.Screen.setFont( mono15 );
+  // border and titlebar
+  Brain.Screen.setPenColor( yellow );
+  Brain.Screen.drawRectangle(ox, oy, width, height, black );
+  Brain.Screen.drawRectangle( ox, oy, width, 20, grey );
+
+  Brain.Screen.setPenColor( yellow );
+  Brain.Screen.setFillColor( blue );
+  Brain.Screen.printAt(ox + 10, oy + 15, "Sensors" );
+  oy += 20;
+  
+  Brain.Screen.setPenColor( white );
+  Brain.Screen.setFillColor( black );
+
+  Brain.Screen.printAt( ox + 10, oy += 15, "Ultrasonic %f", Balls.distance(vex::distanceUnits::in) );
+  // Brain.Screen.printAt( ox + 10, oy += 15, "Errors    %d", jetson_comms.get_errors() );
+  // Brain.Screen.printAt( ox + 10, oy += 15, "Timeouts  %d", jetson_comms.get_timeouts() );
+}
 //
 // Task to update screen with status
 //
@@ -198,7 +217,8 @@ int
 dashboardTask() {
   while(true) {
     // status
-    dashboardJetson(    0, 0, 280, 240 );
+    dashboardSensors(   0, 0, 280, 240 );
+    // dashboardJetson(    0, 0, 280, 240 );
     dashboardVexlink( 279, 0, 201, 240 );
     // draw, at 30Hz
     Brain.Screen.render();
