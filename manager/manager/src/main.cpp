@@ -9,8 +9,8 @@
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // LinkA - PORT11
-// bottomRollers - PORT
-// topRollers - PORT
+// botRoller - PORT
+// topRoller - PORT
 // Balls - PORT10
 // 
 // ---- END VEXCODE CONFIGURED DEVICES ----
@@ -132,6 +132,8 @@ int main() {
 
         // request new data        
         jetson_comms.request_map();
+
+        ball_detect_stop_bot(4.5);
 
         // Allow other tasks to run
         this_thread::sleep_for(loop_time);
