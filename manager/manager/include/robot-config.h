@@ -2,6 +2,7 @@ using namespace vex;
 
 extern brain Brain;
 extern message_link LinkA;
+extern sonar Balls;
 
 
 /**

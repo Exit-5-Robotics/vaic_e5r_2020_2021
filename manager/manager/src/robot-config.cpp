@@ -8,6 +8,7 @@ vex::message_link LinkA( PORT11, "vex_robotics_team_3063_A", linkType::manager )
 // vex::serial_link LinkB( PORT12, "vex_robotics_team_1234_B", linkType::manager );
 // vex::message_link LinkC( PORT11, "vex_robotics_team_1234_A", linkType::worker );
 // vex::serial_link LinkD( PORT12, "vex_robotics_team_1234_B", linkType::worker );
+sonar Balls(triport::port & A); //https://api.vexcode.cloud/v5/html/classvex_1_1sonar.html#aeefdd6cb8826338561d0cf187643b14a
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

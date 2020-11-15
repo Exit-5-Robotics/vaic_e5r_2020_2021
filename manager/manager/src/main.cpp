@@ -11,6 +11,7 @@
 // LinkA - PORT11
 // bottomRollers - PORT
 // topRollers - PORT
+// Balls - PORT10
 // 
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
