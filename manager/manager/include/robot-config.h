@@ -5,6 +5,14 @@ extern message_link LinkA;
 extern sonar Balls;
 extern motor botRoller;
 extern motor topRoller;
+extern motor backLeftWheel;
+extern motor frontLeftWheel;
+extern motor backRightWheel;
+extern motor frontRightWheel;
+extern motor_group leftDrive;
+extern motor_group rightDrive;
+extern inertial tilt;
+extern smartdrive robotDrive;
 
 void ball_detect_stop_bot(float dist);
 

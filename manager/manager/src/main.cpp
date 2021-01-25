@@ -12,6 +12,13 @@
 // botRoller - PORT
 // topRoller - PORT
 // Balls - PORT10
+//
+// backLeftWheel - PORT16
+// frontLeftWheel - PORT17
+// backRightWheel - PORT18
+// frontRightWheel - PORT19
+// leftDrive - PORT16, PORT17
+// rightDrive - PORT18, PORT19
 // 
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
@@ -109,6 +116,7 @@ int main() {
 
     // RUn at about 15Hz
     int32_t loop_time = 66;
+    robotDrive.turnFor(140, degrees);
 
     // start the status update display
     thread t1(dashboardTask);
@@ -133,7 +141,7 @@ int main() {
         // request new data        
         jetson_comms.request_map();
 
-        ball_detect_stop_bot(4.5);
+        // ball_detect_stop_bot(4.5);
 
         // Allow other tasks to run
         this_thread::sleep_for(loop_time);

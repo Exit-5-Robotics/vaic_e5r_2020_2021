@@ -217,8 +217,8 @@ int
 dashboardTask() {
   while(true) {
     // status
-    dashboardSensors(   0, 0, 280, 240 );
-    // dashboardJetson(    0, 0, 280, 240 );
+    // dashboardSensors(   0, 0, 280, 240 );
+    dashboardJetson(    0, 0, 280, 240 );
     dashboardVexlink( 279, 0, 201, 240 );
     // draw, at 30Hz
     Brain.Screen.render();
