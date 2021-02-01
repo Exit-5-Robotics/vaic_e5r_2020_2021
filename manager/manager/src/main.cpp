@@ -9,8 +9,8 @@
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // LinkA - PORT11
-// botRoller - PORT
-// topRoller - PORT
+// botRoller - PORT1
+// topRoller - PORT2
 // Balls - PORT10
 //
 // backLeftWheel - PORT16
@@ -116,7 +116,7 @@ int main() {
 
     // RUn at about 15Hz
     int32_t loop_time = 66;
-    robotDrive.turnFor(140, degrees);
+    // robotDrive.turnFor(140, degrees);
 
     // start the status update display
     thread t1(dashboardTask);
