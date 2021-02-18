@@ -118,8 +118,10 @@ void auto_Isolation(void) {
   // ..........................................................................
   if (OUR_COLOR == RED) {
     // red-side isolation code
+    // cannot go to negative x values
   } else if (OUR_COLOR == BLUE) {
     // blue-side isolation code
+    // cannot go to positive x values
   }
 }
 
@@ -134,12 +136,11 @@ void auto_Isolation(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-
 void auto_Interaction(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-  
+
 }
 
 
@@ -185,6 +186,7 @@ int main() {
 
     // start the status update display
     thread t1(dashboardTask);
+
 
     // Set up callbacks for autonomous and driver control periods.
     Competition.autonomous(autonomousMain);
