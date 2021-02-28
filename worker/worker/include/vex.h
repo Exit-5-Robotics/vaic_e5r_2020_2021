@@ -17,8 +17,13 @@
 
 #include "ai_jetson.h"
 #include "ai_robot_link.h"
+#include "descore.h"
 
 #include "robot-config.h"
+
+#define RED     0
+#define BLUE   1
+#define OUR_COLOR    RED
 
 #define waitUntil(condition)                                                   \
   do {                                                                         \
