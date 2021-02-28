@@ -7,9 +7,6 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// ---- END VEXCODE CONFIGURED DEVICES ----
-
 #include "vex.h"
 
 using namespace vex;
@@ -165,9 +162,8 @@ void tower000(){
 }
 
 
-int main() {
+int towerFixer() {
   // Initializing Robot Configuration. DO NOT REMOVE!
-  vexcodeInit();
 
 
   //continue if it's possible to do anything
@@ -201,5 +197,7 @@ int main() {
     }
 
   }
+
+  return 0;
 
 }

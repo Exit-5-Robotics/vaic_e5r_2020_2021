@@ -1,12 +1,14 @@
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/*    Module:       main.cpp                                                  */
-/*    Description:  V5 project                                                */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------*/
+/*                                                                              */
+/*    Module:       main.cpp                                                    */
+/*    Description:  V5 project                                                  */
+/*    https://kb.vex.com/hc/en-us/articles/360049619171-Coding-the-VEX-AI-Robot */
+/*------------------------------------------------------------------------------*/
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // LinkA - PORT11
+// leftIntake - PORT9
+// rightIntake - PORT8
 // botRoller - PORT1
 // topRoller - PORT2
 // Balls - PORT10
@@ -30,6 +32,11 @@ competition Competition;
 // data from the Jetson nano
 //
 ai::jetson  jetson_comms;
+
+#define EMPTY 0
+#define BLUE 1
+#define RED 2
+#define OUR_COLOR RED
 
 /*----------------------------------------------------------------------------*/
 // Create a robot_link on PORT11 using the unique name robot_3063_1
@@ -102,6 +109,23 @@ void decide_action( std::deque<int> &bot ) {
   }
 }
 
+
+//
+// Task to update screen with status
+//
+int
+driveTo() {
+  while (true) {
+    float current_x, current_y, current_heading;
+    link.get_local_location(current_x, current_y, current_heading);
+    if (current_x != 0) {
+      goTo(-10, -10, 0);
+      std::terminate();
+    }
+  }
+  return 0;
+}
+
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                          Auto_Isolation Task                              */
@@ -140,6 +164,7 @@ void auto_Interaction(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
+  Brain.Screen.printAt( 10, 90, "auto_Interaction" );
 
 }
 
@@ -156,6 +181,8 @@ void auto_Interaction(void) {
 bool firstAutoFlag = true;
 
 void autonomousMain(void) {
+  Brain.Screen.printAt( 10, 10, "autonomousMain" );
+  // goTo(0, 0, 0);
   // ..........................................................................
   // The first time we enter this function we will launch our Isolation routine
   // When the field goes disabled after the isolation period this task will die
@@ -186,8 +213,7 @@ int main() {
 
     // start the status update display
     thread t1(dashboardTask);
-
-
+    thread t2(driveTo);
     // Set up callbacks for autonomous and driver control periods.
     Competition.autonomous(autonomousMain);
 

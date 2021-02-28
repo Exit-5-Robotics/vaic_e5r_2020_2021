@@ -16,7 +16,7 @@ using namespace vex;
 // Display various useful information about the Jetson
 //
 static void
-dashboardJetson( int ox, int oy, int width, int height ) {
+dashboardJetson( /*int ox, int oy, int width, int height */) {
   static int32_t     last_data = 0;
   static int32_t     last_packets = 0;
   static int32_t     total_data = 0;
@@ -25,31 +25,32 @@ dashboardJetson( int ox, int oy, int width, int height ) {
   static MAP_RECORD  local_map;
   color grey = vex::color(0x404040);
 
-  Brain.Screen.setClipRegion( ox, oy, width, height);
-  Brain.Screen.setFont( mono15 );
-  // border and titlebar
-  Brain.Screen.setPenColor( yellow );
-  Brain.Screen.drawRectangle(ox, oy, width, height, black );
-  Brain.Screen.drawRectangle( ox, oy, width, 20, grey );
+  // Brain.Screen.setClipRegion( ox, oy, width, height);
+  // Brain.Screen.setFont( mono15 );
+  // // border and titlebar
+  // Brain.Screen.setPenColor( yellow );
+  // Brain.Screen.drawRectangle(ox, oy, width, height, black );
+  // Brain.Screen.drawRectangle( ox, oy, width, 20, grey );
 
-  Brain.Screen.setPenColor( yellow );
-  Brain.Screen.setFillColor( grey );
-  Brain.Screen.printAt(ox + 10, oy + 15, "Jetson" );
-  oy += 20;
+  // Brain.Screen.setPenColor( yellow );
+  // Brain.Screen.setFillColor( grey );
+  // Brain.Screen.printAt(ox + 10, oy + 15, "Jetson" );
+  // oy += 20;
   
-  Brain.Screen.setPenColor( white );
-  Brain.Screen.setFillColor( black );
+  // Brain.Screen.setPenColor( white );
+  // Brain.Screen.setFillColor( black );
   
   // get last map data
   jetson_comms.get_data( &local_map );
 
-  Brain.Screen.printAt( ox + 10, oy += 15, "Packets   %d", jetson_comms.get_packets() );
-  Brain.Screen.printAt( ox + 10, oy += 15, "Errors    %d", jetson_comms.get_errors() );
-  Brain.Screen.printAt( ox + 10, oy += 15, "Timeouts  %d", jetson_comms.get_timeouts() );
-  Brain.Screen.printAt( ox + 10, oy += 15, "data/sec  %d             ", total_data );
-  Brain.Screen.printAt( ox + 10, oy += 15, "pkts/sec  %d             ", total_packets );
-  Brain.Screen.printAt( ox + 10, oy += 15, "boxnum    %d", local_map.boxnum );
-  Brain.Screen.printAt( ox + 10, oy += 15, "mapnum    %d", local_map.mapnum );
+  // Brain.Screen.printAt( ox + 10, oy += 15, "Packets   %d", jetson_comms.get_packets() );
+  // Brain.Screen.printAt( ox + 10, oy += 15, "Errors    %d", jetson_comms.get_errors() );
+  // Brain.Screen.printAt( ox + 10, oy += 15, "Timeouts  %d", jetson_comms.get_timeouts() );
+  // Brain.Screen.printAt( ox + 10, oy += 15, "data/sec  %d             ", total_data );
+  // Brain.Screen.printAt( ox + 10, oy += 15, "pkts/sec  %d             ", total_packets );
+  // Brain.Screen.printAt( ox + 10, oy += 15, "boxnum    %d", local_map.boxnum );
+  // Brain.Screen.printAt( ox + 10, oy += 15, "mapnum    %d", local_map.mapnum );
+  
 
   // once per second, update data rate stats
   if( Brain.Timer.system() > update_time ) {
@@ -60,34 +61,34 @@ dashboardJetson( int ox, int oy, int width, int height ) {
     last_packets = jetson_comms.get_packets();
   }
   
-  Brain.Screen.setFont( mono12 );
-  for(int i=0;i<4;i++ ) {
-    if( i < local_map.boxnum ) {
-      Brain.Screen.printAt( ox + 10, oy += 12, "box %d: c:%d x:%d y:%d w:%d h:%d prob:%.1f",i,
-                           (local_map.boxobj[i].classID), //Class ID (0 = Red 1 = Blue 2 = Goal)
-                           (local_map.boxobj[i].x), //in pixels
-                           (local_map.boxobj[i].y), //in pixels
-                           (local_map.boxobj[i].width), //in pixels
-                           (local_map.boxobj[i].height), //in pixels
-                           (local_map.boxobj[i].prob)); //percent likely to be in this catagory
-    }
-    else {
-      Brain.Screen.printAt( ox + 10, oy += 12, "---");
-    }
-  }
-  for(int i=0;i<4;i++ ) {
-    if( i < local_map.mapnum ) {
-      Brain.Screen.printAt( ox + 10, oy += 12, "map %d: a:%4d c:%4d X:%.2f Y:%.2f Z:%.1f",i,
-                           local_map.mapobj[i].age,
-                           local_map.mapobj[i].classID,
-                           (local_map.mapobj[i].positionX / -25.4),  // mm -> inches
-                           (local_map.mapobj[i].positionY / -25.4),  // mm -> inches
-                           (local_map.mapobj[i].positionZ / 25.4)); // mm -> inches
-    }
-    else {
-      Brain.Screen.printAt( ox + 10, oy += 12, "---");
-    }
-  }
+  // Brain.Screen.setFont( mono12 );
+  // for(int i=0;i<4;i++ ) {
+  //   if( i < local_map.boxnum ) {
+  //     Brain.Screen.printAt( ox + 10, oy += 12, "box %d: c:%d x:%d y:%d w:%d h:%d prob:%.1f", i,
+  //                          (local_map.boxobj[i].classID), //Class ID (0 = Red 1 = Blue 2 = Goal)
+  //                          (local_map.boxobj[i].x), //in pixels
+  //                          (local_map.boxobj[i].y), //in pixels
+  //                          (local_map.boxobj[i].width), //in pixels
+  //                          (local_map.boxobj[i].height), //in pixels
+  //                          (local_map.boxobj[i].prob)); //percent likely to be in this category
+  //   }
+  //   else {
+  //     Brain.Screen.printAt( ox + 10, oy += 12, "---");
+  //   }
+  // }
+  // for(int i=0;i<4;i++ ) {
+  //   if( i < local_map.mapnum ) {
+  //     Brain.Screen.printAt( ox + 10, oy += 12, "map %d: a:%4d c:%4d X:%.2f Y:%.2f Z:%.1f",i,
+  //                          local_map.mapobj[i].age,
+  //                          local_map.mapobj[i].classID,
+  //                          (local_map.mapobj[i].positionX / 25.4),  // mm -> inches
+  //                          (local_map.mapobj[i].positionY / 25.4),  // mm -> inches
+  //                          (local_map.mapobj[i].positionZ / 25.4)); // mm -> inches
+  //   }
+  //   else {
+  //     Brain.Screen.printAt( ox + 10, oy += 12, "---");
+  //   }
+  // }
 
 }
 
@@ -153,18 +154,18 @@ dashboardVexlink( int ox, int oy, int width, int height ) {
   float x,y,heading;
   link.get_local_location(x, y, heading);
   
-Brain.Screen.printAt( ox + 10, oy += 15, " X:   %.2f", x / -25.4);  // mm -> inches
-  Brain.Screen.printAt( ox + 10, oy += 15, " Y:   %.2f", y / -25.4);  // mm -> inches
-  Brain.Screen.printAt( ox + 10, oy += 15, " H:   %.2f", 180 - (heading / (-2 * M_PI ) * 360) ); // rads to deg
+  Brain.Screen.printAt( ox + 10, oy += 15, " X:   %.2f", x / 25.4);  // mm -> inches
+  Brain.Screen.printAt( ox + 10, oy += 15, " Y:   %.2f", y / 25.4);  // mm -> inches
+  Brain.Screen.printAt( ox + 10, oy += 15, " H:   %.2f", 180 + 180 * heading / M_PI ); // rads to deg
 
   oy += 5;
   Brain.Screen.printAt( ox + 10, oy += 15, "Location: remote");
   
   link.get_remote_location(x, y, heading);
   
-Brain.Screen.printAt( ox + 10, oy += 15, " X:   %.2f", x / -25.4);  // mm -> inches
-  Brain.Screen.printAt( ox + 10, oy += 15, " Y:   %.2f", y / -25.4);  // mm -> inches
-  Brain.Screen.printAt( ox + 10, oy += 15, " H:   %.2f", 180 - (heading / (-2 * M_PI ) * 360) ); // rads to deg
+  Brain.Screen.printAt( ox + 10, oy += 15, " X:   %.2f", x / 25.4);  // mm -> inches
+  Brain.Screen.printAt( ox + 10, oy += 15, " Y:   %.2f", y / 25.4);  // mm -> inches
+  Brain.Screen.printAt( ox + 10, oy += 15, " H:   %.2f", 180 + 180 * heading / M_PI ); // rads to deg
 }
 
 //
@@ -174,7 +175,7 @@ int
 dashboardTask() {
   while(true) {
     // status
-    dashboardJetson(    0, 0, 280, 240 );
+    dashboardJetson(/*    0, 0, 280, 240*/ );
     dashboardVexlink( 279, 0, 201, 240 );
     // draw, at 30Hz
     Brain.Screen.render();
