@@ -15,6 +15,7 @@
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
+#include "descore.h"
 
 using namespace vex;
 
@@ -33,6 +34,7 @@ ai::jetson  jetson_comms;
 // Comment out the following definition to build for the worker robot
 // #define  MANAGER_ROBOT    1
 
+
 #if defined(MANAGER_ROBOT)
 #pragma message("building for the manager")
 ai::robot_link link( PORT11, "robot_3063_1", linkType::manager );
@@ -40,6 +42,8 @@ ai::robot_link link( PORT11, "robot_3063_1", linkType::manager );
 #pragma message("building for the worker")
 ai::robot_link link( PORT11, "robot_3063_1", linkType::worker );
 #endif
+
+static MAP_RECORD       local_map;
 
 /*----------------------------------------------------------------------------*/
 
@@ -56,7 +60,6 @@ int main() {
     vexcodeInit();
 
     // local storage for latest data from the Jetson Nano
-    static MAP_RECORD       local_map;
 
     // RUn at about 15Hz
     int32_t loop_time = 66;
