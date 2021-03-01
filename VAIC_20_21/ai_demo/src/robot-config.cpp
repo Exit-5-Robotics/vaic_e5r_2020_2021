@@ -25,14 +25,6 @@ motor_group   rightDrive( backRightWheel, frontRightWheel );
 inertial      tilt( PORT10 );
 smartdrive    robotDrive( leftDrive, rightDrive, tilt, 12.56, 14.125, 9, distanceUnits::in ); // might have to change values
 
-// void ball_detect_stop_bot( float dist ) {
-//   while (Balls.distance(vex::distanceUnits::in) > dist) {
-//     botRoller.setVelocity(100, vex::percentUnits::pct);
-//     botRoller.spin(fwd);
-//   }
-//   botRoller.stop();
-// }
-
 void intake() {
   // ONLY RUN IF WHEEL EFFICIENCY AND CURRENT ARE BOTH 0
   while (ball.value(analogUnits::mV) > 3300) {

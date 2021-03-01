@@ -181,7 +181,6 @@ void autonomousMain(void) {
   firstAutoFlag = false;
 }
 
-
 /*----------------------------------------------------------------------------*/
 
 int main() {

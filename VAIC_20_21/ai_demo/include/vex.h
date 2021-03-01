@@ -41,3 +41,4 @@ extern ai::robot_link  link;
 extern int dashboardTask( void );
 extern int driveTo( void );
 extern float round(float var);
+extern void turnTo( float dest_heading, int vel );
