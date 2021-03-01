@@ -6,19 +6,19 @@
 /*------------------------------------------------------------------------------*/
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
-// LinkA - PORT11
-// leftIntake - PORT9
-// rightIntake - PORT8
-// botRoller - PORT1
-// topRoller - PORT2
-// Balls - PORT10
+// LinkA -           PORT11
+// leftIntake -      PORT9
+// rightIntake -     PORT8
+// botRoller -       PORT1
+// topRoller -       PORT2
+// Balls -           PORT10
 //
-// backLeftWheel - PORT16
-// frontLeftWheel - PORT17
-// backRightWheel - PORT18
+// backLeftWheel -   PORT16
+// frontLeftWheel -  PORT17
+// backRightWheel -  PORT18
 // frontRightWheel - PORT19
-// leftDrive - PORT16, PORT17
-// rightDrive - PORT18, PORT19
+// leftDrive -       PORT16, PORT17
+// rightDrive -      PORT18, PORT19
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -107,23 +107,6 @@ void decide_action( std::deque<int> &bot ) {
     default:
       break;
   }
-}
-
-
-//
-// Task to update screen with status
-//
-int
-driveTo() {
-  while (true) {
-    float current_x, current_y, current_heading;
-    link.get_local_location(current_x, current_y, current_heading);
-    if (current_x != 0) {
-      goTo(-10, -10, 0);
-      std::terminate();
-    }
-  }
-  return 0;
 }
 
 /*---------------------------------------------------------------------------*/

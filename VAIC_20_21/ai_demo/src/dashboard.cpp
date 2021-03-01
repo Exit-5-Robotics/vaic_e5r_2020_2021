@@ -101,7 +101,7 @@ dashboardVexlink( int ox, int oy, int width, int height ) {
   static int32_t last_packets = 0;
   static int32_t total_data = 0;
   static int32_t total_packets = 0;
-  static uint32_t update_time = 0;  
+  static uint32_t update_time = 0;
 
   color darkred = vex::color(0x800000);
   color darkgrn = vex::color(0x008000);

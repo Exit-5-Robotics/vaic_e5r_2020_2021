@@ -3,6 +3,7 @@ using namespace vex;
 extern brain Brain;
 extern message_link LinkA;
 extern sonar Balls;
+extern line ball;
 extern motor leftIntake;
 extern motor rightIntake;
 extern motor botRoller;
@@ -17,7 +18,6 @@ extern inertial tilt;
 extern smartdrive robotDrive;
 
 void ball_detect_stop_bot(float dist);
-void goTo( float x, float y, float heading );
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
