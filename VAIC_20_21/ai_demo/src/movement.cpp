@@ -46,11 +46,12 @@ void goTo( float dest_x, float dest_y, float dest_heading ) {
 }
 
 void intake() {
-  // ONLY RUN IF WHEEL EFFICIENCY AND CURRENT ARE BOTH 0
   while (ball.value(analogUnits::mV) > 3300) {
+    robotDrive.drive(fwd, 10, vex::velocityUnits::pct);
     intakeWheels.spin(fwd, 100, vex::velocityUnits::pct);
   }
-    intakeWheels.spinFor(fwd, 1000, degrees, 80, vex::velocityUnits::pct);
+  robotDrive.stop();
+  intakeWheels.spinFor(fwd, 1000, degrees, 80, vex::velocityUnits::pct);
 }
 
 void outtake() {
@@ -70,25 +71,30 @@ void poop() {
 
 void descore() {
   
-  while (frontRightWheel.efficiency() > 0 && frontRightWheel.current() > 0) {
-    robotDrive.drive(fwd, 30, vex::velocityUnits::pct);
-  }
-  robotDrive.stop();
+  // while (true) { // WOULD BE COOL IF WE GOT THIS TO WORK :(
+  //   robotDrive.drive(fwd, 30, vex::velocityUnits::pct);
+  //   if (frontRightWheel.efficiency()==0 && frontRightWheel.current()>0) {
+  //     robotDrive.stop();
+  //     break;
+  //   }
+  // }
   intake();
-
+  robotDrive.driveFor(reverse, 10, vex::distanceUnits::in, 30, vex::velocityUnits::pct);
 }
 
 int testMovement() { // just for testing
-  while (true) {
-    float current_x, current_y, current_heading;
-    link.get_local_location(current_x, current_y, current_heading);
-    if (current_x != 0) {
-      vex::task::sleep(2000);
-      goTo(0, 50, 0);
-      descore();
-      vex::task::sleep(10000);
-    }
-    this_thread::sleep_for(16);
-  }
+  task::sleep(2000);
+  descore();
+  this_thread::sleep_for(20000);
+  // while (true) {
+  //   float current_x, current_y, current_heading;
+  //   link.get_local_location(current_x, current_y, current_heading);
+  //   if (current_x != 0) {
+  //     task::sleep(2000);
+  //     goTo(0, 50, 0);
+  //     task::sleep(10000);
+  //   }
+  //   this_thread::sleep_for(16);
+  // }
   return 0;
 }
