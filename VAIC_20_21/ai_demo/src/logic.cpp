@@ -3,7 +3,7 @@
 using namespace vex;
 using namespace std;
 
-float round(float var) 
+float round(float var) // not really being used lol...
 { 
     // 37.66666 * 100 =3766.66 
     // 3766.66 + .5 =3767.16    for rounding off value 

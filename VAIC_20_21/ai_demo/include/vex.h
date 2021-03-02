@@ -27,6 +27,7 @@
 #define BLUE 1
 #define RED 2
 #define OUR_COLOR RED
+
 #define waitUntil(condition)                                                   \
   do {                                                                         \
     wait(5, msec);                                                             \
@@ -39,6 +40,5 @@ extern ai::jetson      jetson_comms;
 extern ai::robot_link  link;
 
 extern int dashboardTask( void );
-extern int driveTo( void );
+extern int testMovement( void );
 extern float round(float var);
-extern void turnTo( float dest_heading, int vel );
