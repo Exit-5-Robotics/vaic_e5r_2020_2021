@@ -195,7 +195,8 @@ int main() {
 
     // start the status update display
     thread t1(dashboardTask);
-    thread t2(driveTo);
+    thread t2(testMovement); // Tested driving to a point
+
     // Set up callbacks for autonomous and driver control periods.
     Competition.autonomous(autonomousMain);
 

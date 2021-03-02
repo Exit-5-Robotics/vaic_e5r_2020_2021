@@ -6,6 +6,7 @@ extern sonar Balls;
 extern line ball;
 extern motor leftIntake;
 extern motor rightIntake;
+extern motor_group intakeWheels;
 extern motor botRoller;
 extern motor topRoller;
 extern motor backLeftWheel;
@@ -16,8 +17,6 @@ extern motor_group leftDrive;
 extern motor_group rightDrive;
 extern inertial tilt;
 extern smartdrive robotDrive;
-
-void ball_detect_stop_bot(float dist);
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

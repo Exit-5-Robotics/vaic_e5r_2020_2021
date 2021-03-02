@@ -25,29 +25,6 @@ motor_group   rightDrive( backRightWheel, frontRightWheel );
 inertial      tilt( PORT10 );
 smartdrive    robotDrive( leftDrive, rightDrive, tilt, 12.56, 14.125, 9, distanceUnits::in ); // might have to change values
 
-void intake() {
-  // ONLY RUN IF WHEEL EFFICIENCY AND CURRENT ARE BOTH 0
-  while (ball.value(analogUnits::mV) > 3300) {
-    intakeWheels.spin(fwd, 100, vex::velocityUnits::pct);
-  }
-    intakeWheels.spinFor(fwd, 1000, degrees, 80, vex::velocityUnits::pct);
-}
-
-void outtake() {
-  // leftIntake.spinFor(rev, double rotation, rotationUnits units, double velocity, velocityUnits units_v);
-  // rightIntake.spinFor(rev, double rotation, rotationUnits units, double velocity, velocityUnits units_v);
-}
-
-void score() {
-  // botRoller.spinFor(fwd, double rotation, rotationUnits units, double velocity, velocityUnits units_v);
-  // topRoller.spinFor(fwd, double rotation, rotationUnits units, double velocity, velocityUnits units_v);
-}
-
-void poop() {
-  // botRoller.spinFor(fwd, double rotation, rotationUnits units, double velocity, velocityUnits units_v);
-  // topRoller.spinFor(rev, double rotation, rotationUnits units, double velocity, velocityUnits units_v);
-}
-
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
  * This should be called at the start of your int main function.
