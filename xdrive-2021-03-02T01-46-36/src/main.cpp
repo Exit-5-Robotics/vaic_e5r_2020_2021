@@ -10,16 +10,13 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
+// RF                   motor         12              
+// RB                   motor         14              
+// LF                   motor         18              
+// LB                   motor         13              
 // Controller1          controller                    
-// Motor1               motor         1               
-// Motor2               motor         2               
-// Motor3               motor         3               
 // Motor8               motor         8               
 // Motor9               motor         9               
-// Motor16              motor         16              
-// Motor17              motor         17              
-// Motor18              motor         18              
-// Motor19              motor         19              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -75,85 +72,9 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-void move(){
-  Motor16.setVelocity(Controller1.Axis3.position(percent)/2, percent);
-  Motor17.setVelocity(Controller1.Axis3.position(percent)/2, percent);
-  Motor18.setVelocity(Controller1.Axis2.position(percent)/2, percent);
-  Motor19.setVelocity(Controller1.Axis2.position(percent)/2, percent);
-
-  Motor16.spin(forward);
-  Motor17.spin(forward);
-  Motor18.spin(forward);
-  Motor19.spin(forward);
-
-  Motor16.setStopping(hold);
-  Motor17.setStopping(hold);
-  Motor18.setStopping(hold);
-  Motor19.setStopping(hold);
-}
-
-void indexer(){
-  int speed = 400;
-      Motor1.setVelocity(speed/2, rpm);
-      Motor2.setVelocity(speed, rpm);
-      //Motor3.setVelocity(speed, rpm);
-
-  if (Controller1.ButtonX.pressing()){
-    Motor1.spin(fwd);
-    Motor2.spin(fwd);
-  }
-  else if (Controller1.ButtonR1.pressing()){
-    Motor1.spin(fwd);
-    Motor2.spin(reverse);
-  }
-  else if (Controller1.ButtonR2.pressing()){
-    Motor1.spin(reverse);
-    Motor2.spin(reverse);
-  }
-  else{
-    Motor1.stop();
-    Motor2.stop();
-  }
-}
-
-void intake(){
-  int speed = 600;
-  Motor8.setVelocity(speed, rpm);
-  Motor9.setVelocity(speed, rpm);
-
-  if (Controller1.ButtonL1.pressing()){
-    Motor8.spin(fwd);
-    Motor9.spin(fwd);
-  }
-
-  else if (Controller1.ButtonL2.pressing()){
-    Motor8.spin(reverse);
-    Motor9.spin(reverse);
-  }
-
-  else{
-    Motor8.stop();
-    Motor9.stop();
-  }
-}
-
-void xDrive(){
-
-  Motor16.setVelocity(Controller1.Axis4.position()+Controller1.Axis1.position()-Controller1.Axis2.position(), percent);
-  Motor17.setVelocity(Controller1.Axis4.position()-Controller1.Axis1.position()-Controller1.Axis2.position(), percent);
-  Motor18.setVelocity(Controller1.Axis4.position()+Controller1.Axis1.position()+Controller1.Axis2.position(), percent);
-  Motor19.setVelocity(Controller1.Axis4.position()-Controller1.Axis1.position()+Controller1.Axis2.position(), percent);
-
-  Motor16.spin(forward);
-  Motor17.spin(forward);
-  Motor18.spin(forward);
-  Motor19.spin(forward);
-}
-
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
-
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
@@ -168,11 +89,130 @@ void usercontrol(void) {
   }
 }
 
+
+//MOTOR 12 RIGHT FRONT
+//MOTOR 14 RIGHT BACK
+//MOTOR 18 LEFT FRONT
+//MOTOR 13 LEFT BACK
+
+void driveAuto(int direction){
+  //direction settings: idk if this helps but here
+  //0 = cw rotation
+  //1 = ccw rotation
+  //2 = forward
+  //3 = backward
+  //4 = left back
+  //5 = right forward
+  //6 = left forward
+  //7 = right back
+
+  int speed = 100;
+
+  RF.setVelocity(speed, rpm);
+  RB.setVelocity(speed, rpm);
+  LF.setVelocity(speed, rpm);
+  LB.setVelocity(speed, rpm);
+
+  //rotate cw
+  if(direction == 0){
+    RF.spin(forward);
+    RB.spin(forward);
+    LF.spin(forward);
+    LB.spin(forward);
+  }
+
+  //rotate ccw
+  if(direction == 1){
+    RF.spin(reverse);
+    RB.spin(reverse);
+    LF.spin(reverse);
+    LB.spin(reverse);
+  }
+
+  //drive forward
+  if(direction == 2){
+    RF.spin(forward);
+    RB.spin(forward);
+    LF.spin(reverse);
+    LB.spin(reverse);
+  }
+
+  //drive backward
+  if(direction == 3){
+    RF.spin(reverse);
+    RB.spin(reverse);
+    LF.spin(forward);
+    LB.spin(forward);
+  }
+
+  speed*=2;
+
+  //left back
+  if(direction == 4){
+    RB.spin(forward);
+    LF.spin(reverse);
+  }
+
+  //right forward
+  if(direction == 5){
+    RB.spin(reverse);
+    LF.spin(forward);
+  }
+
+  //left forward
+  if(direction == 6){
+    RF.spin(reverse);
+    LB.spin(forward);
+  }
+
+  //right back
+  if(direction == 7){
+    RF.spin(forward);
+    LB.spin(reverse);
+  }
+}
+
+void driveControl(){
+
+  RF.setVelocity(Controller1.Axis4.position(percent)+Controller1.Axis1.position(percent)-Controller1.Axis2.position(percent), percent);
+  RB.setVelocity(Controller1.Axis4.position(percent)-Controller1.Axis1.position(percent)-Controller1.Axis2.position(percent), percent);
+  LF.setVelocity(Controller1.Axis4.position(percent)+Controller1.Axis1.position(percent)+Controller1.Axis2.position(percent), percent);
+  LB.setVelocity(Controller1.Axis4.position(percent)-Controller1.Axis1.position(percent)+Controller1.Axis2.position(percent), percent);
+
+  RF.spin(forward);
+  RB.spin(forward);
+  LF.spin(forward);
+  LB.spin(forward);
+}
+
+void intake(){
+  int speed = 400;
+  Motor8.setVelocity(speed, rpm);
+  Motor9.setVelocity(speed, rpm);
+
+  if(Controller1.ButtonR1.pressing()){
+    Motor8.spin(forward);
+    Motor9.spin(forward);
+  }
+
+  else if(Controller1.ButtonR2.pressing()){
+    Motor8.spin(reverse);
+    Motor9.spin(reverse);
+  }
+
+  else{
+    Motor8.setStopping(hold);
+    Motor9.setStopping(hold);
+
+    Motor8.stop();
+    Motor9.stop();
+  }
+}
+ 
 //
 // Main will set up the competition functions and callbacks.
 //
 int main() {
-
   // Set up callbacks for autonomous and driver control periods.
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
@@ -180,14 +220,12 @@ int main() {
   // Run the pre-autonomous function.
   pre_auton();
 
-  //move();
-  indexer();
-  intake();
-  xDrive();
-
+  
+  
   // Prevent main from exiting with an infinite loop.
   while (true) {
-    
     wait(100, msec);
+    driveControl();
+    intake();
   }
 }
