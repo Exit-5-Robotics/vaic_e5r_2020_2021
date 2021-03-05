@@ -8,6 +8,8 @@ using signature = vision::signature;
 extern motor Tilter;
 extern drivetrain Drivetrain;
 extern controller Controller1;
+extern motor botRoller;
+extern motor topRoller;
 extern motor IntakeL;
 extern motor IntakeR;
 extern motor_group LeftDrive;

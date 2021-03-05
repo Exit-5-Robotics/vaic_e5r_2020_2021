@@ -16,6 +16,8 @@
 // RightDrive           motor         20
 // IntakeL              motor         1
 // IntakeR              motor         10
+// botRoller -       PORT1
+// topRoller -       PORT2
 // Arms                 motor         3, 4
 // MiddleWheel          motor         13 (forward is to left)
 // Vision               vision        14

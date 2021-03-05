@@ -2,6 +2,7 @@
 
 using namespace vex;
 
+const int rollerDistance = 400;
 
 void turnTo( float dest_heading, int vel ) {
   
@@ -19,7 +20,7 @@ void turnTo( float dest_heading, int vel ) {
   
 }
 
-void goTo( float dest_x, float dest_y, float dest_heading ) {
+void goTo( float dest_x, float dest_y, float dest_heading ) {   
 
   float start_x, start_y, start_heading;
   link.get_local_location(start_x, start_y, start_heading);
@@ -39,6 +40,8 @@ void goTo( float dest_x, float dest_y, float dest_heading ) {
 
   turnTo(turnToAngle, 5);
   
+  // LeftDrive.setVelocity(pow(drivetrainForwardBackward, 2) / 1.2*drivetrainForwardBackward, percent);
+  // RightDrive.setVelocity(pow(drivetrainForwardBackward, 2) / 1.2*drivetrainForwardBackward, percent);
   robotDrive.driveFor(sqrt((double)pow(change_x, 2) + (double)pow(change_y,2)), vex::distanceUnits::in, 5, vex::velocityUnits::pct);
   
   turnTo(dest_heading, 5);
@@ -55,46 +58,67 @@ void intake() {
 }
 
 void outtake() {
-  // leftIntake.spinFor(rev, double rotation, rotationUnits units, double velocity, velocityUnits units_v);
-  // rightIntake.spinFor(rev, double rotation, rotationUnits units, double velocity, velocityUnits units_v);
+  // leftIntake.spinFor(rev, double rotation, vex::rotationUnits::deg, double velocity, velocityUnits units_v);
+  // rightIntake.spinFor(rev, double rotation, vex::rotationUnits::deg, double velocity, velocityUnits units_v);
 }
 
 void score() {
-  // botRoller.spinFor(fwd, double rotation, rotationUnits units, double velocity, velocityUnits units_v);
-  // topRoller.spinFor(fwd, double rotation, rotationUnits units, double velocity, velocityUnits units_v);
+  // ONLY RUN IF THE DESIRED SCORED BALL IS IN POSITION 3/ARRAY INDEX 0
+  botRoller.spinFor(fwd, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
+  topRoller.spinFor(fwd, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
 }
 
 void poop() {
-  // botRoller.spinFor(fwd, double rotation, rotationUnits units, double velocity, velocityUnits units_v);
-  // topRoller.spinFor(rev, double rotation, rotationUnits units, double velocity, velocityUnits units_v);
+  // ONLY RUN IF THE DESIRED POOPED BALL IS IN POSITION 2/ARRAY INDEX 1
+  botRoller.spinFor(fwd, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct, false);
+  topRoller.spinFor(reverse, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
 }
 
 void descore() {
-  
-  // while (true) { // WOULD BE COOL IF WE GOT THIS TO WORK :(
-  //   robotDrive.drive(fwd, 30, vex::velocityUnits::pct);
-  //   if (frontRightWheel.efficiency()==0 && frontRightWheel.current()>0) {
-  //     robotDrive.stop();
-  //     break;
-  //   }
-  // }
+  while(!goal.pressing()) robotDrive.drive(fwd, 30, vex::velocityUnits::pct);
   intake();
   robotDrive.driveFor(reverse, 10, vex::distanceUnits::in, 30, vex::velocityUnits::pct);
 }
 
+void pickUp( float dist) {
+  // TODO
+  intake();
+  robotDrive.driveFor(fwd, dist, vex::distanceUnits::in, 30, vex::velocityUnits::pct);
+}
+
+int adjustHold(int ballPositions[]) {
+  int numBalls = 0;
+  for (int i=0; i<3; i++) {
+    if (ballPositions[i] != 0) {
+      numBalls += i;
+    }
+  }
+  // botRoller.spinFor(fwd, rollerDistance*adjustment, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
+  // topRoller.spinFor(fwd, rollerDistance*adjustment, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
+  return 0;
+}
+
 int testMovement() { // just for testing
-  task::sleep(2000);
-  descore();
-  this_thread::sleep_for(20000);
-  // while (true) {
-  //   float current_x, current_y, current_heading;
-  //   link.get_local_location(current_x, current_y, current_heading);
-  //   if (current_x != 0) {
-  //     task::sleep(2000);
-  //     goTo(0, 50, 0);
-  //     task::sleep(10000);
-  //   }
-  //   this_thread::sleep_for(16);
-  // }
+  // task::sleep(2000);
+  // descore();
+  // this_thread::sleep_for(20000);
+
+  while (true) {
+    // float current_x, current_y, current_heading;
+    // link.get_local_location(current_x, current_y, current_heading);
+    // if (current_x != 0) {
+
+    //   task::sleep(2000);
+    //   goTo(0, 40, 0);
+    //   task::sleep(10000);
+    // }
+    botRoller.spinFor(fwd, rollerDistance*3, vex::rotationUnits::deg, 100, vex::velocityUnits::pct, false);
+    topRoller.spinFor(fwd, rollerDistance*3, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
+      task::sleep(2000);
+    botRoller.spinFor(fwd, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct, false);
+    topRoller.spinFor(fwd, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
+      task::sleep(2000);
+    this_thread::sleep_for(16);
+  }
   return 0;
 }

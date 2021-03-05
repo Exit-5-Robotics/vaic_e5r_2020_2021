@@ -16,6 +16,7 @@ extern motor frontRightWheel;
 extern motor_group leftDrive;
 extern motor_group rightDrive;
 extern inertial tilt;
+extern bumper goal;
 extern smartdrive robotDrive;
 
 /**

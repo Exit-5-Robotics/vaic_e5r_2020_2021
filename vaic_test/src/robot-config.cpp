@@ -68,6 +68,10 @@ int rc_auto_loop_callback_Controller1() {
     // only tell the motor to spin if the values are not in the deadband range
     if (DrivetrainNeedsToBeStopped_Controller1) {
       if (DriveSpeed) {
+        if (drivetrainForwardBackward <= 70 || drivetrainForwardBackward <= -70) {
+          LeftDrive.setVelocity(pow(drivetrainForwardBackward, 2) / 1.2*drivetrainForwardBackward, percent);
+          RightDrive.setVelocity(pow(drivetrainForwardBackward, 2) / 1.2*drivetrainForwardBackward, percent);
+        }
         LeftDrive.setVelocity(drivetrainForwardBackward, percent);
         RightDrive.setVelocity(drivetrainForwardBackward, percent);
       } else {
@@ -101,32 +105,39 @@ int rc_auto_loop_callback_Controller1() {
     }
     // Up/Down buttons control Arms
     if (Controller1.ButtonL1.pressing()) {
-      ArmsNeedStop = false;
-      // ArmL.spin(vex::directionType::fwd, 50, vex::velocityUnits::pct);
-      // ArmR.spin(vex::directionType::fwd, 50, vex::velocityUnits::pct);
-      Tilter.spinFor(vex::directionType::fwd, 600, vex::rotationUnits::deg, 30, vex::velocityUnits::pct, false);
+      IntakeL.spin(vex::directionType::fwd, 100, vex::velocityUnits::pct);
+      IntakeR.spin(vex::directionType::fwd, 100, vex::velocityUnits::pct);
+      TilterNeedsStop = false;
     } else if (Controller1.ButtonL2.pressing()) {
-      // ArmL.spin(vex::directionType::rev, 50, vex::velocityUnits::pct);
-      // ArmR.spin(vex::directionType::rev, 50, vex::velocityUnits::pct);
-      ArmsNeedStop = false;
-    } else if (!ArmsNeedStop) {
-      // ArmL.stop(vex::brakeType::brake);
-      // ArmR.stop(vex::brakeType::brake);
-      ArmsNeedStop = true;
+      IntakeL.spin(vex::directionType::rev, 100, vex::velocityUnits::pct);
+      IntakeR.spin(vex::directionType::rev, 100, vex::velocityUnits::pct);
+      TilterNeedsStop = false;
+    } else if (!TilterNeedsStop) {
+      IntakeL.stop(vex::brakeType::brake);
+      IntakeR.stop(vex::brakeType::brake);
+      botRoller.stop();
+      topRoller.stop();
+      TilterNeedsStop = true;
     }
 
     // R1/R2 buttons control Intake
     if (Controller1.ButtonR2.pressing()) {
       IntakeL.spin(vex::directionType::fwd, 100, vex::velocityUnits::pct);
       IntakeR.spin(vex::directionType::fwd, 100, vex::velocityUnits::pct);
+      botRoller.spin(vex::directionType::fwd, 100, vex::velocityUnits::pct);
+      topRoller.spin(vex::directionType::fwd, 100, vex::velocityUnits::pct);
       IntakeNeedsStop = false;
     } else if (Controller1.ButtonR1.pressing()) {
       IntakeL.spin(vex::directionType::rev, 100, vex::velocityUnits::pct);
       IntakeR.spin(vex::directionType::rev, 100, vex::velocityUnits::pct);
+      botRoller.spin(vex::directionType::fwd, 100, vex::velocityUnits::pct);
+      topRoller.spin(vex::directionType::rev, 100, vex::velocityUnits::pct);
       IntakeNeedsStop = false;
     } else if (!IntakeNeedsStop) {
       IntakeL.stop(vex::brakeType::brake);
       IntakeR.stop(vex::brakeType::brake);
+      botRoller.stop();
+      topRoller.stop();
       IntakeNeedsStop = true;
     }
     //X/B for Tilter

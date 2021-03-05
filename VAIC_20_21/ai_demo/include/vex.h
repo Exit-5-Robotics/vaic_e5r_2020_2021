@@ -22,6 +22,7 @@
 #include "ai_robot_link.h"
 
 #include "robot-config.h"
+#include "movement.h"
 
 #define EMPTY 0
 #define BLUE 1
@@ -42,3 +43,6 @@ extern ai::robot_link  link;
 extern int dashboardTask( void );
 extern int testMovement( void );
 extern float round(float var);
+
+extern void red_isolation( void );
+extern void blue_isolation( void );

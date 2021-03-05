@@ -26,7 +26,8 @@ float getDistance(float x1, float y1, float x2, float y2){
 
 int findNode(int startTower, int endTower, float startX, float startY, float endX, float endY){
   //0. situations with no node
-  if (endTower == 8 || getDistance(startX, startY, endX, endY) <= minTowerDistance){ // if towers are next to each other (distance between them is less than a specific value) or going to middle tower
+  if (endTower == 8 || getDistance(startX, startY, endX, endY) <= minTowerDistance){ 
+    // if towers are next to each other (distance between them is less than a specific value) or going to middle tower
     return -1;
   }
 
