@@ -44,5 +44,5 @@ extern int dashboardTask( void );
 extern int testMovement( void );
 extern float round(float var);
 
-extern void red_isolation( void );
-extern void blue_isolation( void );
+extern void redIsolation( void );
+extern void blueIsolation( void );

@@ -17,7 +17,7 @@ using namespace vex;
 // dumpPoint --> pathPoint --> (possibly) pathPoint --> dumpPoint
 float dumpPoint[] = {/*x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6, x7, y7, x8, y8, x9, y9, x10, y10, x11, y11, x12, y12*/};
 float pathPoint[] = {/*x1, y1, x2, y2, x3, y3, x4, y4*/};
-float minTowerDistance = 10; // distance between towers that are next to each other, plug this in later
+float minTowerDistance = 50; // distance between towers that are next to each other, plug this in later
 
 
 float getDistance(float x1, float y1, float x2, float y2){

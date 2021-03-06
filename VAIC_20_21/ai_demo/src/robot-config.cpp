@@ -10,7 +10,8 @@ vex::message_link LinkA( PORT11, "vex_robotics_team_3063_A", linkType::manager )
 // vex::message_link LinkC( PORT11, "vex_robotics_team_1234_A", linkType::worker );
 // vex::serial_link LinkD( PORT12, "vex_robotics_team_1234_B", linkType::worker );
 // sonar Balls = sonar(Brain.ThreeWirePort.B); // A is the output, B is the input https://api.vexcode.cloud/v5/html/classvex_1_1sonar.html#aeefdd6cb8826338561d0cf187643b14a
-line          ball(Brain.ThreeWirePort.C);
+line          ballThree(Brain.ThreeWirePort.C);
+line          ballZero(Brain.ThreeWirePort.E);
 motor         leftIntake(PORT9, ratio18_1, false);
 motor         rightIntake(PORT8, ratio18_1, true);
 motor_group   intakeWheels( leftIntake, rightIntake );

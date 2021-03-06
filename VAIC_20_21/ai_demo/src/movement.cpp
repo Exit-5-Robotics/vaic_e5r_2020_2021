@@ -3,13 +3,14 @@
 using namespace vex;
 
 const int rollerDistance = 400;
+const int intakeDriveSpeed = 10;
 
 void turnTo( float dest_heading, int vel ) {
   
   float current_x, current_y, current_heading;
   link.get_local_location(current_x, current_y, current_heading);
 
-  float change = dest_heading - (current_heading*180/M_PI + 180);
+  float change = dest_heading - (current_heading*180/M_PI);
   change = change > 0 ? change : change + 360;
 
   if (change < 180) {
@@ -48,13 +49,13 @@ void goTo( float dest_x, float dest_y, float dest_heading ) {
 
 }
 
-void intake() {
-  while (ball.value(analogUnits::mV) > 3300) {
-    robotDrive.drive(fwd, 10, vex::velocityUnits::pct);
+void intake( int speed ) {
+  while (ballThree.value(analogUnits::mV) > 3300) {
+    robotDrive.drive(fwd, speed, vex::velocityUnits::pct);
     intakeWheels.spin(fwd, 100, vex::velocityUnits::pct);
   }
   robotDrive.stop();
-  intakeWheels.spinFor(fwd, 1000, degrees, 80, vex::velocityUnits::pct);
+  intakeWheels.spinFor(fwd, 720, degrees, 60, vex::velocityUnits::pct);
 }
 
 void outtake() {
@@ -76,25 +77,21 @@ void poop() {
 
 void descore() {
   while(!goal.pressing()) robotDrive.drive(fwd, 30, vex::velocityUnits::pct);
-  intake();
+  intake(intakeDriveSpeed);
   robotDrive.driveFor(reverse, 10, vex::distanceUnits::in, 30, vex::velocityUnits::pct);
 }
 
-void pickUp( float dist) {
+void pickUp( float dist ) {
   // TODO
-  intake();
+  intake(intakeDriveSpeed);
   robotDrive.driveFor(fwd, dist, vex::distanceUnits::in, 30, vex::velocityUnits::pct);
 }
 
-int adjustHold(int ballPositions[]) {
-  int numBalls = 0;
-  for (int i=0; i<3; i++) {
-    if (ballPositions[i] != 0) {
-      numBalls += i;
-    }
+int adjustHold() {
+  while (ballZero.value(analogUnits::mV) > 3400) {
+    botRoller.spin(fwd, 60, vex::velocityUnits::pct);
+    topRoller.spin(fwd, 60, vex::velocityUnits::pct);
   }
-  // botRoller.spinFor(fwd, rollerDistance*adjustment, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
-  // topRoller.spinFor(fwd, rollerDistance*adjustment, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
   return 0;
 }
 
@@ -102,22 +99,19 @@ int testMovement() { // just for testing
   // task::sleep(2000);
   // descore();
   // this_thread::sleep_for(20000);
-
   while (true) {
-    // float current_x, current_y, current_heading;
-    // link.get_local_location(current_x, current_y, current_heading);
+    float current_x, current_y, current_heading;
+    link.get_local_location(current_x, current_y, current_heading);
+    Brain.Screen.printAt(10, 20, "%d", ballThree.value(analogUnits::mV));
+    Brain.Screen.printAt(10, 60, "%d", ballZero.value(analogUnits::mV));
+    adjustHold();
     // if (current_x != 0) {
 
     //   task::sleep(2000);
-    //   goTo(0, 40, 0);
+    //   // redIsolation();
     //   task::sleep(10000);
     // }
-    botRoller.spinFor(fwd, rollerDistance*3, vex::rotationUnits::deg, 100, vex::velocityUnits::pct, false);
-    topRoller.spinFor(fwd, rollerDistance*3, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
-      task::sleep(2000);
-    botRoller.spinFor(fwd, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct, false);
-    topRoller.spinFor(fwd, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
-      task::sleep(2000);
+
     this_thread::sleep_for(16);
   }
   return 0;

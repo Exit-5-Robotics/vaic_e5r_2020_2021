@@ -13,8 +13,8 @@
 // topRoller -       PORT2
 // Balls -           PORT10
 //
-// backLeftWheel -   PORT16
-// frontLeftWheel -  PORT17
+// frontLeftWheel -  PORT16
+// backLeftWheel -   PORT17
 // backRightWheel -  PORT18
 // frontRightWheel - PORT19
 // leftDrive -       PORT16, PORT17
@@ -145,7 +145,8 @@ int main() {
 
     // start the status update display
     thread t1(dashboardTask);
-    thread t2(testMovement); // Tested driving to a point
+    thread t2(testMovement);
+    // thread iso(redIsolation);
 
     // Set up callbacks for autonomous and driver control periods.
     Competition.autonomous(autonomousMain);
