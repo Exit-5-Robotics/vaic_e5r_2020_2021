@@ -87,11 +87,13 @@ void pickUp( float dist ) {
   robotDrive.driveFor(fwd, dist, vex::distanceUnits::in, 30, vex::velocityUnits::pct);
 }
 
-int adjustHold() {
+int adjustHold( int speed ) {
   while (ballZero.value(analogUnits::mV) > 3400) {
-    botRoller.spin(fwd, 60, vex::velocityUnits::pct);
-    topRoller.spin(fwd, 60, vex::velocityUnits::pct);
+    botRoller.spin(fwd, speed, vex::velocityUnits::pct);
+    topRoller.spin(fwd, speed, vex::velocityUnits::pct);
   }
+  botRoller.stop();
+  topRoller.stop();
   return 0;
 }
 
@@ -102,15 +104,13 @@ int testMovement() { // just for testing
   while (true) {
     float current_x, current_y, current_heading;
     link.get_local_location(current_x, current_y, current_heading);
-    Brain.Screen.printAt(10, 20, "%d", ballThree.value(analogUnits::mV));
-    Brain.Screen.printAt(10, 60, "%d", ballZero.value(analogUnits::mV));
-    adjustHold();
-    // if (current_x != 0) {
+    // adjustHold(20);
+    if (current_x != 0) {
 
-    //   task::sleep(2000);
-    //   // redIsolation();
-    //   task::sleep(10000);
-    // }
+      task::sleep(2000);
+      redIsolation();
+      task::sleep(10000);
+    }
 
     this_thread::sleep_for(16);
   }

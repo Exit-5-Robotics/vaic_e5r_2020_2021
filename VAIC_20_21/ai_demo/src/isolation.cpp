@@ -13,7 +13,7 @@ void redIsolation() {
   robotDrive.driveFor(fwd, 20, inches, 30, velocityUnits::pct);
   robotDrive.driveFor(fwd, 10, inches, 20, velocityUnits::pct);
   intakeWheels.spinFor(fwd, 360, degrees, 60, velocityUnits::pct, false);
-  adjustHold();
+  adjustHold(70);
   while(!goal.pressing()) robotDrive.drive(fwd, 20, velocityUnits::pct);
   score();
   score();

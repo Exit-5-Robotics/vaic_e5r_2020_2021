@@ -9,4 +9,4 @@ extern void score( void );
 extern void poop( void );
 
 extern void descore( void );
-extern int adjustHold( void );
+extern int adjustHold( int speed );
