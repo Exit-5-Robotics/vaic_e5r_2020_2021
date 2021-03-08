@@ -1,12 +1,15 @@
-//MOTOR 12 RIGHT FRONT
-//MOTOR 14 RIGHT BACK
-//MOTOR 18 LEFT FRONT
-//MOTOR 13 LEFT BACK
+// RF    - PORT 12
+// RB    - PORT 14
+// LF    - PORT 18
+// LB    - PORT 13
+// Intake - PORT 9
+// Roller - PORT 8
+
 #include "vex.h"
 
 using namespace vex;
 
-void driveAuto(int direction){
+void driveAuto(int direction, int speed){
   //direction settings: idk if this helps but here
   //0 = cw rotation
   //1 = ccw rotation
@@ -16,8 +19,6 @@ void driveAuto(int direction){
   //5 = right forward
   //6 = left forward
   //7 = right back
-
-  int speed = 100;
 
   RF.setVelocity(speed, rpm);
   RB.setVelocity(speed, rpm);
@@ -81,63 +82,5 @@ void driveAuto(int direction){
   if(direction == 7){
     RF.spin(forward);
     LB.spin(reverse);
-  }
-}
-
-void driveControl(){
-
-  RF.setVelocity(Controller1.Axis4.position(percent)+Controller1.Axis1.position(percent)-Controller1.Axis2.position(percent), percent);
-  RB.setVelocity(Controller1.Axis4.position(percent)-Controller1.Axis1.position(percent)-Controller1.Axis2.position(percent), percent);
-  LF.setVelocity(Controller1.Axis4.position(percent)+Controller1.Axis1.position(percent)+Controller1.Axis2.position(percent), percent);
-  LB.setVelocity(Controller1.Axis4.position(percent)-Controller1.Axis1.position(percent)+Controller1.Axis2.position(percent), percent);
-
-  RF.spin(forward);
-  RB.spin(forward);
-  LF.spin(forward);
-  LB.spin(forward);
-}
-
-void intake(){
-  int speed = 400;
-  Motor8.setVelocity(speed, rpm);
-  Motor9.setVelocity(speed, rpm);
-
-  if(Controller1.ButtonR1.pressing()){
-    Motor8.spin(forward);
-    Motor9.spin(forward);
-  }
-
-  else if(Controller1.ButtonR2.pressing()){
-    Motor8.spin(reverse);
-    Motor9.spin(reverse);
-  }
-
-  else{
-    Motor8.setStopping(hold);
-    Motor9.setStopping(hold);
-
-    Motor8.stop();
-    Motor9.stop();
-  }
-}
- 
-//
-// Main will set up the competition functions and callbacks.
-//
-int main() {
-  // Set up callbacks for autonomous and driver control periods.
-  Competition.autonomous(autonomous);
-  Competition.drivercontrol(usercontrol);
-
-  // Run the pre-autonomous function.
-  pre_auton();
-
-  
-  
-  // Prevent main from exiting with an infinite loop.
-  while (true) {
-    wait(100, msec);
-    driveControl();
-    intake();
   }
 }

@@ -13,8 +13,8 @@ motor RB = motor(PORT14, ratio18_1, false);
 motor LF = motor(PORT18, ratio18_1, false);
 motor LB = motor(PORT13, ratio18_1, false);
 controller Controller1 = controller(primary);
-motor Motor8 = motor(PORT8, ratio18_1, false);
-motor Motor9 = motor(PORT9, ratio18_1, true);
+motor roller = motor(PORT8, ratio18_1, false);
+motor intake = motor(PORT9, ratio18_1, true);
 
 
 /**

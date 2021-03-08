@@ -8,8 +8,8 @@ extern motor RF;
 extern motor RB;
 extern motor LF;
 extern motor LB;
-extern motor Motor8;
-extern motor Motor9;
+extern motor roller;
+extern motor intake;
 
 
 /**

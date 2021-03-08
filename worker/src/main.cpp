@@ -8,10 +8,24 @@
 /*----------------------------------------------------------------------------*/
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
-// LinkA - PORT11
+// LinkA - PORT 11
+// RF    - PORT 12
+// RB    - PORT 14
+// LF    - PORT 18
+// LB    - PORT 13
+// Intake - PORT 9
+// Roller - PORT 8
 // 
 // 
-// 
+// direction settings FOR NAVIGATION: idk if this helps but here
+  //0 = cw rotation
+  //1 = ccw rotation
+  //2 = forward
+  //3 = backward
+  //4 = left back
+  //5 = right forward
+  //6 = left forward
+  //7 = right back
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
