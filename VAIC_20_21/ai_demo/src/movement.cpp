@@ -99,8 +99,17 @@ int adjustHold( int speed ) {
 
 int testMovement() { // just for testing
   // task::sleep(2000);
-  // descore();
+  // // descore();
+  // frontLeftWheel.spinFor(fwd, 800, rotationUnits::deg, 30, velocityUnits::pct, false);
+  // frontRightWheel.spinFor(fwd, 800, rotationUnits::deg, 30, velocityUnits::pct, false);
+  // backLeftWheel.spinFor(fwd, 800, rotationUnits::deg, 30, velocityUnits::pct, false);
+  // backRightWheel.spinFor(fwd, 800, rotationUnits::deg, 30, velocityUnits::pct);
+  // frontLeftWheel.spinFor(fwd, 800, rotationUnits::deg, 60, velocityUnits::pct, false);
+  // frontRightWheel.spinFor(fwd, 800, rotationUnits::deg, 60, velocityUnits::pct, false);
+  // backLeftWheel.spinFor(fwd, 800, rotationUnits::deg, 60, velocityUnits::pct, false);
+  // backRightWheel.spinFor(fwd, 800, rotationUnits::deg, 60, velocityUnits::pct);
   // this_thread::sleep_for(20000);
+  
   while (true) {
     float current_x, current_y, current_heading;
     link.get_local_location(current_x, current_y, current_heading);

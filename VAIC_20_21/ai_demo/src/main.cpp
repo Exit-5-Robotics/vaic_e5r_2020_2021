@@ -7,18 +7,23 @@
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // LinkA -           PORT11
-// leftIntake -      PORT9
-// rightIntake -     PORT8
-// botRoller -       PORT1
-// topRoller -       PORT2
-// Balls -           PORT10
+// ballThree -       3WireC
+// ballZero -        3WireE
+// tilt -            PORT10
+// goal -            3WireD
 //
-// frontLeftWheel -  PORT16
-// backLeftWheel -   PORT17
-// backRightWheel -  PORT18
-// frontRightWheel - PORT19
-// leftDrive -       PORT16, PORT17
-// rightDrive -      PORT18, PORT19
+// leftIntake -      PORT1
+// rightIntake -     PORT19
+// botRoller -       PORT11
+// topRoller -       PORT12
+// Balls -           PORT10 (not in use)
+//
+// frontLeftWheel -  PORT2
+// backLeftWheel -   PORT16
+// backRightWheel -  PORT17
+// frontRightWheel - PORT18
+// leftDrive -       PORT16, PORT2
+// rightDrive -      PORT17, PORT18
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -146,6 +151,7 @@ int main() {
     // start the status update display
     thread t1(dashboardTask);
     thread t2(testMovement);
+    thread accel(values);
     // thread iso(redIsolation);
 
     // Set up callbacks for autonomous and driver control periods.
