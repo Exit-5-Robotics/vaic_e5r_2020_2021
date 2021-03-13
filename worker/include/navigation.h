@@ -1,3 +1,5 @@
 using namespace vex;
 
-void driveAuto(int direction);
+bool checkDescore(void);
+void setSpeed(int speed);
+void driveAuto(int direction1);

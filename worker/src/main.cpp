@@ -67,6 +67,12 @@ get_obj(const char *message, const char *linkname, double i) {
   Brain.Screen.clearScreen();
 }
 
+void workerDuties(){
+  this_thread::sleep_for(10);
+  setSpeed(20);
+  descore();
+}
+
 
 
 int main() {
@@ -90,6 +96,8 @@ int main() {
     //FILE *fp = fopen("/dev/serial2","wb");
 
     LinkA.received("object", get_obj);
+
+    thread t2(workerDuties);
 
     while(1) {
         // get last map data
