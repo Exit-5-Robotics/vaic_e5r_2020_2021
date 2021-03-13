@@ -23,6 +23,8 @@ motor         backRightWheel(PORT17, ratio18_1, true);
 motor         frontRightWheel(PORT18, ratio18_1, true);
 motor_group   leftDrive( backLeftWheel, frontLeftWheel );
 motor_group   rightDrive( backRightWheel, frontRightWheel );
+motor_group   rightDiagDrive( frontLeftWheel, backRightWheel );
+motor_group   leftDiagDrive( frontRightWheel, backLeftWheel );
 inertial      tilt( PORT10 );
 bumper        goal(Brain.ThreeWirePort.D);
 smartdrive    robotDrive( leftDrive, rightDrive, tilt, 12.56, 14.125, 9, distanceUnits::in ); // might have to change values
@@ -42,39 +44,77 @@ void vexcodeInit(void) {
 
 void driveAngle( int angleToDrive, int speed ) {
   // drive at an angle relative to the current angle of the robot
-
-
-  if (angleToDrive%360 > 180) {
-    frontLeftWheel.spin(reverse, speed, velocityUnits::pct);
-    frontRightWheel.spin(fwd, speed, velocityUnits::pct);
-    backLeftWheel.spin(fwd, speed, velocityUnits::pct);
-    backRightWheel.spin(reverse, speed, velocityUnits::pct);
-  } else {
-    frontLeftWheel.spin(fwd, speed, velocityUnits::pct);
-    frontRightWheel.spin(reverse, speed, velocityUnits::pct);
-    backLeftWheel.spin(reverse, speed, velocityUnits::pct);
-    backRightWheel.spin(fwd, speed, velocityUnits::pct);
-  }
+    int measureAngle = (angleToDrive+45)%360;
+    int tempAngle;
+    float rightSpeed, leftSpeed;
+    switch (measureAngle/90) {
+      case 0:
+        tempAngle = 90 - measureAngle;
+        rightSpeed = speed*cos(tempAngle/(180/M_PI));
+        leftSpeed = speed*sin(tempAngle/(180/M_PI));
+        rightDiagDrive.spin(fwd, rightSpeed, velocityUnits::pct);
+        leftDiagDrive.spin(fwd, leftSpeed, velocityUnits::pct);
+        // both L and R are positive
+        break;
+      case 1:
+        // R is positive, L is negative
+        tempAngle = measureAngle - 90;
+        rightSpeed = speed*cos(tempAngle/(180/M_PI));
+        leftSpeed = speed*sin(tempAngle/(180/M_PI));
+        rightDiagDrive.spin(fwd, rightSpeed, velocityUnits::pct);
+        leftDiagDrive.spin(reverse, leftSpeed, velocityUnits::pct);
+        break;
+      case 2:
+        // both L and R are negative
+        tempAngle = 270 - measureAngle;
+        rightSpeed = speed*cos(tempAngle/(180/M_PI));
+        leftSpeed = speed*sin(tempAngle/(180/M_PI));
+        rightDiagDrive.spin(reverse, rightSpeed, velocityUnits::pct);
+        leftDiagDrive.spin(reverse, leftSpeed, velocityUnits::pct);
+        break;
+      default:
+        // L is positive, R is negative
+        tempAngle = measureAngle - 270;
+        rightSpeed = speed*cos(tempAngle/(180/M_PI));
+        leftSpeed = speed*sin(tempAngle/(180/M_PI));
+        rightDiagDrive.spin(reverse, rightSpeed, velocityUnits::pct);
+        leftDiagDrive.spin(fwd, leftSpeed, velocityUnits::pct);
+        break;
+    }
 }
 
 void driveAngleAbs( int angleToDrive, int speed ) {
   // drive at an absolute angle
 
-  // TODO: Find relative angle, then use above to drive at relative angle
-  
+  // get starting location and heading (mainly just heading)
+  float start_x, start_y, start_heading;
+  link.get_local_location(start_x, start_y, start_heading);
+  // convert to degrees
+  start_heading *= 180/M_PI;
+  start_heading += 180;
+
+  // find angle to drive at relative to current heading
+  int relativeDriveAngle = (angleToDrive - (int)start_heading)%360;
+  driveAngle(relativeDriveAngle, speed);
 }
 
 void driveAngleFor( int dist, int angleToDrive, int speed ) {
   // drive at an angle for a distance in inches relative to current angle of robot
+  int degreesDrive = dist*29;
+  Brain.Screen.printAt(10, 20, "deg: %d", degreesDrive);
+  robotDrive.setRotation(0, rotationUnits::deg);
 
-  // TODO: math :(
-  
+  driveAngle(angleToDrive, speed);
+  while (sqrt(pow(rightDiagDrive.rotation(deg),2)+pow(leftDiagDrive.rotation(deg),2)) < degreesDrive) {
+    Brain.Screen.printAt(10, 60, "sqrt: %f", sqrt(pow(frontLeftWheel.rotation(deg),2)+pow(frontRightWheel.rotation(deg),2)));
+  }
+  robotDrive.stop();
 }
 
 void driveAngleForAbs( int dist, int angleToDrive, int speed ) {
   // drive at an absolute angle for a distance in inches
 
-  
+  // TODO: Find relative angle, then use above to drive at relative angle
 }
 
 // COPIED FROM PRIOR DRIVING PROGRAM
@@ -229,22 +269,4 @@ void clearValues ( void ) {
 }
 
 void values ( void ) {
-  while (true) {
-    Brain.Screen.printAt( 10, 20, "front left %f", frontLeftWheel.position(rotationUnits::deg) );
-    Brain.Screen.printAt( 10, 40, "front right %f", frontRightWheel.position(rotationUnits::deg) );
-    Brain.Screen.printAt( 10, 60, "back left %f", backLeftWheel.position(rotationUnits::deg) );
-    Brain.Screen.printAt( 10, 80, "back right %f", backRightWheel.position(rotationUnits::deg) );
-  }
-
-  // static double accel = tilt.acceleration(xaxis);
-  // static double maxAccel = 0;
-
-  // while (true) {
-  //   accel = tilt.acceleration(axisType::xaxis);
-  //   if (abs(accel) > abs(maxAccel)) maxAccel = accel;
-  //   Brain.Screen.printAt( 10, 20, "Max accel x %f", maxAccel);
-  //   Brain.Screen.printAt( 10, 40, "Inertial accel y %f", tilt.acceleration(axisType::yaxis) );
-  //   Brain.Screen.printAt( 10, 60, "Inertial accel z %f", tilt.acceleration(axisType::zaxis) );
-
-  // }
 }

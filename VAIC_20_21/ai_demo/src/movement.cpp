@@ -23,29 +23,35 @@ void turnTo( float dest_heading, int vel ) {
 
 void goTo( float dest_x, float dest_y, float dest_heading ) {   
 
-  float start_x, start_y, start_heading;
+  float start_x, start_y, start_heading, current_x, current_y, current_heading;
   link.get_local_location(start_x, start_y, start_heading);
 
   // convert units to inches and degrees
   start_x /= 25.4;
   start_y /= 25.4;
-  start_heading *= 180/M_PI + 180;
+  start_heading *= 180/M_PI;
+  start_heading += 180;
 
   float change_x = dest_x - start_x;
   float change_y = dest_y - start_y;
-  Brain.Screen.printAt(10, 20, "change x: %f", change_x);
-  Brain.Screen.printAt(10, 40, "change y: %f", change_y);
 
   double turnToAngle = (90 - atan((double)change_y/(double)change_x)*180/M_PI);
-  Brain.Screen.printAt(10, 60, "turn to: %f", turnToAngle);
 
-  turnTo(turnToAngle, 5);
-  
+  turnTo(dest_heading, 5);
+
+  // turnTo(turnToAngle, 5);
   // LeftDrive.setVelocity(pow(drivetrainForwardBackward, 2) / 1.2*drivetrainForwardBackward, percent);
   // RightDrive.setVelocity(pow(drivetrainForwardBackward, 2) / 1.2*drivetrainForwardBackward, percent);
-  robotDrive.driveFor(sqrt((double)pow(change_x, 2) + (double)pow(change_y,2)), vex::distanceUnits::in, 5, vex::velocityUnits::pct);
+  // robotDrive.driveFor(sqrt((double)pow(change_x, 2) + (double)pow(change_y,2)), vex::distanceUnits::in, 5, vex::velocityUnits::pct);
+  driveAngle(turnToAngle, 30);
   
-  turnTo(dest_heading, 5);
+  current_x = start_x, current_y = start_y, current_heading = start_heading;
+  while(abs((int)current_x - (int)dest_x) > 10) {
+    link.get_local_location(current_x, current_y, current_heading);
+  }
+  robotDrive.stop();
+  
+  // turnTo(dest_heading, 5);
 
 }
 
@@ -99,6 +105,7 @@ int adjustHold( int speed ) {
 
 int testMovement() { // just for testing
   // task::sleep(2000);
+  // driveAngleFor(10, 330, 15);
   // // descore();
   // frontLeftWheel.spinFor(fwd, 800, rotationUnits::deg, 30, velocityUnits::pct, false);
   // frontRightWheel.spinFor(fwd, 800, rotationUnits::deg, 30, velocityUnits::pct, false);
@@ -108,7 +115,7 @@ int testMovement() { // just for testing
   // frontRightWheel.spinFor(fwd, 800, rotationUnits::deg, 60, velocityUnits::pct, false);
   // backLeftWheel.spinFor(fwd, 800, rotationUnits::deg, 60, velocityUnits::pct, false);
   // backRightWheel.spinFor(fwd, 800, rotationUnits::deg, 60, velocityUnits::pct);
-  // this_thread::sleep_for(20000);
+  this_thread::sleep_for(20000);
   
   while (true) {
     float current_x, current_y, current_heading;
@@ -117,7 +124,8 @@ int testMovement() { // just for testing
     if (current_x != 0) {
 
       task::sleep(2000);
-      redIsolation();
+      goTo(40, -40, 180);
+      // redIsolation();
       task::sleep(10000);
     }
 

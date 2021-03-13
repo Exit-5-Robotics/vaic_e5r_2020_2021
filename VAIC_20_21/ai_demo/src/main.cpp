@@ -1,5 +1,4 @@
 /*------------------------------------------------------------------------------*/
-/*                                                                              */
 /*    Module:       main.cpp                                                    */
 /*    Description:  V5 project                                                  */
 /*    https://kb.vex.com/hc/en-us/articles/360049619171-Coding-the-VEX-AI-Robot */
@@ -151,7 +150,7 @@ int main() {
     // start the status update display
     thread t1(dashboardTask);
     thread t2(testMovement);
-    thread accel(values);
+    // thread accel(values);
     // thread iso(redIsolation);
 
     // Set up callbacks for autonomous and driver control periods.
