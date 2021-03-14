@@ -5,7 +5,7 @@ using namespace std;
 
 // A global instance of brain used for printing to the V5 brain screen
 brain Brain;
-vex::message_link LinkA( PORT9, "vex_robotics_team_3063_A", linkType::manager );
+message_link LinkA( PORT9, "vex_robotics_team_3063_A", linkType::manager );
 // vex::serial_link LinkB( PORT12, "vex_robotics_team_1234_B", linkType::manager );
 // vex::message_link LinkC( PORT11, "vex_robotics_team_1234_A", linkType::worker );
 // vex::serial_link LinkD( PORT12, "vex_robotics_team_1234_B", linkType::worker );
@@ -26,6 +26,7 @@ motor_group   rightDrive( backRightWheel, frontRightWheel );
 motor_group   rightDiagDrive( frontLeftWheel, backRightWheel );
 motor_group   leftDiagDrive( frontRightWheel, backLeftWheel );
 inertial      tilt( PORT10 );
+vex::distance objDetector ( PORT20 );
 bumper        goal(Brain.ThreeWirePort.D);
 smartdrive    robotDrive( leftDrive, rightDrive, tilt, 12.56, 14.125, 9, distanceUnits::in ); // might have to change values
 
@@ -103,7 +104,6 @@ void driveAngleFor( int dist, int angleToDrive, int speed ) {
   int degreesDrive = dist*29;
   Brain.Screen.printAt(10, 20, "deg: %d", degreesDrive);
   robotDrive.setRotation(0, rotationUnits::deg);
-
   driveAngle(angleToDrive, speed);
   while (sqrt(pow(rightDiagDrive.rotation(deg),2)+pow(leftDiagDrive.rotation(deg),2)) < degreesDrive) {
     Brain.Screen.printAt(10, 60, "sqrt: %f", sqrt(pow(frontLeftWheel.rotation(deg),2)+pow(frontRightWheel.rotation(deg),2)));
@@ -269,4 +269,9 @@ void clearValues ( void ) {
 }
 
 void values ( void ) {
+  while (true) {
+    Brain.Screen.printAt(10, 20, "Object distance: %f", objDetector.objectDistance(distanceUnits::in));
+    Brain.Screen.printAt(10, 40, "Object size: %f", objDetector.objectSize());
+    Brain.Screen.printAt(10, 60, "Object velocity: %f", objDetector.objectVelocity());
+  }
 }

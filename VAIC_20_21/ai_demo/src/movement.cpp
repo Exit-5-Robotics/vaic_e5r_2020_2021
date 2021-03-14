@@ -14,8 +14,10 @@ void turnTo( float dest_heading, int vel ) {
   change = change > 0 ? change : change + 360;
 
   if (change < 180) {
+    Brain.Screen.printAt(10, 100, "Right");
     robotDrive.turnFor(right, change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct);
   } else {
+    Brain.Screen.printAt(10, 120, "Left");
     robotDrive.turnFor(left, 360 - change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct);
   }
   
@@ -24,6 +26,8 @@ void turnTo( float dest_heading, int vel ) {
 void goTo( float dest_x, float dest_y, float dest_heading ) {   
 
   float start_x, start_y, start_heading, current_x, current_y, current_heading;
+  link.get_local_location(start_x, start_y, start_heading);
+  // turnTo(dest_heading, 30);
   link.get_local_location(start_x, start_y, start_heading);
 
   // convert units to inches and degrees
@@ -35,9 +39,8 @@ void goTo( float dest_x, float dest_y, float dest_heading ) {
   float change_x = dest_x - start_x;
   float change_y = dest_y - start_y;
 
-  double turnToAngle = (90 - atan((double)change_y/(double)change_x)*180/M_PI);
-
-  turnTo(dest_heading, 5);
+  int turnToAngle = (int)(90 - atan((double)change_y/(double)change_x)*180/M_PI)%360;
+  if ((change_x*change_y > 0 && change_y <0) || (change_x*change_y < 0 && change_y > 0) || (change_x < 0 && change_y == 0)) turnToAngle += 180;
 
   // turnTo(turnToAngle, 5);
   // LeftDrive.setVelocity(pow(drivetrainForwardBackward, 2) / 1.2*drivetrainForwardBackward, percent);
@@ -124,7 +127,8 @@ int testMovement() { // just for testing
     if (current_x != 0) {
 
       task::sleep(2000);
-      goTo(40, -40, 180);
+      goTo(-40, -40, 180);
+      // driveAngleAbs(45, 30);
       // redIsolation();
       task::sleep(10000);
     }
