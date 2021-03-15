@@ -63,7 +63,8 @@ dashboardJetson( int ox, int oy, int width, int height ) {
   Brain.Screen.setFont( mono12 );
   for(int i=0;i<4;i++ ) {
     if( i < local_map.boxnum ) {
-      Brain.Screen.printAt( ox + 10, oy += 12, "box %d: x:%4d y:%4d w:%4d h:%4d d:%.1f",i,
+      Brain.Screen.printAt( ox + 10, oy += 12, "box %d: x:%4d y:%4d w:%4d h:%4d d:%.1f",
+                           i,
                            local_map.boxobj[i].x,
                            local_map.boxobj[i].y,
                            local_map.boxobj[i].width,
