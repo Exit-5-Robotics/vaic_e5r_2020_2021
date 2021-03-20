@@ -33,6 +33,9 @@
 
 using namespace vex;
 
+// A global instance of competition
+competition Competition;  
+
 // create instance of jetson class to receive location and other
 // data from the Jetson nano
 //
