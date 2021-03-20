@@ -20,6 +20,7 @@ motor frontLeftWheel = motor(PORT17, ratio18_1, false);
 motor backRightWheel = motor(PORT18, ratio18_1, true);
 motor frontRightWheel = motor(PORT19, ratio18_1, true);
 line ball = line(Brain.ThreeWirePort.C);
+distance detec = distance(PORT20);
 
 motor_group   LeftDrive( backLeftWheel, frontLeftWheel );
 motor_group   RightDrive( backRightWheel, frontRightWheel );
@@ -184,17 +185,10 @@ void values ( void ) {
   static double     frightVoltage;
   static double     ballval;
   while (true) {
-    frightCurrent = frontRightWheel.current();
-    frightEfficiency = frontRightWheel.efficiency();
-    frightPower = frontRightWheel.power();
-    frightVoltage = frontRightWheel.voltage();
-    ballval =  ball.value(analogUnits::mV);
-
-    Brain.Screen.printAt( 10, 20, "FRight c %f", frightCurrent );
-    Brain.Screen.printAt( 10, 40, "FRight e %f", frightEfficiency );
-    Brain.Screen.printAt( 10, 60, "FRight p %f", frightPower );
-    Brain.Screen.printAt( 10, 80, "FRight v %f", frightVoltage );
-    Brain.Screen.printAt( 10, 120, "line %f", ballval );
+    
+    Brain.Screen.printAt( 10, 20, "Obj dist %f", detec.objectDistance(distanceUnits::in) );
+    Brain.Screen.printAt( 10, 40, "Obj size %f", detec.objectSize() );
+    Brain.Screen.printAt( 10, 60, "Obj vel %f", detec.objectVelocity() );
   
   }
 }
