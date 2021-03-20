@@ -16,14 +16,12 @@ extern motor backRightWheel;
 extern motor frontRightWheel;
 extern motor_group leftDrive;
 extern motor_group rightDrive;
+extern motor_group rightDiagDrive;
+extern motor_group leftDiagDrive;
 extern inertial tilt;
 extern bumper goal;
 extern smartdrive robotDrive;
 
-void driveAngle( int angleToDrive, int speed );
-void driveAngleAbs( int angleToDrive, int speed );
-void driveAngleFor( int dist, int angleToDrive, int speed );
-void driveAngleForAbs( int dist, int angleToDrive, int speed );
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
  *

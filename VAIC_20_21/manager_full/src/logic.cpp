@@ -11,10 +11,9 @@ int mapScore[3][3] = {{0, 0, 0},  // 00, 01, 02
 
 deque<int> goalsVisiting;
 
-        
 
-float round(float var) // not really being used lol...
-{
+
+float round(float var) {
     float value = (int)(var * 100 + .5); 
     return (float)value / 100;
 }
