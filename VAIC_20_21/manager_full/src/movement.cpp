@@ -10,14 +10,12 @@ void turnTo( float dest_heading, int vel ) {
   float current_x, current_y, current_heading;
   link.get_local_location(current_x, current_y, current_heading);
 
-  float change = dest_heading - (current_heading*180/M_PI);
+  float change = dest_heading - (current_heading*180/M_PI) + 180;
   change = change > 0 ? change : change + 360;
 
   if (change < 180) {
-    Brain.Screen.printAt(10, 100, "Right");
     robotDrive.turnFor(right, change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct);
   } else {
-    Brain.Screen.printAt(10, 120, "Left");
     robotDrive.turnFor(left, 360 - change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct);
   }
   
@@ -27,7 +25,8 @@ void goTo( float dest_x, float dest_y, float dest_heading ) {
 
   float start_x, start_y, start_heading, current_x, current_y, current_heading;
   link.get_local_location(start_x, start_y, start_heading);
-  // turnTo(dest_heading, 30);
+  turnTo(dest_heading, 30);
+
   link.get_local_location(start_x, start_y, start_heading);
 
   // convert units to inches and degrees
@@ -39,20 +38,17 @@ void goTo( float dest_x, float dest_y, float dest_heading ) {
   float change_x = dest_x - start_x;
   float change_y = dest_y - start_y;
 
-  int turnToAngle = (int)(90 - atan((double)change_y/(double)change_x)*180/M_PI)%360;
-  if ((change_x*change_y > 0 && change_y <0) || (change_x*change_y < 0 && change_y > 0) || (change_x < 0 && change_y == 0)) turnToAngle += 180;
+  int driveToAngle = (int)(90 - atan((double)change_y/(double)change_x)*180/M_PI)%360;
 
-  // turnTo(turnToAngle, 5);
-  // LeftDrive.setVelocity(pow(drivetrainForwardBackward, 2) / 1.2*drivetrainForwardBackward, percent);
-  // RightDrive.setVelocity(pow(drivetrainForwardBackward, 2) / 1.2*drivetrainForwardBackward, percent);
-  // robotDrive.driveFor(sqrt((double)pow(change_x, 2) + (double)pow(change_y,2)), vex::distanceUnits::in, 5, vex::velocityUnits::pct);
-  driveAngle(turnToAngle, 30);
+  // Adjusts to go to -x direction of field
+  if ((change_x*change_y > 0 && change_y <0) || (change_x*change_y < 0 && change_y > 0) || (change_x < 0 && change_y == 0)) driveToAngle += 180;
+
+  driveAngleAbs(driveToAngle, 30);
   
   current_x = start_x, current_y = start_y, current_heading = start_heading;
-  while(abs((int)current_x - (int)dest_x) > 10) {
-    link.get_local_location(current_x, current_y, current_heading);
-  }
-  robotDrive.stop();
+  dest_x *= 25.4, dest_y *= 25.4;
+  while(abs((int)current_x - (int)dest_x) > 100 || abs((int)current_y - (int)dest_y) > 100) link.get_local_location(current_x, current_y, current_heading);
+  robotDrive.stop();  
   
   // turnTo(dest_heading, 5);
 
@@ -127,7 +123,7 @@ int testMovement() { // just for testing
     if (current_x != 0) {
 
       task::sleep(2000);
-      goTo(-40, -40, 180);
+      goTo(40, 40, 180);
       // driveAngleAbs(45, 30);
       // redIsolation();
       task::sleep(10000);

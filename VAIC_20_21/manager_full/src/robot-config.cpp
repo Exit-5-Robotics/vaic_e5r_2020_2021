@@ -5,7 +5,7 @@ using namespace std;
 
 // A global instance of brain used for printing to the V5 brain screen
 brain Brain;
-message_link LinkA( PORT9, "vex_robotics_team_3063_A", linkType::manager );
+message_link  LinkA( PORT9, "vex_robotics_team_3063_A", linkType::manager );
 // vex::serial_link LinkB( PORT12, "vex_robotics_team_1234_B", linkType::manager );
 // vex::message_link LinkC( PORT11, "vex_robotics_team_1234_A", linkType::worker );
 // vex::serial_link LinkD( PORT12, "vex_robotics_team_1234_B", linkType::worker );
@@ -45,48 +45,47 @@ void vexcodeInit(void) {
 
 void driveAngle( int angleToDrive, int speed ) {
   // drive at an angle relative to the current angle of the robot
-    int measureAngle = (angleToDrive+45)%360;
-    int tempAngle;
-    float rightSpeed, leftSpeed;
-    switch (measureAngle/90) {
-      case 0:
-        tempAngle = 90 - measureAngle;
-        rightSpeed = speed*cos(tempAngle/(180/M_PI));
-        leftSpeed = speed*sin(tempAngle/(180/M_PI));
-        rightDiagDrive.spin(fwd, rightSpeed, velocityUnits::pct);
-        leftDiagDrive.spin(fwd, leftSpeed, velocityUnits::pct);
-        // both L and R are positive
-        break;
-      case 1:
-        // R is positive, L is negative
-        tempAngle = measureAngle - 90;
-        rightSpeed = speed*cos(tempAngle/(180/M_PI));
-        leftSpeed = speed*sin(tempAngle/(180/M_PI));
-        rightDiagDrive.spin(fwd, rightSpeed, velocityUnits::pct);
-        leftDiagDrive.spin(reverse, leftSpeed, velocityUnits::pct);
-        break;
-      case 2:
-        // both L and R are negative
-        tempAngle = 270 - measureAngle;
-        rightSpeed = speed*cos(tempAngle/(180/M_PI));
-        leftSpeed = speed*sin(tempAngle/(180/M_PI));
-        rightDiagDrive.spin(reverse, rightSpeed, velocityUnits::pct);
-        leftDiagDrive.spin(reverse, leftSpeed, velocityUnits::pct);
-        break;
-      default:
-        // L is positive, R is negative
-        tempAngle = measureAngle - 270;
-        rightSpeed = speed*cos(tempAngle/(180/M_PI));
-        leftSpeed = speed*sin(tempAngle/(180/M_PI));
-        rightDiagDrive.spin(reverse, rightSpeed, velocityUnits::pct);
-        leftDiagDrive.spin(fwd, leftSpeed, velocityUnits::pct);
-        break;
-    }
+  int measureAngle = (angleToDrive + 45)%360;
+  int tempAngle;
+  float rightSpeed, leftSpeed;
+  switch (measureAngle/90) {
+    case 0:
+      tempAngle = 90 - measureAngle;
+      rightSpeed = speed*cos(tempAngle/(180/M_PI));
+      leftSpeed = speed*sin(tempAngle/(180/M_PI));
+      rightDiagDrive.spin(fwd, rightSpeed, velocityUnits::pct);
+      leftDiagDrive.spin(fwd, leftSpeed, velocityUnits::pct);
+      // both L and R are positive
+      break;
+    case 1:
+      // R is positive, L is negative
+      tempAngle = measureAngle - 90;
+      rightSpeed = speed*cos(tempAngle/(180/M_PI));
+      leftSpeed = speed*sin(tempAngle/(180/M_PI));
+      rightDiagDrive.spin(fwd, rightSpeed, velocityUnits::pct);
+      leftDiagDrive.spin(reverse, leftSpeed, velocityUnits::pct);
+      break;
+    case 2:
+      // both L and R are negative
+      tempAngle = 270 - measureAngle;
+      rightSpeed = speed*cos(tempAngle/(180/M_PI));
+      leftSpeed = speed*sin(tempAngle/(180/M_PI));
+      rightDiagDrive.spin(reverse, rightSpeed, velocityUnits::pct);
+      leftDiagDrive.spin(reverse, leftSpeed, velocityUnits::pct);
+      break;
+    default:
+      // L is positive, R is negative
+      tempAngle = measureAngle - 270;
+      rightSpeed = speed*cos(tempAngle/(180/M_PI));
+      leftSpeed = speed*sin(tempAngle/(180/M_PI));
+      rightDiagDrive.spin(reverse, rightSpeed, velocityUnits::pct);
+      leftDiagDrive.spin(fwd, leftSpeed, velocityUnits::pct);
+      break;
+  }
 }
 
 void driveAngleAbs( int angleToDrive, int speed ) {
   // drive at an absolute angle
-
   // get starting location and heading (mainly just heading)
   float start_x, start_y, start_heading;
   link.get_local_location(start_x, start_y, start_heading);
@@ -96,6 +95,7 @@ void driveAngleAbs( int angleToDrive, int speed ) {
 
   // find angle to drive at relative to current heading
   int relativeDriveAngle = (angleToDrive - (int)start_heading)%360;
+  
   driveAngle(relativeDriveAngle, speed);
 }
 
