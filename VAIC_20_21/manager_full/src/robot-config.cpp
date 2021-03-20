@@ -197,7 +197,7 @@ void clearValues ( void ) {
 void values ( void ) {
   while (true) {
     Brain.Screen.printAt(10, 20, "Object distance: %f", objDetector.objectDistance(distanceUnits::in));
-    Brain.Screen.printAt(10, 40, "Object size: %f", objDetector.objectSize());
+    Brain.Screen.printAt(10, 40, "Object size: %d", objDetector.objectRawSize());
     Brain.Screen.printAt(10, 60, "Object velocity: %f", objDetector.objectVelocity());
   }
 }

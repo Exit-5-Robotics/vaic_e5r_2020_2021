@@ -46,7 +46,7 @@ typedef struct {
                             // center of your robot you will have add an offset. 
 	float	    az;             // Rotation of the robot in radians (Heading)
   float     el;             // Elevation of the robot in radians (Pitch)
-  float     rot;            // Rotation/Tilt of the robot in radians (Roll)
+  // float     rot;            // Rotation/Tilt of the robot in radians (Roll)
 } POS_RECORD;
 
 /// This structure represents a visual detection of a VEX object from the forward facing depth camera.
