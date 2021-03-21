@@ -1,3 +1,15 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// RF                   motor         12              
+// RB                   motor         14              
+// LF                   motor         18              
+// LB                   motor         13              
+// Controller1          controller                    
+// Motor8               motor         8               
+// Motor9               motor         9               
+// Motor10              motor         10              
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -189,24 +201,31 @@ void intake(){
   int speed = 400;
   Motor8.setVelocity(speed, rpm);
   Motor9.setVelocity(speed, rpm);
+  Motor10.setVelocity(speed, rpm);
 
   if(Controller1.ButtonR1.pressing()){
     Motor8.spin(forward);
     Motor9.spin(forward);
+    Motor10.spin(reverse);
   }
 
   else if(Controller1.ButtonR2.pressing()){
     Motor8.spin(reverse);
     Motor9.spin(reverse);
+    Motor10.spin(forward);
   }
 
   else{
     Motor8.setStopping(hold);
     Motor9.setStopping(hold);
+    Motor10.setStopping(hold);
 
     Motor8.stop();
     Motor9.stop();
+    Motor10.stop();
   }
+
+
 }
  
 //
