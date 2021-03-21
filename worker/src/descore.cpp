@@ -2,32 +2,27 @@
 // call descore() to check if descoring is necessary / descore
 
 bool checkDescore(){
-  int sum0 = 0, sum1 = 0, sum2 = 0;
   static MAP_RECORD  local_map;
 
   jetson_comms.get_data( &local_map );
 
   if(local_map.boxnum >= 3){
-    int avgY[local_map.boxnum] = {};
+    int largestAvgY[] = {0, 0}; // {avg, boxnum}
     for(int k = 0; k < local_map.boxnum; k++){
+      int currentAvgY = 0;
       for(int i = 0; i < 15; i++){
         static MAP_RECORD  local_map;
-        avgY[k] += local_map.boxobj[k].y;
+        jetson_comms.get_data( &local_map );
+        currentAvgY += local_map.boxobj[k].y;
       }
-      avgY[k] /= 15;
+      currentAvgY /= 15;
+      if(currentAvgY > largestAvgY[0]){
+        largestAvgY[0] = currentAvgY;
+        largestAvgY[1] = k;
+      }
     }
     
-
-    //{y pos, id}
-    int highestBox[] = {avgY[0], 0}; 
-    for(int i = 1; i < local_map.boxnum; i++){
-      if (avgY[i] > highestBox[0]){
-        highestBox[0] = avgY[i];
-        highestBox[1] = i;
-      }
-    }    
-    
-    if(local_map.mapobj[highestBox[1]].classID != OUR_COLOR){
+    if(local_map.mapobj[largestAvgY[1]].classID != OUR_COLOR){
       return true;
     }
   }
@@ -40,6 +35,26 @@ bool checkDescore(){
 
 void descore (){
   if(checkDescore()){
-    driveAutoDist(0, 10);
+
+    static MAP_RECORD  local_map;
+    jetson_comms.get_data( &local_map );
+
+    int acceptedDeviation = 200;
+    //int axisTarget = 1300;
+
+    //find location & go
+    if(abs(local_map.pos.x) < acceptedDeviation || abs(local_map.pos.y) < acceptedDeviation){
+      //on y-axis or x-axis
+      while(local_map.boxnum > 1){
+        driveAuto(0);
+      }
+      driveAutoDist(0, 100);
+
+    } else{
+      //on corner
+
+    }
+
+
   }
 }
