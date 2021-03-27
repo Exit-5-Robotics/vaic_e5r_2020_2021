@@ -23,7 +23,7 @@
 
 #include "robot-config.h"
 
-#define RED     0
+#define RED    0
 #define BLUE   1
 #define OUR_COLOR    RED
 

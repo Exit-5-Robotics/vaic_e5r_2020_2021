@@ -18,8 +18,8 @@ void setSpeed(int speed){
 
 void driveAuto(int direction1){
   //DIRECTION SETTINGS
-  //0 = FORWARD
-  //1 = BACKWARD
+  //0 = BACKWARD
+  //1 = FORWARD
   //2 = CLOCKWISE
   //3 = COUNTER CLOCKWISE
   //4 = LEFT BACK
@@ -28,14 +28,14 @@ void driveAuto(int direction1){
   //7 = RIGHT BACK
 
   switch(direction1){
-    case 0: //FORWARD
+    case 0: //BACKWARD
     RF.spin(forward);
     RB.spin(forward);
     LF.spin(reverse);
     LB.spin(reverse);
     break;
 
-    case 1: //BACKWARD
+    case 1: //FORWARD
     RF.spin(reverse);
     RB.spin(reverse);
     LF.spin(forward);
@@ -79,12 +79,18 @@ void driveAuto(int direction1){
 
   }
 }
+void pause(){
+  RF.stop();
+  LF.stop();
+  RB.stop();
+  LB.stop();
+}
 
 //DRIVE FOR DIRECTION AND DISTANCE
 void driveAutoDist(int direction1, int dist){ 
   //DIRECTION SETTINGS
-  //0 = FORWARD
-  //1 = BACKWARD
+  //0 = BACKWARD
+  //1 = FORWARD
   //2 = CLOCKWISE
   //3 = COUNTER CLOCKWISE
   //4 = LEFT BACK
@@ -92,14 +98,14 @@ void driveAutoDist(int direction1, int dist){
   //6 = LEFT FORWARD
   //7 = RIGHT BACK
   switch (direction1) {
-    case 0: //FORWARD
+    case 0: //BACKWARD
     RF.spinFor(forward, dist, degrees, false);
     RB.spinFor(forward, dist, degrees, false);
     LF.spinFor(reverse, dist, degrees, false);
     LB.spinFor(reverse, dist, degrees);
     break;
 
-    case 1: //BACKWARD
+    case 1: //FORWARD
     RF.spinFor(reverse, dist, degrees, false);
     RB.spinFor(reverse, dist, degrees, false);
     LF.spinFor(forward, dist, degrees, false);

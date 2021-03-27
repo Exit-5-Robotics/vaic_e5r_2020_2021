@@ -29,7 +29,6 @@
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
-#include "descore.h"
 
 using namespace vex;
 
@@ -64,6 +63,79 @@ static MAP_RECORD       local_map;
 
 /*----------------------------------------------------------------------------*/
 
+
+
+/*---------------------------------------------------------------------------*/
+/*                                                                           */
+/*                          Auto_Isolation Task                              */
+/*                                                                           */
+/*  This task is used to control your robot during the autonomous isolation  */
+/*  phase of a VEX AI Competition.                                           */
+/*                                                                           */
+/*  You must modify the code to add your own robot specific commands here.   */
+/*---------------------------------------------------------------------------*/
+
+void auto_Isolation(void) {
+  // ..........................................................................
+  // Insert autonomous user code here.
+  // ..........................................................................
+  if (OUR_COLOR == RED) {
+    // red-side isolation code
+    // cannot go to negative x values
+  } else if (OUR_COLOR == BLUE) {
+    // blue-side isolation code
+    // cannot go to positive x values
+  }
+}
+
+/*---------------------------------------------------------------------------*/
+/*                                                                           */
+/*                        Auto_Interaction Task                              */
+/*                                                                           */
+/*  This task is used to control your robot during the autonomous interaction*/
+/*  phase of a VEX AI Competition.                                           */
+/*                                                                           */
+/*  You must modify the code to add your own robot specific commands here.   */
+/*---------------------------------------------------------------------------*/
+
+void auto_Interaction(void) {
+  // ..........................................................................
+  // Insert autonomous user code here.
+  // ..........................................................................
+  Brain.Screen.printAt( 10, 90, "auto_Interaction" );
+
+}
+
+/*---------------------------------------------------------------------------*/
+/*                                                                           */
+/*                          AutonomousMain Task                              */
+/*                                                                           */
+/*  This task is used to control your robot during the autonomous phase of   */
+/*  a VEX Competition.                                                       */
+/*                                                                           */
+/*---------------------------------------------------------------------------*/
+
+bool firstAutoFlag = true;
+
+void autonomousMain(void) {
+  Brain.Screen.printAt( 10, 10, "autonomousMain" );
+  // ..........................................................................
+  // The first time we enter this function we will launch our Isolation routine
+  // When the field goes disabled after the isolation period this task will die
+  // When the field goes enabled for the second time this task will start again
+  // and we will enter the interaction period. 
+  // ..........................................................................
+
+  if(firstAutoFlag)
+    auto_Isolation();
+  else 
+    auto_Interaction();
+
+  firstAutoFlag = false;
+}
+
+/*----------------------------------------------------------------------------*/
+
 void 
 get_obj(const char *message, const char *linkname, double i) {
   printf("%f", i);
@@ -73,6 +145,8 @@ get_obj(const char *message, const char *linkname, double i) {
 void workerDuties(){
   this_thread::sleep_for(10);
   setSpeed(20);
+  //driveAuto(30);
+  //pause();
   descore();
 }
 
@@ -83,12 +157,17 @@ int main() {
     vexcodeInit();
 
     // local storage for latest data from the Jetson Nano
+    static MAP_RECORD       local_map;
 
     // RUn at about 15Hz
     int32_t loop_time = 66;
 
     // start the status update display
     thread t1(dashboardTask);
+
+    // Set up callbacks for autonomous and driver control periods.
+    Competition.autonomous(autonomousMain);
+
 
     // print through the controller to the terminal (vexos 1.0.12 is needed)
     // As USB is tied up with Jetson communications we cannot use
