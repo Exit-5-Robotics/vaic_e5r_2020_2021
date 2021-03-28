@@ -11,8 +11,10 @@ void driveAngle( int angleToDrive, int speed ) {
   int measureAngle = (angleToDrive + 45)%360;
   int tempAngle;
   float rightSpeed, leftSpeed;
+  Brain.Screen.printAt(10, 160, "Driving");
   switch (measureAngle/90) {
     case 0:
+      Brain.Screen.printAt(10, 200, "case 0");
       tempAngle = 90 - measureAngle;
       rightSpeed = speed*cos(tempAngle/(180/M_PI));
       leftSpeed = speed*sin(tempAngle/(180/M_PI));
@@ -21,6 +23,7 @@ void driveAngle( int angleToDrive, int speed ) {
       // both L and R are positive
       break;
     case 1:
+      Brain.Screen.printAt(10, 200, "case 1");
       // R is positive, L is negative
       tempAngle = measureAngle - 90;
       rightSpeed = speed*cos(tempAngle/(180/M_PI));
@@ -29,6 +32,7 @@ void driveAngle( int angleToDrive, int speed ) {
       leftDiagDrive.spin(reverse, leftSpeed, velocityUnits::pct);
       break;
     case 2:
+      Brain.Screen.printAt(10, 200, "case 2");
       // both L and R are negative
       tempAngle = 270 - measureAngle;
       rightSpeed = speed*cos(tempAngle/(180/M_PI));
@@ -37,12 +41,15 @@ void driveAngle( int angleToDrive, int speed ) {
       leftDiagDrive.spin(reverse, leftSpeed, velocityUnits::pct);
       break;
     default:
+      Brain.Screen.printAt(10, 200, "case 3");
       // L is positive, R is negative
       tempAngle = measureAngle - 270;
       rightSpeed = speed*cos(tempAngle/(180/M_PI));
       leftSpeed = speed*sin(tempAngle/(180/M_PI));
+      Brain.Screen.printAt(10, 200, "spinning 3");
       rightDiagDrive.spin(reverse, rightSpeed, velocityUnits::pct);
       leftDiagDrive.spin(fwd, leftSpeed, velocityUnits::pct);
+      Brain.Screen.printAt(10, 200, "set spinning 3");
       break;
   }
 }
@@ -58,14 +65,16 @@ void driveAngleAbs( int angleToDrive, int speed ) {
 
   // find angle to drive at relative to current heading
   int relativeDriveAngle = (angleToDrive - (int)start_heading)%360;
+  if (relativeDriveAngle < 0) relativeDriveAngle += 360;
   
   driveAngle(relativeDriveAngle, speed);
+  Brain.Screen.printAt(10, 180, "Finished driving");
 }
 
 void driveAngleFor( int dist, int angleToDrive, int speed ) {
   // drive at an angle for a distance in inches relative to current angle of robot
   int degreesDrive = dist*47;
-  int currentRotation = robotDrive.rotation();
+  int currentRotation = robotDrive.rotation(deg);
   driveAngle(angleToDrive, speed);
   while (sqrt(pow(rightDiagDrive.rotation(deg),2)+pow(leftDiagDrive.rotation(deg),2))-currentRotation < degreesDrive);
   robotDrive.stop();
@@ -85,7 +94,7 @@ void driveAngleForAbs( int dist, int angleToDrive, int speed ) {
   driveAngleFor(dist, relativeDriveAngle, speed);
 }
 
-void turnTo( float dest_heading, int vel ) {
+int turnTo( float dest_heading, int vel ) {
   
   float current_x, current_y, current_heading;
   link.get_local_location(current_x, current_y, current_heading);
@@ -94,19 +103,32 @@ void turnTo( float dest_heading, int vel ) {
   change = change > 0 ? change : change + 360;
 
   if (change < 180) {
-    robotDrive.turnFor(right, change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct);
+    robotDrive.turnFor(right, change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct, false);
+    while (robotDrive.isTurning()) {
+      link.get_local_location(current_x, current_y, current_heading);
+      if (abs((int)dest_heading - (int)current_heading) < 10) {
+        robotDrive.stop();
+        return 0;
+      }
+    }
   } else {
-    robotDrive.turnFor(left, 360 - change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct);
+    robotDrive.turnFor(left, 360 - change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct, false);
+    while (robotDrive.isTurning()) {
+      link.get_local_location(current_x, current_y, current_heading);
+      if (abs((int)dest_heading - (int)current_heading) < 10) {
+        robotDrive.stop();
+        return 0;
+      }
+    }
   }
-  
+  return 0;
 }
 
 void goTo( float dest_x, float dest_y, float dest_heading ) {   
 
-  float start_x, start_y, start_heading, current_x, current_y, current_heading;
-  link.get_local_location(start_x, start_y, start_heading);
   turnTo(dest_heading, 30);
 
+  float start_x, start_y, start_heading, current_x, current_y, current_heading;
   link.get_local_location(start_x, start_y, start_heading);
 
   // convert units to inches and degrees
@@ -117,6 +139,7 @@ void goTo( float dest_x, float dest_y, float dest_heading ) {
 
   float change_x = dest_x - start_x;
   float change_y = dest_y - start_y;
+  Brain.Screen.printAt(10, 20, "%.3f %.3f", change_x, change_y);
 
   int driveToAngle = (int)(90 - atan((double)change_y/(double)change_x)*180/M_PI)%360;
 
@@ -128,13 +151,6 @@ void goTo( float dest_x, float dest_y, float dest_heading ) {
   current_x = start_x, current_y = start_y, current_heading = start_heading;
   dest_x *= 25.4, dest_y *= 25.4;
   while(abs((int)current_x - (int)dest_x) > 100) link.get_local_location(current_x, current_y, current_heading);
-  Brain.Screen.printAt(10, 40, "toward pos");
-  int toward_pos = current_y - dest_y > 0 ? 1 : -1;
-  while(abs((int)current_y - (int)dest_y) > 50) {
-    link.get_local_location(current_x, current_y, current_heading);
-    driveAngleAbs(toward_pos*180, 30);
-  }
-  robotDrive.stop();
   turnTo(dest_heading, 30);
 }
 

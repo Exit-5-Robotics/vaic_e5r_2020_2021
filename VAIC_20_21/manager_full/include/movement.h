@@ -6,7 +6,7 @@ void driveAngleFor( int dist, int angleToDrive, int speed );
 void driveAngleForAbs( int dist, int angleToDrive, int speed );
 
 extern void goTo( float dest_x, float dest_y, float dest_heading );
-extern void turnTo( float dest_heading, int vel );
+extern int turnTo( float dest_heading, int vel );
 
 extern void intake( int speed );
 extern void outtake( void );
