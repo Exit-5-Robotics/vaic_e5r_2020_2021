@@ -15,6 +15,7 @@ motor LB = motor(PORT13, ratio18_1, false);
 controller Controller1 = controller(primary);
 motor Motor8 = motor(PORT8, ratio18_1, false);
 motor Motor9 = motor(PORT9, ratio18_1, true);
+motor Motor10 = motor(PORT10, ratio18_1, false);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
