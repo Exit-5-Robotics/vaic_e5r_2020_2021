@@ -64,20 +64,25 @@ void driveAngleAbs( int angleToDrive, int speed ) {
 
 void driveAngleFor( int dist, int angleToDrive, int speed ) {
   // drive at an angle for a distance in inches relative to current angle of robot
-  int degreesDrive = dist*29;
-  Brain.Screen.printAt(10, 20, "deg: %d", degreesDrive);
-  robotDrive.setRotation(0, rotationUnits::deg);
+  int degreesDrive = dist*47;
+  int currentRotation = robotDrive.rotation();
   driveAngle(angleToDrive, speed);
-  while (sqrt(pow(rightDiagDrive.rotation(deg),2)+pow(leftDiagDrive.rotation(deg),2)) < degreesDrive) {
-    Brain.Screen.printAt(10, 60, "sqrt: %f", sqrt(pow(frontLeftWheel.rotation(deg),2)+pow(frontRightWheel.rotation(deg),2)));
-  }
+  while (sqrt(pow(rightDiagDrive.rotation(deg),2)+pow(leftDiagDrive.rotation(deg),2))-currentRotation < degreesDrive);
   robotDrive.stop();
 }
 
 void driveAngleForAbs( int dist, int angleToDrive, int speed ) {
   // drive at an absolute angle for a distance in inches
+  float start_x, start_y, start_heading;
+  link.get_local_location(start_x, start_y, start_heading);
+  // convert to degrees
+  start_heading *= 180/M_PI;
+  start_heading += 180;
 
-  // TODO: Find relative angle, then use above to drive at relative angle
+  // find angle to drive at relative to current heading
+  int relativeDriveAngle = (angleToDrive - (int)start_heading)%360;
+  
+  driveAngleFor(dist, relativeDriveAngle, speed);
 }
 
 void turnTo( float dest_heading, int vel ) {
@@ -122,8 +127,15 @@ void goTo( float dest_x, float dest_y, float dest_heading ) {
   
   current_x = start_x, current_y = start_y, current_heading = start_heading;
   dest_x *= 25.4, dest_y *= 25.4;
-  while(abs((int)current_x - (int)dest_x) > 100 || abs((int)current_y - (int)dest_y) > 100) link.get_local_location(current_x, current_y, current_heading);
+  while(abs((int)current_x - (int)dest_x) > 100) link.get_local_location(current_x, current_y, current_heading);
+  Brain.Screen.printAt(10, 40, "toward pos");
+  int toward_pos = current_y - dest_y > 0 ? 1 : -1;
+  while(abs((int)current_y - (int)dest_y) > 50) {
+    link.get_local_location(current_x, current_y, current_heading);
+    driveAngleAbs(toward_pos*180, 30);
+  }
   robotDrive.stop();
+  turnTo(dest_heading, 30);
 }
 
 void intake( int speed ) {
@@ -175,32 +187,15 @@ int adjustHold( int speed ) {
 }
 
 int testMovement() { // just for testing
-  // task::sleep(2000);
-  // driveAngleFor(10, 330, 15);
-  // // descore();
-  // frontLeftWheel.spinFor(fwd, 800, rotationUnits::deg, 30, velocityUnits::pct, false);
-  // frontRightWheel.spinFor(fwd, 800, rotationUnits::deg, 30, velocityUnits::pct, false);
-  // backLeftWheel.spinFor(fwd, 800, rotationUnits::deg, 30, velocityUnits::pct, false);
-  // backRightWheel.spinFor(fwd, 800, rotationUnits::deg, 30, velocityUnits::pct);
-  // frontLeftWheel.spinFor(fwd, 800, rotationUnits::deg, 60, velocityUnits::pct, false);
-  // frontRightWheel.spinFor(fwd, 800, rotationUnits::deg, 60, velocityUnits::pct, false);
-  // backLeftWheel.spinFor(fwd, 800, rotationUnits::deg, 60, velocityUnits::pct, false);
-  // backRightWheel.spinFor(fwd, 800, rotationUnits::deg, 60, velocityUnits::pct);
-  this_thread::sleep_for(20000);
   
   while (true) {
     float current_x, current_y, current_heading;
     link.get_local_location(current_x, current_y, current_heading);
     // adjustHold(20);
     if (current_x != 0) {
-
-      task::sleep(2000);
-      goTo(40, 40, 180);
-      // driveAngleAbs(45, 30);
-      // redIsolation();
-      task::sleep(10000);
+      task::sleep(15000);
+      redIsolation();
     }
-
     this_thread::sleep_for(16);
   }
   return 0;
