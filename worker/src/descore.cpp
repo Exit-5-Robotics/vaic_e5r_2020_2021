@@ -47,10 +47,11 @@ void descore (){
     //find location & go
     //on y-axis or x-axis
     while(local_map.boxnum > 1){
+    jetson_comms.get_data( &local_map );
       driveAuto(1);
       Brain.Screen.printAt( 200, 205, "YES");
     }
-    Brain.Screen.printAt( 200, 205, "NO");
+    Brain.Screen.printAt( 200, 250, "NO");
     pause();
 
     /*
