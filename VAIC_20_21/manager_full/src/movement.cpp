@@ -11,10 +11,8 @@ void driveAngle( int angleToDrive, int speed ) {
   int measureAngle = (angleToDrive + 45)%360;
   int tempAngle;
   float rightSpeed, leftSpeed;
-  Brain.Screen.printAt(10, 160, "Driving");
   switch (measureAngle/90) {
     case 0:
-      Brain.Screen.printAt(10, 200, "case 0");
       tempAngle = 90 - measureAngle;
       rightSpeed = speed*cos(tempAngle/(180/M_PI));
       leftSpeed = speed*sin(tempAngle/(180/M_PI));
@@ -23,7 +21,6 @@ void driveAngle( int angleToDrive, int speed ) {
       // both L and R are positive
       break;
     case 1:
-      Brain.Screen.printAt(10, 200, "case 1");
       // R is positive, L is negative
       tempAngle = measureAngle - 90;
       rightSpeed = speed*cos(tempAngle/(180/M_PI));
@@ -32,7 +29,6 @@ void driveAngle( int angleToDrive, int speed ) {
       leftDiagDrive.spin(reverse, leftSpeed, velocityUnits::pct);
       break;
     case 2:
-      Brain.Screen.printAt(10, 200, "case 2");
       // both L and R are negative
       tempAngle = 270 - measureAngle;
       rightSpeed = speed*cos(tempAngle/(180/M_PI));
@@ -41,15 +37,12 @@ void driveAngle( int angleToDrive, int speed ) {
       leftDiagDrive.spin(reverse, leftSpeed, velocityUnits::pct);
       break;
     default:
-      Brain.Screen.printAt(10, 200, "case 3");
       // L is positive, R is negative
       tempAngle = measureAngle - 270;
       rightSpeed = speed*cos(tempAngle/(180/M_PI));
       leftSpeed = speed*sin(tempAngle/(180/M_PI));
-      Brain.Screen.printAt(10, 200, "spinning 3");
       rightDiagDrive.spin(reverse, rightSpeed, velocityUnits::pct);
       leftDiagDrive.spin(fwd, leftSpeed, velocityUnits::pct);
-      Brain.Screen.printAt(10, 200, "set spinning 3");
       break;
   }
 }
@@ -68,7 +61,6 @@ void driveAngleAbs( int angleToDrive, int speed ) {
   if (relativeDriveAngle < 0) relativeDriveAngle += 360;
   
   driveAngle(relativeDriveAngle, speed);
-  Brain.Screen.printAt(10, 180, "Finished driving");
 }
 
 void driveAngleFor( int dist, int angleToDrive, int speed ) {
@@ -106,7 +98,7 @@ int turnTo( float dest_heading, int vel ) {
     robotDrive.turnFor(right, change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct, false);
     while (robotDrive.isTurning()) {
       link.get_local_location(current_x, current_y, current_heading);
-      if (abs((int)dest_heading - (int)current_heading) < 10) {
+      if (abs((int)dest_heading - (int)current_heading + 180) < 5) {
         robotDrive.stop();
         return 0;
       }
@@ -115,7 +107,7 @@ int turnTo( float dest_heading, int vel ) {
     robotDrive.turnFor(left, 360 - change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct, false);
     while (robotDrive.isTurning()) {
       link.get_local_location(current_x, current_y, current_heading);
-      if (abs((int)dest_heading - (int)current_heading) < 10) {
+      if (abs((int)dest_heading - (int)current_heading + 180) < 5) {
         robotDrive.stop();
         return 0;
       }
@@ -146,11 +138,20 @@ void goTo( float dest_x, float dest_y, float dest_heading ) {
   // Adjusts to go to -x direction of field
   if ((change_x*change_y > 0 && change_y <0) || (change_x*change_y < 0 && change_y > 0) || (change_x < 0 && change_y == 0)) driveToAngle += 180;
 
-  driveAngleAbs(driveToAngle, 30);
-  
   current_x = start_x, current_y = start_y, current_heading = start_heading;
+  driveAngleAbs(driveToAngle, 30);
   dest_x *= 25.4, dest_y *= 25.4;
-  while(abs((int)current_x - (int)dest_x) > 100) link.get_local_location(current_x, current_y, current_heading);
+  while(abs((int)current_x - (int)dest_x) > 50) link.get_local_location(current_x, current_y, current_heading);
+  robotDrive.stop();
+
+  if (abs((int)current_y - (int)dest_y) > 50) {
+    int directionY = (current_y - dest_y) ? 0 : 1;
+
+    driveAngleAbs(180*directionY, 30);
+    while(abs((int)current_y - (int)dest_y) > 50) link.get_local_location(current_x, current_y, current_heading);
+    robotDrive.stop();
+  }
+
   turnTo(dest_heading, 30);
 }
 
@@ -161,6 +162,13 @@ void intake( int speed ) {
   }
   robotDrive.stop();
   intakeWheels.spinFor(fwd, 720, degrees, 60, vex::velocityUnits::pct);
+}
+
+void intakeNoDrive() {
+  while (ballThree.value(analogUnits::mV) > 3300) {
+    intakeWheels.spin(fwd, 100, vex::velocityUnits::pct);
+  }
+  intakeWheels.stop();
 }
 
 void outtake() {
@@ -211,6 +219,7 @@ int testMovement() { // just for testing
     if (current_x != 0) {
       task::sleep(15000);
       redIsolation();
+      // goTo(35, -7, 180);
     }
     this_thread::sleep_for(16);
   }
