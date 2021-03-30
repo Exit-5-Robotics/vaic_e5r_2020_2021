@@ -19,6 +19,7 @@
 #include "ai_robot_link.h"
 #include "descore.h"
 #include "navigation.h"
+#include "movement.h"
 
 
 #include "robot-config.h"
