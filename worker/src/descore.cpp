@@ -34,6 +34,15 @@ bool checkDescore(){
   return false;
 }
 
+void poop(){
+  while(ballChecker.value(analogUnits::mV) < 3200){
+    pooper.spin(forward, 50, rpm);
+  }
+  while(ballChecker.value(analogUnits::mV) > 3200){
+    pooper.spin(forward, 50, rpm);
+  }
+  pooper.stop();
+}
 
 void descore (){
   if(checkDescore()){
@@ -46,28 +55,14 @@ void descore (){
 
     //find location & go
     //on y-axis or x-axis
-    while(local_map.boxnum > 1){
+    while(!goal.pressing()){
       driveAuto(1);
       Brain.Screen.printAt( 200, 205, "YES");
     }
     Brain.Screen.printAt( 200, 205, "NO");
     pause();
 
-    /*
-    int acceptedDeviation = 200;
-    if(abs(local_map.pos.x) < acceptedDeviation || abs(local_map.pos.y) < acceptedDeviation){
-      //on y-axis or x-axis
-      while(local_map.boxnum > 1){
-        driveAuto(0);
-      }
-      driveAutoDist(0, 100);
-
-    } else{
-      //on corner
-
-    }
-    */
-
+    poop();
 
   }
 }

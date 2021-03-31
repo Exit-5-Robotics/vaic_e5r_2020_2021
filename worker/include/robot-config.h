@@ -9,8 +9,17 @@ extern motor RB;
 extern motor LF;
 extern motor LB;
 extern motor roller;
-extern motor intake; 
-
+extern motor intakeLeft;
+extern motor intakeRight;
+extern motor_group pooper;
+extern motor_group leftDrive;
+extern motor_group rightDrive;
+extern motor_group leftDiagDrive;
+extern motor_group rightDiagDrive;
+extern inertial tilt;
+extern line ballChecker;
+extern bumper   goal;
+extern smartdrive robotDrive;
 
 /*
 extern brain Brain;

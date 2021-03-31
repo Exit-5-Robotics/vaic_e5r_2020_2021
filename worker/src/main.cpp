@@ -144,10 +144,9 @@ get_obj(const char *message, const char *linkname, double i) {
 
 void workerDuties(){
   this_thread::sleep_for(10);
-  setSpeed(20);
-  //driveAuto(30);
-  //pause();
-  descore();
+  setSpeed(40);
+  
+  poop();
 }
 
 
@@ -192,6 +191,9 @@ int main() {
 
         // request new data        
         jetson_comms.request_map();
+
+        //print other things
+        Brain.Screen.printAt(20, 204, "ballChecker: %d", ballChecker.value(analogUnits::mV));
 
         // Allow other tasks to run
         this_thread::sleep_for(loop_time);
