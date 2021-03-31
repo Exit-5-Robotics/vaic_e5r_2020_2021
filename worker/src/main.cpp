@@ -144,9 +144,8 @@ get_obj(const char *message, const char *linkname, double i) {
 
 void workerDuties(){
   this_thread::sleep_for(10);
+  
   setSpeed(40);
-  //driveAuto(30);
-  //pause();
   descore();
 }
 

@@ -137,8 +137,3 @@ void goTo( float dest_x, float dest_y, float dest_heading ) {
   pause();
   turnTo(dest_heading, 30);
 }
-
-void poop() {
-  intake.spinFor(fwd, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct, false);
-  roller.spinFor(reverse, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
-}

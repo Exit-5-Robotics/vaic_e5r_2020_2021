@@ -23,6 +23,7 @@ motor_group rightDiagDrive(LF, RB);
 motor roller = motor(PORT10, ratio18_1, true);
 motor intakeRight = motor(PORT8, ratio18_1, true);
 motor intakeLeft = motor(PORT7, ratio18_1, false);
+motor_group intake (intakeLeft, intakeRight);
 motor_group pooper(roller, intakeLeft, intakeRight);
 
 inertial      tilt(PORT5);
@@ -33,16 +34,6 @@ smartdrive    robotDrive( leftDrive, rightDrive, tilt, 12.56, 7.75, 10.9, distan
   // A: circumference
   // B: width
   // C: length
-
-motor_group   leftDrive( LB, LF );
-motor_group   rightDrive( RB, RF );
-motor_group   rightDiagDrive( LF, RB );
-motor_group   leftDiagDrive( RF, LB );
-inertial      tilt( PORT5 );
-//vex::distance objDetector ( PORT20 );
-bumper        button(Brain.ThreeWirePort.A);
-smartdrive    robotDrive( leftDrive, rightDrive, tilt, 12.56, 14.125, 9, distanceUnits::in ); //
-
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

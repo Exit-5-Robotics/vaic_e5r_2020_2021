@@ -34,41 +34,26 @@ bool checkDescore(){
   return false;
 }
 
+void poop(int speed){
+  while(ballChecker.value(analogUnits::mV) < 3200){
+    pooper.spin(forward, speed, pct);
+  }
+  while(ballChecker.value(analogUnits::mV) > 3200){
+    pooper.spin(forward, speed, pct);
+  }
+  pooper.stop();
+}
+
 
 void descore (){
   if(checkDescore()){
 
-    static MAP_RECORD  local_map;
-    jetson_comms.get_data( &local_map );
-
-    
-    //int axisTarget = 1300;
-
-    //find location & go
-    //on y-axis or x-axis
-    while(local_map.boxnum > 1){
-    jetson_comms.get_data( &local_map );
+    while(!goal.pressing()){
       driveAuto(1);
-      Brain.Screen.printAt( 200, 205, "YES");
     }
-    Brain.Screen.printAt( 200, 250, "NO");
     pause();
 
-    /*
-    int acceptedDeviation = 200;
-    if(abs(local_map.pos.x) < acceptedDeviation || abs(local_map.pos.y) < acceptedDeviation){
-      //on y-axis or x-axis
-      while(local_map.boxnum > 1){
-        driveAuto(0);
-      }
-      driveAutoDist(0, 100);
-
-    } else{
-      //on corner
-
-    }
-    */
-
+    poop(100);
 
   }
 }

@@ -11,6 +11,7 @@ extern motor LB;
 extern motor roller;
 extern motor intakeLeft;
 extern motor intakeRight;
+extern motor_group intake;
 extern motor_group pooper;
 extern motor_group leftDrive;
 extern motor_group rightDrive;
