@@ -79,6 +79,8 @@ void driveAuto(int direction1){
 
   }
 }
+
+//STOP ALL WHEELS
 void pause(){
   RF.stop();
   LF.stop();
