@@ -144,9 +144,12 @@ get_obj(const char *message, const char *linkname, double i) {
 
 void workerDuties(){
   this_thread::sleep_for(10);
-  
-  setSpeed(40);
-  descore();
+  //setSpeed(40);
+  //descore();
+
+  turnTo(180, 50);
+  Brain.Screen.printAt(5, 155, "seven");
+
 }
 
 
