@@ -149,7 +149,7 @@ int main() {
 
     // start the status update display
     thread t1(dashboardTask);
-    // thread t2(testMovement);
+    thread t2(testMovement);
     // thread accel(values);
     // thread iso(redIsolation);
 
@@ -170,7 +170,6 @@ int main() {
 
         // set our location to be sent to partner robot
         link.set_remote_location( local_map.pos.x, local_map.pos.y, local_map.pos.az );
-
         //fprintf(fp, "%.2f %.2f %.2f\n", local_map.pos.x, local_map.pos.y, local_map.pos.az  );
 
         // request new data    

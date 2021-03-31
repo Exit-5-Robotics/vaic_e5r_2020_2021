@@ -58,7 +58,6 @@ void driveAngleAbs( int angleToDrive, int speed ) {
 
   // find angle to drive at relative to current heading
   int relativeDriveAngle = (angleToDrive - (int)start_heading)%360;
-  if (relativeDriveAngle < 0) relativeDriveAngle += 360;
   
   driveAngle(relativeDriveAngle, speed);
 }
@@ -86,7 +85,7 @@ void driveAngleForAbs( int dist, int angleToDrive, int speed ) {
   driveAngleFor(dist, relativeDriveAngle, speed);
 }
 
-int turnTo( float dest_heading, int vel ) {
+void turnTo( float dest_heading, int vel ) {
   
   float current_x, current_y, current_heading;
   link.get_local_location(current_x, current_y, current_heading);
@@ -95,32 +94,19 @@ int turnTo( float dest_heading, int vel ) {
   change = change > 0 ? change : change + 360;
 
   if (change < 180) {
-    robotDrive.turnFor(right, change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct, false);
-    while (robotDrive.isTurning()) {
-      link.get_local_location(current_x, current_y, current_heading);
-      if (abs((int)dest_heading - (int)current_heading + 180) < 5) {
-        robotDrive.stop();
-        return 0;
-      }
-    }
+    robotDrive.turnFor(right, change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct);
   } else {
-    robotDrive.turnFor(left, 360 - change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct, false);
-    while (robotDrive.isTurning()) {
-      link.get_local_location(current_x, current_y, current_heading);
-      if (abs((int)dest_heading - (int)current_heading + 180) < 5) {
-        robotDrive.stop();
-        return 0;
-      }
-    }
+    robotDrive.turnFor(left, 360 - change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct);
   }
-  return 0;
+  
 }
 
 void goTo( float dest_x, float dest_y, float dest_heading ) {   
 
+  float start_x, start_y, start_heading, current_x, current_y, current_heading;
+  link.get_local_location(start_x, start_y, start_heading);
   turnTo(dest_heading, 30);
 
-  float start_x, start_y, start_heading, current_x, current_y, current_heading;
   link.get_local_location(start_x, start_y, start_heading);
 
   // convert units to inches and degrees
@@ -131,97 +117,28 @@ void goTo( float dest_x, float dest_y, float dest_heading ) {
 
   float change_x = dest_x - start_x;
   float change_y = dest_y - start_y;
-  Brain.Screen.printAt(10, 20, "%.3f %.3f", change_x, change_y);
 
   int driveToAngle = (int)(90 - atan((double)change_y/(double)change_x)*180/M_PI)%360;
 
   // Adjusts to go to -x direction of field
   if ((change_x*change_y > 0 && change_y <0) || (change_x*change_y < 0 && change_y > 0) || (change_x < 0 && change_y == 0)) driveToAngle += 180;
 
-  current_x = start_x, current_y = start_y, current_heading = start_heading;
   driveAngleAbs(driveToAngle, 30);
+  
+  current_x = start_x, current_y = start_y, current_heading = start_heading;
   dest_x *= 25.4, dest_y *= 25.4;
-  while(abs((int)current_x - (int)dest_x) > 50) link.get_local_location(current_x, current_y, current_heading);
-  robotDrive.stop();
-
-  if (abs((int)current_y - (int)dest_y) > 50) {
-    int directionY = (current_y - dest_y) ? 0 : 1;
-
-    driveAngleAbs(180*directionY, 30);
-    while(abs((int)current_y - (int)dest_y) > 50) link.get_local_location(current_x, current_y, current_heading);
-    robotDrive.stop();
+  while(abs((int)current_x - (int)dest_x) > 100) link.get_local_location(current_x, current_y, current_heading);
+  Brain.Screen.printAt(10, 40, "toward pos");
+  int toward_pos = current_y - dest_y > 0 ? 1 : -1;
+  while(abs((int)current_y - (int)dest_y) > 50) {
+    link.get_local_location(current_x, current_y, current_heading);
+    driveAngleAbs(toward_pos*180, 30);
   }
-
+  pause();
   turnTo(dest_heading, 30);
 }
 
-void intake( int speed ) {
-  while (ballThree.value(analogUnits::mV) > 3300) {
-    robotDrive.drive(fwd, speed, vex::velocityUnits::pct);
-    intakeWheels.spin(fwd, 100, vex::velocityUnits::pct);
-  }
-  robotDrive.stop();
-  intakeWheels.spinFor(fwd, 720, degrees, 60, vex::velocityUnits::pct);
-}
-
-void intakeNoDrive() {
-  while (ballThree.value(analogUnits::mV) > 3300) {
-    intakeWheels.spin(fwd, 100, vex::velocityUnits::pct);
-  }
-  intakeWheels.stop();
-}
-
-void outtake() {
-  // leftIntake.spinFor(rev, double rotation, vex::rotationUnits::deg, double velocity, velocityUnits units_v);
-  // rightIntake.spinFor(rev, double rotation, vex::rotationUnits::deg, double velocity, velocityUnits units_v);
-}
-
-void score() {
-  // ONLY RUN IF THE DESIRED SCORED BALL IS IN POSITION 3/ARRAY INDEX 0
-  botRoller.spinFor(fwd, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
-  topRoller.spinFor(fwd, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
-}
-
 void poop() {
-  // ONLY RUN IF THE DESIRED POOPED BALL IS IN POSITION 2/ARRAY INDEX 1
-  botRoller.spinFor(fwd, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct, false);
-  topRoller.spinFor(reverse, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
-}
-
-void descore() {
-  while(!goal.pressing()) robotDrive.drive(fwd, 30, vex::velocityUnits::pct);
-  intake(intakeDriveSpeed);
-  robotDrive.driveFor(reverse, 10, vex::distanceUnits::in, 30, vex::velocityUnits::pct);
-}
-
-void pickUp( float dist ) {
-  // TODO
-  intake(intakeDriveSpeed);
-  robotDrive.driveFor(fwd, dist, vex::distanceUnits::in, 30, vex::velocityUnits::pct);
-}
-
-int adjustHold( int speed ) {
-  while (ballZero.value(analogUnits::mV) > 3400) {
-    botRoller.spin(fwd, speed, vex::velocityUnits::pct);
-    topRoller.spin(fwd, speed, vex::velocityUnits::pct);
-  }
-  botRoller.stop();
-  topRoller.stop();
-  return 0;
-}
-
-int testMovement() { // just for testing
-  
-  while (true) {
-    float current_x, current_y, current_heading;
-    link.get_local_location(current_x, current_y, current_heading);
-    // adjustHold(20);
-    if (current_x != 0) {
-      task::sleep(15000);
-      redIsolation();
-      // goTo(35, -7, 180);
-    }
-    this_thread::sleep_for(16);
-  }
-  return 0;
+  intake.spinFor(fwd, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct, false);
+  roller.spinFor(reverse, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
 }

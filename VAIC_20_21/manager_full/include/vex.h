@@ -23,6 +23,7 @@
 
 #include "robot-config.h"
 #include "movement.h"
+#include "logic.h"
 
 #define EMPTY 0
 #define BLUE 1

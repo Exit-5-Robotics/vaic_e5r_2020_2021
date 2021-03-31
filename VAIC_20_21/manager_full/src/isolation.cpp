@@ -4,28 +4,31 @@ using namespace vex;
 
 void redIsolation() {
   /* (x, -y) ball, then (x, 0) ball, then (x, y) ball if time permits */
-  // // goTo( 30, -30, 135);
-  robotDrive.driveFor(fwd, 28, inches, 30, velocityUnits::pct);
-  robotDrive.turnFor(left, 80, degrees, 30, velocityUnits::pct);
-  turnTo(135, 20);
-  // // intake(20);
+  goTo(40, -48, 180);
+  task::sleep(500);
+  robotDrive.turnFor(left, 45, degrees, 30, velocityUnits::pct);
+  thread intakeCornerFirst(intakeNoDrive);
+  while(!goal.pressing()) robotDrive.drive(fwd, 80, velocityUnits::pct);
+  robotDrive.stop();
+  intakeCornerFirst.join();
+  // score();
+  // score();
+
+  robotDrive.driveFor(reverse, 30, inches, 30, velocityUnits::pct);
+  robotDrive.turnFor(right, 45, degrees, 30, velocityUnits::pct);
+  Brain.Screen.clearScreen();
+  goTo(35, -7, 180);
+
+  robotDrive.turnFor(right, 90, degrees, 30, velocityUnits::pct);
+  
+  if (testChange()) turnTo(270, 20);
+  
   intakeWheels.spin(fwd, 100, velocityUnits::pct);
-  robotDrive.driveFor(fwd, 20, inches, 30, velocityUnits::pct);
-  robotDrive.driveFor(fwd, 10, inches, 20, velocityUnits::pct);
-  intakeWheels.spinFor(fwd, 360, degrees, 60, velocityUnits::pct, false);
-  adjustHold(70);
-  while(!goal.pressing()) robotDrive.drive(fwd, 20, velocityUnits::pct);
-  score();
-  score();
+  thread intakeMid(intakeNoDrive);
+  while (ballZero.value(analogUnits::mV) > 3300) robotDrive.drive(fwd, 40, velocityUnits::pct);
+  robotDrive.stop();
+  intakeMid.join();
 
-  // robotDrive.driveFor(reverse, 45, inches, 30, velocityUnits::pct);
-
-
-  // intakeWheels.spin(fwd, 100, vex::velocityUnits::pct);
-  // robotDrive.driveFor(fwd, 20, inches, 30, velocityUnits::pct);
-  // robotDrive.driveFor(fwd, 20, inches, 20, velocityUnits::pct);
-  // intakeWheels.spinFor(fwd, 360, degrees, 50, velocityUnits::pct, false);
-  // // robotDrive.driveFor(reverse, 15, inches, 30, velocityUnits::pct);
   task::sleep(20000);
 }
 

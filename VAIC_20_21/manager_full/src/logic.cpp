@@ -11,7 +11,18 @@ int mapScore[3][3] = {{0, 0, 0},  // 00, 01, 02
 
 deque<int> goalsVisiting;
 
+bool testChange() {
+  bool isDiff = false;
 
+  float first_x, first_y, first_heading, next_heading;
+  link.get_local_location(first_x, first_y, first_heading);
+  task::sleep(100);
+  link.get_local_location(first_x, first_y, next_heading);
+
+  if (first_heading != next_heading) isDiff = true;
+
+  return isDiff;
+}
 
 float round(float var) {
     float value = (int)(var * 100 + .5); 

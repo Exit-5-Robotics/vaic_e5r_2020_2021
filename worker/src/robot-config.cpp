@@ -34,6 +34,15 @@ smartdrive    robotDrive( leftDrive, rightDrive, tilt, 12.56, 7.75, 10.9, distan
   // B: width
   // C: length
 
+motor_group   leftDrive( LB, LF );
+motor_group   rightDrive( RB, RF );
+motor_group   rightDiagDrive( LF, RB );
+motor_group   leftDiagDrive( RF, LB );
+inertial      tilt( PORT5 );
+//vex::distance objDetector ( PORT20 );
+bumper        button(Brain.ThreeWirePort.A);
+smartdrive    robotDrive( leftDrive, rightDrive, tilt, 12.56, 14.125, 9, distanceUnits::in ); //
+
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
