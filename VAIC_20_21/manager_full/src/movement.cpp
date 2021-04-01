@@ -131,7 +131,6 @@ void goTo( float dest_x, float dest_y, float dest_heading ) {
 
   float change_x = dest_x - start_x;
   float change_y = dest_y - start_y;
-  Brain.Screen.printAt(10, 20, "%.3f %.3f", change_x, change_y);
 
   int driveToAngle = (int)(90 - atan((double)change_y/(double)change_x)*180/M_PI)%360;
 
@@ -200,27 +199,65 @@ void pickUp( float dist ) {
   robotDrive.driveFor(fwd, dist, vex::distanceUnits::in, 30, vex::velocityUnits::pct);
 }
 
-int adjustHold( int speed ) {
+int adjustHold() {
   while (ballZero.value(analogUnits::mV) > 3400) {
-    botRoller.spin(fwd, speed, vex::velocityUnits::pct);
-    topRoller.spin(fwd, speed, vex::velocityUnits::pct);
+    botRoller.spin(fwd, 100, vex::velocityUnits::pct);
+    topRoller.spin(fwd, 100, vex::velocityUnits::pct);
   }
   botRoller.stop();
   topRoller.stop();
   return 0;
 }
 
+int centerGoal() {
+  int goalX = 160;
+  int directionDrive, diff, currentBox = 5;
+
+  static MAP_RECORD  local_map;
+  jetson_comms.get_data( &local_map );
+
+  if (local_map.boxnum > 0) {
+    for(int i=0;i<4;i++ ) {
+      if( i < local_map.boxnum ) {
+        if (local_map.boxobj[i].classID == 2) currentBox = i;
+        break;
+      }
+    }
+    if (currentBox != 5) {
+      diff = goalX - local_map.boxobj[currentBox].x;
+      while (abs(diff) > 5) {
+        jetson_comms.get_data( &local_map );
+        for(int i=0;i<4;i++ ) {
+          if( i < local_map.boxnum ) {
+            if (local_map.boxobj[i].classID == 2) currentBox = i;
+            break;
+          }
+        }
+        diff = goalX - local_map.boxobj[currentBox].x;
+        directionDrive = (diff > 0) ? 0 : 180;
+        driveAngle(90+directionDrive, 10);
+      }
+    }
+  }
+
+  return 0;
+}
+
 int testMovement() { // just for testing
+  float current_x, current_y, current_heading;
   
   while (true) {
-    float current_x, current_y, current_heading;
     link.get_local_location(current_x, current_y, current_heading);
-    // adjustHold(20);
+
     if (current_x != 0) {
       task::sleep(15000);
       redIsolation();
-      // goTo(35, -7, 180);
     }
+
+    // if (current_heading != 0) {
+    //   centerGoal();
+    // }
+
     this_thread::sleep_for(16);
   }
   return 0;
