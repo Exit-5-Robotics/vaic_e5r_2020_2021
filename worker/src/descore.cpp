@@ -34,26 +34,59 @@ bool checkDescore(){
   return false;
 }
 
-void poop(int speed){
+//POOP function out of a tower
+void poopTower(int speed){
+  driveAutoDist(0, 45);
+  setSpeed(8);
   while(ballChecker.value(analogUnits::mV) < 3200){
     pooper.spin(forward, speed, pct);
+    driveAuto(0);
   }
   while(ballChecker.value(analogUnits::mV) > 3200){
     pooper.spin(forward, speed, pct);
+    driveAuto(0);
   }
   pooper.stop();
+  pause();
 }
 
+//POOP function just from the ground
+void poop(int speed){
+  setSpeed(8);
+  while(ballChecker.value(analogUnits::mV) < 3200){
+    pooper.spin(forward, speed, pct);
+    driveAuto(1);
+  }
+  while(ballChecker.value(analogUnits::mV) > 3200){
+    pooper.spin(forward, speed, pct);
+    driveAuto(1);
+  }
+  pooper.stop();
+  pause();
+}
 
 void descore (){
+  static MAP_RECORD  local_map;
   if(checkDescore()){
+
+    int ballCount = 0;
+    for(int i = 0; i < local_map.boxnum; i++){
+      jetson_comms.get_data( &local_map );
+
+      if(local_map.boxobj[i].classID != 2){
+        ballCount++;
+      }
+    }
 
     while(!goal.pressing()){
       driveAuto(1);
+      if(ballCount<2){
+        pooper.spin(forward, 80, pct);
+      }
     }
     pause();
 
-    poop(100);
+    poopTower(100);
 
   }
 }
