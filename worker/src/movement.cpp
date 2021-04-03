@@ -87,7 +87,7 @@ void driveAngleForAbs( int dist, int angleToDrive, int speed ) {
 }
 
 int turnTo( float dest_heading, int vel ) {
-  Brain.Screen.printAt(5, 15, "one");
+  Brain.Screen.printAt(280, 15, "one");
   float current_x, current_y, current_heading;
   link.get_local_location(current_x, current_y, current_heading);
 
@@ -95,30 +95,30 @@ int turnTo( float dest_heading, int vel ) {
   change = change > 0 ? change : change + 360;
 
   if (change < 180) {
-    Brain.Screen.printAt(5, 35, "two");
+    Brain.Screen.printAt(280, 35, "two");
     robotDrive.turnFor(right, change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct, false);
     while (robotDrive.isTurning()) {
       link.get_local_location(current_x, current_y, current_heading);
       if (abs((int)dest_heading - (int)current_heading + 180) < 5) {
         robotDrive.stop();
-        Brain.Screen.printAt(5, 55, "three");
+        Brain.Screen.printAt(280, 55, "three");
         return 0;
       }
     }
   } else {
-    Brain.Screen.printAt(5, 75, "four");
+    Brain.Screen.printAt(280, 75, "four");
     robotDrive.turnFor(left, 360 - change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct, false);
     while (robotDrive.isTurning()) {
-      Brain.Screen.printAt(5, 75, "four.five");
+      Brain.Screen.printAt(280, 75, "four.five");
       link.get_local_location(current_x, current_y, current_heading);
       if (abs((int)dest_heading - (int)current_heading + 180) < 5) {
         robotDrive.stop();
-        Brain.Screen.printAt(5, 115, "five");
+        Brain.Screen.printAt(280, 115, "five");
         return 0;
       }
     }
   }
-  Brain.Screen.printAt(5, 135, "six");
+  Brain.Screen.printAt(280, 135, "six");
   return 0;
 }
 

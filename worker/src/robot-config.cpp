@@ -12,11 +12,11 @@ controller Controller1 = controller(primary);
 
 motor RF = motor(PORT12, ratio18_1, false);
 motor RB = motor(PORT14, ratio18_1, false);
-motor LF = motor(PORT18, ratio18_1, false);
-motor LB = motor(PORT13, ratio18_1, false);
+motor LF = motor(PORT18, ratio18_1, true);
+motor LB = motor(PORT13, ratio18_1, true);
 
-motor_group leftDrive(LF, LB);
-motor_group rightDrive(RF, RB);
+motor_group leftDrive(LB, LF);
+motor_group rightDrive(RB, RF);
 motor_group leftDiagDrive(LB, RF);
 motor_group rightDiagDrive(LF, RB);
 
