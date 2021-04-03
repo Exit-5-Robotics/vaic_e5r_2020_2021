@@ -31,50 +31,50 @@ void driveAuto(int direction1){
     case 0: //BACKWARD
     RF.spin(forward);
     RB.spin(forward);
-    LF.spin(reverse);
-    LB.spin(reverse);
+    LF.spin(forward);
+    LB.spin(forward);
     break;
 
     case 1: //FORWARD
     RF.spin(reverse);
     RB.spin(reverse);
-    LF.spin(forward);
-    LB.spin(forward);
+    LF.spin(reverse);
+    LB.spin(reverse);
     break;
 
     case 2: //CLOCKWISE
     RF.spin(forward);
     RB.spin(forward);
-    LF.spin(forward);
-    LB.spin(forward);
+    LF.spin(reverse);
+    LB.spin(reverse);
     
     break;
 
     case 3: //COUNTER CLOCKWISE
     RF.spin(reverse);
     RB.spin(reverse);
-    LF.spin(reverse);
-    LB.spin(reverse);
+    LF.spin(forward);
+    LB.spin(forward);
     break;
 
     case 4: //LEFT BACK
     RB.spin(forward);
-    LF.spin(reverse);
+    LF.spin(forward);
     break;
 
     case 5: //RIGHT FORWARD
     RB.spin(reverse);
-    LF.spin(forward);
+    LF.spin(reverse);
     break;
 
     case 6: //LEFT FORWARD
     RF.spin(reverse);
-    LB.spin(forward);
+    LB.spin(reverse);
     break;
 
     case 7: //RIGHT BACK
     RF.spin(forward);
-    LB.spin(reverse);
+    LB.spin(forward);
     break;
 
   }
@@ -103,49 +103,49 @@ void driveAutoDist(int direction1, int dist){
     case 0: //BACKWARD
     RF.spinFor(forward, dist, degrees, false);
     RB.spinFor(forward, dist, degrees, false);
-    LF.spinFor(reverse, dist, degrees, false);
-    LB.spinFor(reverse, dist, degrees);
+    LF.spinFor(forward, dist, degrees, false);
+    LB.spinFor(forward, dist, degrees);
     break;
 
     case 1: //FORWARD
     RF.spinFor(reverse, dist, degrees, false);
     RB.spinFor(reverse, dist, degrees, false);
-    LF.spinFor(forward, dist, degrees, false);
-    LB.spinFor(forward, dist, degrees);
+    LF.spinFor(reverse, dist, degrees, false);
+    LB.spinFor(reverse, dist, degrees);
     break;
 
     case 2: //CLOCKWISE
     RF.spinFor(forward, dist, degrees, false);
     RB.spinFor(forward, dist, degrees, false);
-    LF.spinFor(forward, dist, degrees, false);
-    LB.spinFor(forward, dist, degrees);
+    LF.spinFor(reverse, dist, degrees, false);
+    LB.spinFor(reverse, dist, degrees);
     break;
 
     case 3: //COUNTER CLOCKWISE
     RF.spinFor(reverse, dist, degrees, false);
     RB.spinFor(reverse, dist, degrees, false);
-    LF.spinFor(reverse, dist, degrees, false);
-    LB.spinFor(reverse, dist, degrees);
+    LF.spinFor(forward, dist, degrees, false);
+    LB.spinFor(forward, dist, degrees);
     break;
 
     case 4: //LEFT BACK
     RB.spinFor(forward, dist, degrees, false);
-    LF.spinFor(forward, dist, degrees);
+    LF.spinFor(reverse, dist, degrees);
     break;
 
     case 5: //RIGHT FORWARD
     RB.spinFor(reverse, dist, degrees, false);
-    LF.spinFor(forward, dist, degrees);
+    LF.spinFor(reverse, dist, degrees);
     break;
     
     case 6: //LEFT FORWARD
     RF.spinFor(reverse, dist, degrees, false);
-    LB.spinFor(forward, dist, degrees);
+    LB.spinFor(reverse, dist, degrees);
     break;
 
     case 7: //RIGHT BACK
     RF.spinFor(forward, dist, degrees, false);
-    LB.spinFor(reverse, dist, degrees);
+    LB.spinFor(forward, dist, degrees);
     break;
     }
 }

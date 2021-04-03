@@ -147,8 +147,9 @@ void workerDuties(){
   setSpeed(40);
   //descore();
   //robotDrive.turnFor(left, 360, vex::rotationUnits::deg, 5, vex::velocityUnits::pct, false);
-  turnTo(180, 50);
+  //turnTo(180, 50);
   //poop(100);
+  driveAutoDist(1, 1000);
   Brain.Screen.printAt(280, 155, "seven");
 
 }
