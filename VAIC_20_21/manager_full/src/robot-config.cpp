@@ -12,11 +12,13 @@ message_link  LinkA( PORT9, "vex_robotics_team_3063_A", linkType::manager );
 // sonar Balls = sonar(Brain.ThreeWirePort.B); // A is the output, B is the input https://api.vexcode.cloud/v5/html/classvex_1_1sonar.html#aeefdd6cb8826338561d0cf187643b14a
 line          ballThree(Brain.ThreeWirePort.C);
 line          ballZero(Brain.ThreeWirePort.E);
+vex::distance dist(PORT5);
 motor         leftIntake(PORT1, ratio18_1, false);
 motor         rightIntake(PORT19, ratio18_1, true);
 motor_group   intakeWheels( leftIntake, rightIntake );
 motor         botRoller(PORT11, ratio18_1, false);
 motor         topRoller(PORT12, ratio18_1, false);
+motor         distMotor(PORT8, ratio18_1, true);
 motor         backLeftWheel(PORT16, ratio18_1, false);
 motor         frontLeftWheel(PORT2, ratio18_1, false);
 motor         backRightWheel(PORT17, ratio18_1, true);
@@ -26,7 +28,6 @@ motor_group   rightDrive( backRightWheel, frontRightWheel );
 motor_group   rightDiagDrive( frontLeftWheel, backRightWheel );
 motor_group   leftDiagDrive( frontRightWheel, backLeftWheel );
 inertial      tilt( PORT10 );
-vex::distance objDetector ( PORT20 );
 bumper        goal(Brain.ThreeWirePort.D);
 smartdrive    robotDrive( leftDrive, rightDrive, tilt, 12.56, 14.125, 9, distanceUnits::in ); // might have to change values
 
@@ -194,10 +195,10 @@ void clearValues ( void ) {
   // ArmL.setPosition(0, degrees);
 }
 
-void values ( void ) {
-  while (true) {
-    Brain.Screen.printAt(10, 20, "Object distance: %f", objDetector.objectDistance(distanceUnits::in));
-    Brain.Screen.printAt(10, 40, "Object size: %d", objDetector.objectRawSize());
-    Brain.Screen.printAt(10, 60, "Object velocity: %f", objDetector.objectVelocity());
-  }
-}
+// void values ( void ) {
+//   while (true) {
+//     Brain.Screen.printAt(10, 20, "Object distance: %f", objDetector.objectDistance(distanceUnits::in));
+//     Brain.Screen.printAt(10, 40, "Object size: %d", objDetector.objectRawSize());
+//     Brain.Screen.printAt(10, 60, "Object velocity: %f", objDetector.objectVelocity());
+//   }
+// }

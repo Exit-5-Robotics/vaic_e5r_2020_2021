@@ -17,3 +17,5 @@ extern void intakeNoDrive( void );
 
 extern void descore( void );
 extern int adjustHold( void );
+
+extern int moveDistSensor( int direc ); // returns an int: 1 means it is in the UP position, -1 means it is in the DOWN position

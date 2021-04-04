@@ -10,11 +10,13 @@
 // ballZero -        3WireE
 // tilt -            PORT10
 // goal -            3WireD
+// dist -            PORT5
 //
 // leftIntake -      PORT1
 // rightIntake -     PORT19
 // botRoller -       PORT11
 // topRoller -       PORT12
+// distMotor -       PORT8 (300 degrees turning)
 // Balls -           PORT10 (not in use)
 //
 // frontLeftWheel -  PORT2

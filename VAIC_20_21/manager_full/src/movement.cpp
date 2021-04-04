@@ -243,6 +243,11 @@ int centerGoal() {
   return 0;
 }
 
+int moveDistSensor( int direc ) {
+  distMotor.spinFor(direc*300, degrees, 100, velocityUnits::pct);
+  return direc;
+}
+
 int testMovement() { // just for testing
   float current_x, current_y, current_heading;
   

@@ -4,6 +4,7 @@ using namespace vex;
 
 void redIsolation() {
   /* (x, -y) ball, then (x, 0) ball, then (x, y) ball if time permits */
+  driveAngleFor(10, 90, 50);
   goTo(40, -48, 180);
   task::sleep(500);
   robotDrive.turnFor(left, 45, degrees, 30, velocityUnits::pct);

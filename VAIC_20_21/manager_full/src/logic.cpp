@@ -24,6 +24,11 @@ bool testChange() {
   return isDiff;
 }
 
+// bool robotInFront( int distPos, ) {
+  // if objdist + current x or y depending on direction == 72 in then it's probably a wall
+//   if (distPos==1 && (dist.objectDistance(distanceUnits::in) + ))
+// }
+
 float round(float var) {
     float value = (int)(var * 100 + .5); 
     return (float)value / 100;

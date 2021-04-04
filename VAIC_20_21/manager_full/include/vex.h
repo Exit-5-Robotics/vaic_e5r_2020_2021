@@ -6,7 +6,9 @@
 /*    Description:  Default header for V5 projects                            */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-//
+// half of field width/height is 1829 mm or 72 in
+// TODO: robotInFront in logic.cpp
+
 #include <cmath>
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,6 +31,9 @@
 #define BLUE 1
 #define RED 2
 #define OUR_COLOR RED
+
+#define UP 1
+#define DOWN -1
 
 #define waitUntil(condition)                                                   \
   do {                                                                         \
