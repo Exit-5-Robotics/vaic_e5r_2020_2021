@@ -34,6 +34,39 @@ float round(float var) {
     return (float)value / 100;
 }
 
+void cache_goals( void ) {
+  // move out
+  static MAP_RECORD  local_map;
+  jetson_comms.get_data( &local_map );
+
+  int opponentScored[9];
+
+  int mapnum = local_map.mapnum;
+  if (mapnum > 0) {
+    for (int i=0; i<mapnum; i++) {
+      if (local_map.mapobj[i].positionZ / 25.4 > 100000 /*REPLACE*/ && local_map.mapobj[i].classID == OTHER_COLOR) {
+        // opponentScored 
+        // const int prevToFind = 10;
+        // auto findResult = std::find_if(std::begin(table), std::end(table), [&](const std::pair<int, struct_t*> &pair)
+        // {
+        //     return pair.second->prev == prevToFind;
+        // });
+
+        // int foundKey = 0; // You might want to initialise this to a value you know is invalid in your map
+        // struct_t *foundValue = nullptr
+        // if (findResult != std::end(table))
+        // {
+        //     foundKey = findResult->first;
+        //     foundValue = findResult->second;
+
+        //     // Now do something with the key or value!
+        // }
+      }
+    }
+  }
+
+}
+
 void decide_action( deque<int> &bot ) {
   // std::queue<int> bot; We would already have the balls in the bot
   deque<int> col;

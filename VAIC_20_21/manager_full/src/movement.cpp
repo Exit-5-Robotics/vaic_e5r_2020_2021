@@ -250,14 +250,25 @@ int moveDistSensor( int direc ) {
 
 int testMovement() { // just for testing
   float current_x, current_y, current_heading;
+
+  // intakeWheels.spin(fwd, 100, vex::velocityUnits::pct);
+  
+  while(true) {
+    robotDrive.drive(fwd, 10, velocityUnits::pct);
+    Brain.Screen.printAt(10, 20, "%f", tilt.acceleration(axisType::xaxis));
+  }
+  // robotDrive.stop();
+  
+  // while (ballThree.value(analogUnits::mV) > 3300) robotDrive.drive(fwd, 5, velocityUnits::pct);
+  
   
   while (true) {
     link.get_local_location(current_x, current_y, current_heading);
 
-    if (current_x != 0) {
-      task::sleep(15000);
-      redIsolation();
-    }
+    // if (current_x != 0) {
+    //   task::sleep(15000);
+    //   redIsolation();
+    // }
 
     // if (current_heading != 0) {
     //   centerGoal();

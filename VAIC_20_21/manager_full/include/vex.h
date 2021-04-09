@@ -16,6 +16,7 @@
 #include <sstream>
 #include <deque>
 #include <iostream>
+#include <map>
 
 #include "v5.h"
 #include "v5_vcs.h"
@@ -27,13 +28,16 @@
 #include "movement.h"
 #include "logic.h"
 
-#define EMPTY 0
+#define EMPTY 3
 #define BLUE 1
-#define RED 2
+#define RED 0
 #define OUR_COLOR RED
+#define OTHER_COLOR BLUE
 
 #define UP 1
 #define DOWN -1
+
+const std::map<int, int(*)[2]> goals;
 
 #define waitUntil(condition)                                                   \
   do {                                                                         \
