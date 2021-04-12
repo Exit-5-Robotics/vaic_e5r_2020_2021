@@ -1,151 +1,35 @@
-// RF    - PORT 12
-// RB    - PORT 14
-// LF    - PORT 18
-// LB    - PORT 13
-// Intake - PORT 9
-// Roller - PORT 8
-
 #include "vex.h"
-
 using namespace vex;
 
-void setSpeed(int speed){
-  RF.setVelocity(speed, rpm);
-  RB.setVelocity(speed, rpm);
-  LF.setVelocity(speed, rpm);
-  LB.setVelocity(speed, rpm);
+float orderBlue[] = {1, 7, 2, 5, 3, 4, 0, 6};
+float orderRed[] = {3, 4, 0, 6, 1, 7, 2, 5};
+float order[8];
+
+float centerNodes[] = {/*x0, y0, x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6, x7, y7, x8, y8*/};
+
+void setStart(int color){
+  //set order orderBlue or orderRed
 }
 
-void driveAuto(int direction1){
-  //DIRECTION SETTINGS
-  //0 = BACKWARD
-  //1 = FORWARD
-  //2 = CLOCKWISE
-  //3 = COUNTER CLOCKWISE
-  //4 = LEFT BACK
-  //5 = RIGHT FORWARD
-  //6 = LEFT FORWARD
-  //7 = RIGHT BACK
+void checkTower(){
+  /*
+    1. check info for tower in front
+    2. if the top is not our color:
+        a. descore
+        b. return to center position
+    3. send updated matrix info to manager
+  */
+}
 
-  switch(direction1){
-    case 0: //BACKWARD
-    RF.spin(forward);
-    RB.spin(forward);
-    LF.spin(forward);
-    LB.spin(forward);
-    break;
-
-    case 1: //FORWARD
-    RF.spin(reverse);
-    RB.spin(reverse);
-    LF.spin(reverse);
-    LB.spin(reverse);
-    break;
-
-    case 2: //CLOCKWISE
-    RF.spin(forward);
-    RB.spin(forward);
-    LF.spin(reverse);
-    LB.spin(reverse);
-    
-    break;
-
-    case 3: //COUNTER CLOCKWISE
-    RF.spin(reverse);
-    RB.spin(reverse);
-    LF.spin(forward);
-    LB.spin(forward);
-    break;
-
-    case 4: //LEFT BACK
-    RB.spin(forward);
-    LF.spin(forward);
-    break;
-
-    case 5: //RIGHT FORWARD
-    RB.spin(reverse);
-    LF.spin(reverse);
-    break;
-
-    case 6: //LEFT FORWARD
-    RF.spin(reverse);
-    LB.spin(reverse);
-    break;
-
-    case 7: //RIGHT BACK
-    RF.spin(forward);
-    LB.spin(forward);
-    break;
-
+void navigateForever(){
+  int count = 0;
+  while(1){
+    if(count > 7){
+      count = 0;
+    }
+    checkTower();
+    goTo(centerNodes[order[count*2]], centerNodes[order[count*2 + 1]]); // also turns 45 degrees
+    count++;
   }
 }
 
-//STOP ALL WHEELS
-void pause(){
-  RF.stop();
-  LF.stop();
-  RB.stop();
-  LB.stop();
-}
-
-//DRIVE FOR DIRECTION AND DISTANCE
-void driveAutoDist(int direction1, int dist){ 
-  //DIRECTION SETTINGS
-  //0 = BACKWARD
-  //1 = FORWARD
-  //2 = CLOCKWISE
-  //3 = COUNTER CLOCKWISE
-  //4 = LEFT BACK
-  //5 = RIGHT FORWARD
-  //6 = LEFT FORWARD
-  //7 = RIGHT BACK
-  switch (direction1) {
-    case 0: //BACKWARD
-    RF.spinFor(forward, dist, degrees, false);
-    RB.spinFor(forward, dist, degrees, false);
-    LF.spinFor(forward, dist, degrees, false);
-    LB.spinFor(forward, dist, degrees);
-    break;
-
-    case 1: //FORWARD
-    RF.spinFor(reverse, dist, degrees, false);
-    RB.spinFor(reverse, dist, degrees, false);
-    LF.spinFor(reverse, dist, degrees, false);
-    LB.spinFor(reverse, dist, degrees);
-    break;
-
-    case 2: //CLOCKWISE
-    RF.spinFor(forward, dist, degrees, false);
-    RB.spinFor(forward, dist, degrees, false);
-    LF.spinFor(reverse, dist, degrees, false);
-    LB.spinFor(reverse, dist, degrees);
-    break;
-
-    case 3: //COUNTER CLOCKWISE
-    RF.spinFor(reverse, dist, degrees, false);
-    RB.spinFor(reverse, dist, degrees, false);
-    LF.spinFor(forward, dist, degrees, false);
-    LB.spinFor(forward, dist, degrees);
-    break;
-
-    case 4: //LEFT BACK
-    RB.spinFor(forward, dist, degrees, false);
-    LF.spinFor(reverse, dist, degrees);
-    break;
-
-    case 5: //RIGHT FORWARD
-    RB.spinFor(reverse, dist, degrees, false);
-    LF.spinFor(reverse, dist, degrees);
-    break;
-    
-    case 6: //LEFT FORWARD
-    RF.spinFor(reverse, dist, degrees, false);
-    LB.spinFor(reverse, dist, degrees);
-    break;
-
-    case 7: //RIGHT BACK
-    RF.spinFor(forward, dist, degrees, false);
-    LB.spinFor(forward, dist, degrees);
-    break;
-    }
-}
