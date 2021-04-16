@@ -69,6 +69,7 @@ void cacheGoals( void ) { // should also be a long-running thread
         // get_id
         opponentScored[i] = OTHER_COLOR; // MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE
 
+// https://stackoverflow.com/questions/12742472/how-to-get-matching-key-using-the-value-in-a-map-c
   //       // const int prevToFind = 10;
   //       // auto findResult = std::find_if(std::begin(table), std::end(table), [&](const std::pair<int, struct_t*> &pair)
   //       // {
@@ -99,7 +100,8 @@ void loadInfo(const char *message, const char *linkname, double value) {
 
 void receiveMessages( void ) {
   while (true) {
-    LinkA.received("lalala", loadInfo); // FIX
+    LinkA.received("lalala", loadInfo); // FIX // https://stackoverflow.com/questions/30306993/integer-matching-regex-pattern-not-working
+    // convert received message to integer array
   }
 }
 
