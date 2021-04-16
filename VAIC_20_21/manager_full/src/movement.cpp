@@ -244,8 +244,24 @@ int centerGoal() {
 }
 
 int moveDistSensor( int direc ) {
-  distMotor.spinFor(direc*300, degrees, 100, velocityUnits::pct);
+  distMotor.spinFor(direc*-300, degrees, 100, velocityUnits::pct);
   return direc;
+}
+
+void distSensorControl( void ) {
+  int objDistance = dist.objectDistance(distanceUnits::mm);
+  int distPosition = 1;
+  while (true) {
+    objDistance = dist.objectDistance(distanceUnits::mm);
+    if (objDistance < 200 && distPosition == -1) {
+      distPosition = moveDistSensor(UP);
+      this_thread::sleep_for(5000);
+    } else if (objDistance > 200 && distPosition == 1) { // issue because when it goes up, does not see object any more
+      distPosition = moveDistSensor(DOWN);
+    } else {
+      distMotor.stop();
+    }
+  }
 }
 
 int testMovement() { // just for testing

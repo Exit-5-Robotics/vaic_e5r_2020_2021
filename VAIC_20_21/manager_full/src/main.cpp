@@ -151,7 +151,9 @@ int main() {
 
     // start the status update display
     thread t1(dashboardTask);
-    thread t2(testMovement);
+    thread distanceSensor(distSensorControl); // assumes dist sensor starts up
+    thread goals(cacheGoals);
+    // thread t2(testMovement);
     // thread accel(values);
     // thread iso(redIsolation);
 

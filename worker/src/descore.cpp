@@ -19,7 +19,6 @@ bool checkDescore(){
   if(ballCount >= 3){
     int smallestHeight[] = {local_map.boxobj[0].y, 0};
     for(int i = 1; i < local_map.boxnum; i++){
-      static MAP_RECORD  local_map;
       jetson_comms.get_data( &local_map );
 
       if(local_map.boxobj[i].y < smallestHeight[0] && local_map.boxobj[i].classID != 2){

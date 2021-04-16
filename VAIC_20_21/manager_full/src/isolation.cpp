@@ -9,7 +9,7 @@ void redIsolation() {
   task::sleep(500);
   robotDrive.turnFor(left, 45, degrees, 30, velocityUnits::pct);
   thread intakeCornerFirst(intakeNoDrive);
-  while(!goal.pressing()) robotDrive.drive(fwd, 60, velocityUnits::pct);
+  while(!goal.pressing()) robotDrive.drive(fwd, 50, velocityUnits::pct);
   robotDrive.stop();
   intakeCornerFirst.join();
   robotDrive.driveFor(reverse, 5, inches, 30, velocityUnits::pct);
@@ -17,6 +17,8 @@ void redIsolation() {
   robotDrive.driveFor(fwd, 5, inches, 30, velocityUnits::pct);
   adjustHold();
   score();
+
+  LinkA.send("First");
 
   robotDrive.driveFor(reverse, 30, inches, 30, velocityUnits::pct);
   robotDrive.turnFor(right, 45, degrees, 30, velocityUnits::pct);
@@ -27,8 +29,13 @@ void redIsolation() {
   
   intakeWheels.spin(fwd, 100, velocityUnits::pct);
   thread intakeMid(intakeNoDrive);
-  robotDrive.drive(fwd, 40, velocityUnits::pct);
-  while (ballThree.value(analogUnits::mV) > 3300);
+  robotDrive.drive(fwd, 30, velocityUnits::pct);
+
+  float current_x, current_y, current_heading;
+  link.get_local_location(current_x, current_y, current_heading);
+  while (ballThree.value(analogUnits::mV) > 3300 || current_x < 5) {
+    link.get_local_location(current_x, current_y, current_heading);
+  };
   robotDrive.stop();
   intakeMid.join();
 
@@ -42,11 +49,14 @@ void redIsolation() {
   moveMid.join();
 
   thread intakeMidSide(intakeNoDrive);
-  while(!goal.pressing()) robotDrive.drive(fwd, 60, velocityUnits::pct);
+  while(!goal.pressing()) robotDrive.drive(fwd, 50, velocityUnits::pct);
   robotDrive.stop();
   intakeMidSide.join();
   intakeWheels.spinFor(1000, degrees, 100, velocityUnits::pct);
   score();
+  
+  LinkA.send("Second");
+
   task::sleep(250);
   adjustHold();
   score();

@@ -18,14 +18,14 @@
 // 
 // 
 // direction settings FOR NAVIGATION: idk if this helps but here
-  //0 = cw rotation
-  //1 = ccw rotation
-  //2 = forward
-  //3 = backward
-  //4 = left back
-  //5 = right forward
-  //6 = left forward
-  //7 = right back
+  // 0 = cw rotation
+  // 1 = ccw rotation
+  // 2 = forward
+  // 3 = backward
+  // 4 = left back
+  // 5 = right forward
+  // 6 = left forward
+  // 7 = right back
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
