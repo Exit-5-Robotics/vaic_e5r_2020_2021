@@ -13,8 +13,8 @@
 // RB    - PORT 14
 // LF    - PORT 18
 // LB    - PORT 13
-// Intake - PORT 9
-// Roller - PORT 8
+// Intake - PORT 7, 8
+// Roller - PORT 10
 // 
 // 
 // direction settings FOR NAVIGATION: idk if this helps but here

@@ -17,6 +17,7 @@
 #include <deque>
 #include <iostream>
 #include <map>
+#include <regex>
 
 #include "v5.h"
 #include "v5_vcs.h"
@@ -39,6 +40,9 @@
 
 const std::map<int, int(*)[2]> goals;
 
+#define SSTR( x ) static_cast< std::ostringstream & >( \
+        ( std::ostringstream() << std::dec << x ) ).str()
+
 #define waitUntil(condition)                                                   \
   do {                                                                         \
     wait(5, msec);                                                             \
@@ -49,6 +53,7 @@ const std::map<int, int(*)[2]> goals;
 
 extern ai::jetson      jetson_comms;
 extern ai::robot_link  link;
+extern int mapScore[9];
 
 extern int dashboardTask( void );
 extern int testMovement( void );

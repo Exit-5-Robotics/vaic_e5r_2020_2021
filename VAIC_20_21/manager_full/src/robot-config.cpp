@@ -65,7 +65,7 @@ int rc_auto_loop_callback_Controller1() {
     // calculate the drivetrain motor velocities from the controller joystick axes
     // movement = Axis3, perspective = Axis2
     int drivetrainForwardBackward = Controller1.Axis3.position();
-    int drivetrainSide = Controller1.Axis4.position();
+    // int drivetrainSide = Controller1.Axis4.position();
     int drivetrainPerspective = Controller1.Axis1.position();
     // check if the value is inside of the deadband range
     if (drivetrainForwardBackward < 5 && drivetrainForwardBackward > -5) { //////////
@@ -120,7 +120,7 @@ int rc_auto_loop_callback_Controller1() {
         rightDrive.setVelocity(drivetrainPerspective/5, pct);
       }
       leftDrive.spin(fwd);
-      rightDrive.spin(reverse);
+      rightDrive.spin(vex::reverse);
     }
     // Up/Down buttons control Arms
     if (Controller1.ButtonL1.pressing()) {

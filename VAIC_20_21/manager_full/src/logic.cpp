@@ -2,14 +2,31 @@
 
 using namespace vex;
 using namespace std;
+int mapScore[9] = {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY};
+int mapAll[9][3] = {{EMPTY, EMPTY, EMPTY},
+                    {EMPTY, EMPTY, EMPTY},
+                    {EMPTY, EMPTY, EMPTY},
+                    {EMPTY, EMPTY, EMPTY},
+                    {EMPTY, EMPTY, EMPTY},
+                    {EMPTY, EMPTY, EMPTY},
+                    {EMPTY, EMPTY, EMPTY},
+                    {EMPTY, EMPTY, EMPTY},
+                    {EMPTY, EMPTY, EMPTY}};
 
-int mapScore[3][3] = {{0, 0, 0},  // 00, 01, 02
-                      {0, 0, 0},  // 10, 11, 12
-                      {0, 0, 0}}; // 20, 21, 22
+std::map<std::string, int> goalKeys = { // converts goal position to the number of the goal
+  {"+00+50", 0},
+  {"+50+00", 1},
+  {"+00-50", 2},
+  {"-50+00", 3},
+  {"-50+50", 4},
+  {"-50-50", 5},
+  {"+50+50", 6},
+  {"+50-50", 7},
+  {"+00+00", 8},
+};
 
-// hashmap??
-
-deque<int> goalsVisiting;
+// goal height is about 12, 19, 26
+// so thresholds are 16, 22
 
 bool testChange() {
   bool isDiff = false;
@@ -29,81 +46,168 @@ bool testChange() {
 //   if (distPos==1 && (dist.objectDistance(distanceUnits::in) + ))
 // }
 
-// goal height is about 12, 19, 26
-// so thresholds are 16, 22
-
 float round(float var) {
     float value = (int)(var * 100 + .5); 
     return (float)value / 100;
 }
 
-std::string arrToString( int (&arr)[9] ) {
+string arrToString( int (&arr)[9] ) {
   
-    std::ostringstream os;
+    ostringstream os;
     for (int i: arr) {
         os << i;
     }
  
-    std::string str(os.str());
+    string str(os.str());
 
     return str;
 }
 
-void cacheGoals( void ) { // should also be a long-running thread
-  // move out
-  static MAP_RECORD  local_map;
-  jetson_comms.get_data( &local_map );
+int intLen( int n ) {
+  unsigned int number_of_digits = 0;
 
+  do {
+      ++number_of_digits; 
+      n /= 10;
+  } while (n);
+  return number_of_digits;
+}
+
+string positionToString( int x_pos, int y_pos ) {
+  int x_diff = (abs(x_pos/10) > 0) ? 0 : 1;
+  int y_diff = (abs(y_pos/10) > 0) ? 0 : 1;
+  char x_sign = (x_pos >= 0) ? '+' : '-';
+  char y_sign = (y_pos >= 0) ? '+' : '-';
+
+  string xStrDiff(x_diff, '0');
+  string yStrDiff(y_diff, '0');
+
+  string s = SSTR(x_sign << xStrDiff << x_pos << y_sign << yStrDiff << y_pos);
+  
+  return s;
+}
+
+int stringToX( string pos ) {
+  int xStr = atoi(pos.substr(1, 2).c_str());
+  if (pos[0] == '-') xStr *= -1;
+  return xStr;
+}
+
+int stringToY( string pos ) {
+  int yStr = atoi(pos.substr(4, 2).c_str());
+  if (pos[3] == '-') yStr *= -1;
+  return yStr;
+}
+
+string getBallPosition( int ballDistance /* in mm*/ ) { // FIX USING X, Y, AND DISTANCE
+  int ballX, ballY;
   float current_x, current_y, current_heading;
   link.get_local_location(current_x, current_y, current_heading);
+  current_heading *= 180/M_PI;
+  current_heading += 180;
+  ballDistance /= 25.4;
 
-  int opponentScored[9] = {2};
-  std::string stringSend;
-  // int heading_direction = current_heading/; 
-  // assume robot is facing goal
+  switch((int)current_heading/90) {
+    case 0:
+      ballX = ballDistance*sin(current_heading);
+      ballY = ballDistance*cos(current_heading);
+      break;
+    case 1:
+      ballX = ballDistance*sin(current_heading);
+      ballY = -ballDistance*cos(current_heading);
+      break;
+    case 2:
+      ballX = -ballDistance*sin(current_heading);
+      ballY = -ballDistance*cos(current_heading);
+      break;
+    default:
+      ballX = -ballDistance*sin(current_heading);
+      ballY = ballDistance*cos(current_heading);
+      break;
+  }
+
+  string ballPosition = positionToString(ballX, ballY);
+
+  return ballPosition;
+}
+
+void cacheGoals( void ) { // should also be a long-running thread should also be a long-running thread should also be a long-running thread should also be a long-running thread
+  // move out
+  static MAP_RECORD  local_map;
+  float current_x, current_y, current_heading;
+  int mapnum;
   
-  int mapnum = local_map.mapnum;
-  if (mapnum > 0) {
-    for (int i=0; i<mapnum; i++) {
-      if (local_map.mapobj[i].age == 100 && local_map.mapobj[i].positionZ/25.4 > 22 && local_map.mapobj[i].classID == OTHER_COLOR) {
-        // get_id
-        opponentScored[i] = OTHER_COLOR; // MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE
-
-// https://stackoverflow.com/questions/12742472/how-to-get-matching-key-using-the-value-in-a-map-c
-  //       // const int prevToFind = 10;
-  //       // auto findResult = std::find_if(std::begin(table), std::end(table), [&](const std::pair<int, struct_t*> &pair)
-  //       // {
-  //       //     return pair.second->prev == prevToFind;
-  //       // });
-
-  //       // int foundKey = 0; // You might want to initialise this to a value you know is invalid in your map
-  //       // struct_t *foundValue = nullptr
-  //       // if (findResult != std::end(table))
-  //       // {
-  //       //     foundKey = findResult->first;
-  //       //     foundValue = findResult->second;
-
-  //       //     // Now do something with the key or value!
-  //       // }
+  string stringSend;
+  
+  while (true) {
+    link.get_local_location(current_x, current_y, current_heading);
+    jetson_comms.get_data( &local_map );
+    mapnum = local_map.mapnum;
+    
+    if (mapnum > 0) {
+      for (int i=0; i<mapnum; i++) {
+        if ((local_map.mapobj[i].age < 100) && (local_map.mapobj[i].positionZ/25.4 > 22)) {
+          // get_id
+          mapScore[i] = local_map.mapobj[i].classID; // MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE
+          mapAll[i][0] = local_map.mapobj[i].classID;
+          Brain.Screen.printAt(10, 20, getBallPosition(local_map.boxobj[i].depth).c_str());
+        }
       }
-    }
-    stringSend = arrToString(opponentScored);
-    Brain.Screen.printAt(10, 20, stringSend.c_str());
+      stringSend = arrToString(mapScore);
 
-    LinkA.send(stringSend.c_str());
+      LinkA.send(stringSend.c_str());
+    }
   }
 }
 
-void loadInfo(const char *message, const char *linkname, double value) {
+int getGoal( int x_pos, int y_pos ) {
+  string s = positionToString(x_pos, y_pos);
+  int goalNum = goalKeys.at(s);
+  
+  Brain.Screen.printAt(10, 40, s.c_str());
+  Brain.Screen.printAt(10, 60, "%d", goalNum);
+
+  return goalNum;
+}
+
+void loadGoalsInfo(const char *message, const char *linkname, int32_t index, double value) {
+    // convert received message to integer array
+    // add the changed values to the mapAll
   ;
 }
 
 void receiveMessages( void ) {
   while (true) {
-    LinkA.received("lalala", loadInfo); // FIX // https://stackoverflow.com/questions/30306993/integer-matching-regex-pattern-not-working
-    // convert received message to integer array
+    LinkA.received(loadGoalsInfo);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 bool checkDescore(){
@@ -134,55 +238,4 @@ bool checkDescore(){
     }
   }
   return false;
-}
-
-void decide_action( deque<int> &bot ) {
-  // std::queue<int> bot; We would already have the balls in the bot
-  deque<int> col;
-
-  col.push_back(RED);
-  col.push_back(BLUE);
-  col.push_back(RED);
-
-  switch(col.size()) {
-    case 3:
-      if (col[2] == OUR_COLOR) {
-        // LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE LEAVE
-      } else {
-        if (col[0] == OUR_COLOR) {
-          // INTAKE INTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKE
-          // PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH 
-        } else {
-          // INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE INTAKE
-          if (bot.empty()) {
-            if (col[1] == OUR_COLOR) {
-            // INTAKE INTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKE
-            // INTAKE INTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKE
-            // PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH 
-            } else {
-              //IDK MAN IDK MAN IDK MAN IDK MAN IDK MAN
-              //THROW IT ALL OUT
-            }
-          } else {
-            // INTAKE INTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKEINTAKE
-            // PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH 
-            // DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE DISPOSE
-          }
-        }
-      }
-      break;
-    case 2:
-      if (!bot.empty()) {
-
-      } else {
-        // PICK UP PICK UP PICK UP PICK UP PICK UP PICK UP PICK UP PICK UP PICK UP PICK UP PICK UP PICK UP PICK UP PICK UP PICK UP PICK UP PICK UP 
-        // PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH 
-      }
-      break;
-    case 1:
-      // WE MIGHT DO SMTH WE MIGHT DO SMTH WE MIGHT DO SMTH WE MIGHT DO SMTH WE MIGHT DO SMTH WE MIGHT DO SMTH
-      break;
-    default:
-      break;
-  }
 }

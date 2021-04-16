@@ -4,6 +4,8 @@
 /*    https://kb.vex.com/hc/en-us/articles/360049619171-Coding-the-VEX-AI-Robot */
 /*------------------------------------------------------------------------------*/
 
+// SOMETHING TO TRY BELOW
+
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // LinkA -           PORT11
 // ballThree -       3WireC
@@ -39,11 +41,6 @@ competition Competition;
 //
 ai::jetson  jetson_comms;
 
-#define EMPTY 0
-#define BLUE 1
-#define RED 2
-#define OUR_COLOR RED
-
 /*----------------------------------------------------------------------------*/
 // Create a robot_link on PORT11 using the unique name robot_3063_1
 // The unique name should probably incorporate the team number
@@ -64,6 +61,14 @@ ai::robot_link       link( PORT11, "robot_3063_1", linkType::worker );
 
 /*----------------------------------------------------------------------------*/
 
+// TRY SOMETHING ALONG THESE LINES TO GO TO WORKER ROBOT TRY SOMETHING ALONG THESE LINES TO GO TO WORKER ROBOT TRY SOMETHING ALONG THESE LINES TO GO TO WORKER ROBOT
+// void goToContinuous( ) {
+//   while (true) {
+//     thread go(goTo);
+//     task::sleep(100);
+//     go.join();
+//   }
+// }
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -151,7 +156,7 @@ int main() {
 
     // start the status update display
     thread t1(dashboardTask);
-    thread distanceSensor(distSensorControl); // assumes dist sensor starts up
+    thread distanceSensor(distSensorControl); // assumes dist sensor starts UP
     thread goals(cacheGoals);
     // thread t2(testMovement);
     // thread accel(values);
