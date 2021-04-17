@@ -2,10 +2,6 @@
 
 using namespace vex;
 
-const int rollerDistance = 400;
-const int intakeDriveSpeed = 10;
-
-
 void driveAngle( int angleToDrive, int speed ) {
   // drive at an angle relative to the current angle of the robot
   int measureAngle = (angleToDrive + 45)%360;
@@ -87,38 +83,40 @@ void driveAngleForAbs( int dist, int angleToDrive, int speed ) {
 }
 
 int turnTo( float dest_heading, int vel ) {
-  Brain.Screen.printAt(280, 15, "one");
+  Brain.Screen.printAt(0, 15, "one");
   float current_x, current_y, current_heading;
-  link.get_local_location(current_x, current_y, current_heading);
+  link.get_local_location(current_x, current_y, current_heading); //rachelle help the current_heading isn't working it just always says zero
 
   float change = dest_heading - (current_heading*180/M_PI) + 180;
+  Brain.Screen.printAt(0,34, "%f", change);
   change = change > 0 ? change : change + 360;
+  Brain.Screen.printAt(0,44, "%f", change);
 
   if (change < 180) {
-    Brain.Screen.printAt(280, 35, "two");
+    Brain.Screen.printAt(0, 35, "two");
     robotDrive.turnFor(right, change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct, false);
     while (robotDrive.isTurning()) {
       link.get_local_location(current_x, current_y, current_heading);
       if (abs((int)dest_heading - (int)current_heading + 180) < 5) {
         robotDrive.stop();
-        Brain.Screen.printAt(280, 55, "three");
+        Brain.Screen.printAt(0, 55, "three");
         return 0;
       }
     }
   } else {
-    Brain.Screen.printAt(280, 75, "four");
+    Brain.Screen.printAt(0, 75, "four");
     robotDrive.turnFor(left, 360 - change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct, false);
     while (robotDrive.isTurning()) {
-      Brain.Screen.printAt(280, 75, "four.five");
+      Brain.Screen.printAt(0, 75, "four.five");
       link.get_local_location(current_x, current_y, current_heading);
       if (abs((int)dest_heading - (int)current_heading + 180) < 5) {
         robotDrive.stop();
-        Brain.Screen.printAt(280, 115, "five");
+        Brain.Screen.printAt(0, 115, "five");
         return 0;
       }
     }
   }
-  Brain.Screen.printAt(280, 135, "six");
+  Brain.Screen.printAt(0, 135, "six");
   return 0;
 }
 

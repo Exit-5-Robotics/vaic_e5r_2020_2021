@@ -145,16 +145,13 @@ get_obj(const char *message, const char *linkname, double i) {
 void workerDuties(){
   this_thread::sleep_for(10);
   setSpeed(40);
-  descore();
+  //intake.spin(forward, 100, vex::velocityUnits::pct);
+  //roller.spin(forward, 100, vex::velocityUnits::pct);
   //robotDrive.turnFor(left, 360, vex::rotationUnits::deg, 5, vex::velocityUnits::pct, false);
-  //turnTo(180, 50);
+  turnTo(180, 50);
   //poop(100);
-  //driveAutoDist(1, 1000);
-  Brain.Screen.printAt(280, 155, "seven");
 
 }
-
-
 
 int main() {
     // Initializing Robot Configuration. DO NOT REMOVE!
