@@ -78,11 +78,14 @@ dashboardJetson( int ox, int oy, int width, int height ) {
   }
   for(int i=0;i<4;i++ ) {
     if( i < local_map.mapnum ) {
-      Brain.Screen.printAt( ox + 10, oy += 12, "map %d: a:%4d c:%4d X:%.2f Y:%.2f Z:%.1f",i,
+      std::string pos = getBallPosition(local_map.mapobj[i]);
+      int mapX = stringToX(pos), mapY = stringToY(pos);
+
+      Brain.Screen.printAt( ox + 10, oy += 12, "map %d: a:%4d c:%4d X:%d Y:%d Z:%.1f",i,
                            local_map.mapobj[i].age,
                            local_map.mapobj[i].classID,
-                           (local_map.mapobj[i].positionX / 25.4),  // mm -> inches
-                           (local_map.mapobj[i].positionY / 25.4),  // mm -> inches
+                           mapX,
+                           mapY,
                            (local_map.mapobj[i].positionZ / 25.4)); // mm -> inches
     }
     else {

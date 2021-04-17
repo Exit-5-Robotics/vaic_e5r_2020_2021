@@ -13,6 +13,7 @@
 
 #ifndef AI_JETSON_H_
 #define AI_JETSON_H_
+#pragma once
 
 /*----------------------------------------------------------------------------*/
 /** @file    jetson.h

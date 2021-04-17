@@ -24,6 +24,17 @@ std::map<std::string, int> goalKeys = { // converts goal position to the number 
   {"+50-50", 7},
   {"+00+00", 8},
 };
+std::map<int, std::string> goalLocation = { // converts goal position to the number of the goal
+  {0, "+00+50"},
+  {1, "+50+00"},
+  {2, "+00-50"},
+  {3, "-50+00"},
+  {4, "-50+50"},
+  {5, "-50-50"},
+  {6, "+50+50"},
+  {7, "+50-50"},
+  {8, "+00+00"},
+};
 
 // goal height is about 12, 19, 26
 // so thresholds are 16, 22
@@ -99,36 +110,17 @@ int stringToY( string pos ) {
   return yStr;
 }
 
-string getBallPosition( int ballDistance /* in mm*/ ) { // FIX USING X, Y, AND DISTANCE
-  int ballX, ballY;
+string getBallPosition( MAP_OBJECTS mapObj ) {
+  int ballX = mapObj.positionX, ballY = mapObj.positionY;
+
   float current_x, current_y, current_heading;
   link.get_local_location(current_x, current_y, current_heading);
-  current_heading *= 180/M_PI;
-  current_heading += 180;
-  ballDistance /= 25.4;
+  current_x /= 25.4, current_y /= 25.4;
 
-  switch((int)current_heading/90) {
-    case 0:
-      ballX = ballDistance*sin(current_heading);
-      ballY = ballDistance*cos(current_heading);
-      break;
-    case 1:
-      ballX = ballDistance*sin(current_heading);
-      ballY = -ballDistance*cos(current_heading);
-      break;
-    case 2:
-      ballX = -ballDistance*sin(current_heading);
-      ballY = -ballDistance*cos(current_heading);
-      break;
-    default:
-      ballX = -ballDistance*sin(current_heading);
-      ballY = ballDistance*cos(current_heading);
-      break;
-  }
+  ballX = current_x - ballX;
+  ballY = current_y - ballY;
 
-  string ballPosition = positionToString(ballX, ballY);
-
-  return ballPosition;
+  return positionToString(ballX, ballY);
 }
 
 void cacheGoals( void ) { // should also be a long-running thread should also be a long-running thread should also be a long-running thread should also be a long-running thread
@@ -147,10 +139,11 @@ void cacheGoals( void ) { // should also be a long-running thread should also be
     if (mapnum > 0) {
       for (int i=0; i<mapnum; i++) {
         if ((local_map.mapobj[i].age < 100) && (local_map.mapobj[i].positionZ/25.4 > 22)) {
+
           // get_id
           mapScore[i] = local_map.mapobj[i].classID; // MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE
           mapAll[i][0] = local_map.mapobj[i].classID;
-          Brain.Screen.printAt(10, 20, getBallPosition(local_map.boxobj[i].depth).c_str());
+          // Brain.Screen.printAt(10, 20, getBallPosition(local_map.boxobj[i].depth).c_str()); // broken line
         }
       }
       stringSend = arrToString(mapScore);

@@ -13,21 +13,26 @@ message_link  LinkA( PORT9, "vex_robotics_team_3063_A", linkType::manager );
 line          ballThree(Brain.ThreeWirePort.C);
 line          ballZero(Brain.ThreeWirePort.E);
 vex::distance dist(PORT5);
+inertial      tilt( PORT10 );
+
 motor         leftIntake(PORT1, ratio18_1, false);
 motor         rightIntake(PORT19, ratio18_1, true);
 motor_group   intakeWheels( leftIntake, rightIntake );
+
 motor         botRoller(PORT11, ratio18_1, false);
 motor         topRoller(PORT12, ratio18_1, false);
 motor         distMotor(PORT8, ratio18_1, true);
+
 motor         backLeftWheel(PORT16, ratio18_1, false);
 motor         frontLeftWheel(PORT2, ratio18_1, true);
 motor         backRightWheel(PORT17, ratio18_1, true);
 motor         frontRightWheel(PORT18, ratio18_1, false);
+
 motor_group   leftDrive( backLeftWheel, frontLeftWheel );
 motor_group   rightDrive( backRightWheel, frontRightWheel );
 motor_group   rightDiagDrive( frontLeftWheel, backRightWheel );
 motor_group   leftDiagDrive( frontRightWheel, backLeftWheel );
-inertial      tilt( PORT10 );
+
 // bumper        goal(Brain.ThreeWirePort.D);
 smartdrive    robotDrive( leftDrive, rightDrive, tilt, 12.56, 14.125, 9, distanceUnits::in ); // might have to change values
 

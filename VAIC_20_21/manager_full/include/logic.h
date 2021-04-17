@@ -1,3 +1,5 @@
+#include "ai_jetson.h"
+
 extern bool testChange( void );
 extern float round( float var );
 extern std::string arrToString( int (&arr)[9] );
@@ -7,7 +9,7 @@ extern int stringToX( std::string pos );
 extern int stringToY( std::string pos );
 
 extern std::string positionToString( int x_pos, int y_pos );
-extern std::string getBallPosition( int ballDistance );
+extern std::string getBallPosition( MAP_OBJECTS mapObj );
 
 extern void cacheGoals( void );
 extern void loadGoalsInfo(const char *message, const char *linkname, int32_t index, double value);

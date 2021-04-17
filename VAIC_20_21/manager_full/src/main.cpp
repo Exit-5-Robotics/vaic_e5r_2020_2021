@@ -155,6 +155,7 @@ int main() {
     int32_t loop_time = 66;
 
     // start the status update display
+    
     thread t1(dashboardTask);
     thread distanceSensor(distSensorControl); // assumes dist sensor starts UP
     thread goals(cacheGoals);

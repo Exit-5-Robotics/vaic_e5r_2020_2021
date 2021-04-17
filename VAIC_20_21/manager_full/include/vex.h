@@ -38,7 +38,8 @@
 #define UP 1
 #define DOWN -1
 
-const std::map<int, int(*)[2]> goals;
+extern std::map<std::string, int> goalKeys;
+extern std::map<int, std::string> goalLocation;
 
 #define SSTR( x ) static_cast< std::ostringstream & >( \
         ( std::ostringstream() << std::dec << x ) ).str()
