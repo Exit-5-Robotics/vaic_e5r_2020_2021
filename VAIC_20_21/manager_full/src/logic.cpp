@@ -3,7 +3,7 @@
 using namespace vex;
 using namespace std;
 int mapScore[9] = {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY};
-int mapAll[9][3] = {{EMPTY, EMPTY, EMPTY},
+int mapAll[9][3] = {{EMPTY, EMPTY, EMPTY}, // top, mid, bot
                     {EMPTY, EMPTY, EMPTY},
                     {EMPTY, EMPTY, EMPTY},
                     {EMPTY, EMPTY, EMPTY},
@@ -99,27 +99,29 @@ string positionToString( int x_pos, int y_pos ) {
 }
 
 int stringToX( string pos ) {
-  int xStr = atoi(pos.substr(1, 2).c_str());
-  if (pos[0] == '-') xStr *= -1;
-  return xStr;
+  return (pos[0] == '-') ? atoi(pos.substr(1, 2).c_str())*-1 : atoi(pos.substr(1, 2).c_str());
 }
 
 int stringToY( string pos ) {
-  int yStr = atoi(pos.substr(4, 2).c_str());
-  if (pos[3] == '-') yStr *= -1;
-  return yStr;
+  return (pos[3] == '-') ? atoi(pos.substr(4, 2).c_str())*-1 : atoi(pos.substr(4, 2).c_str());
 }
 
 string getBallPosition( MAP_OBJECTS mapObj ) {
-  int ballX = mapObj.positionX, ballY = mapObj.positionY;
+  int ballX = (int)(mapObj.positionX/25.4);
+  int ballY = (int)(mapObj.positionY/25.4); 
+
+  Brain.Screen.printAt(10, 20, "%d %d", ballX, ballY);
 
   float current_x, current_y, current_heading;
   link.get_local_location(current_x, current_y, current_heading);
   current_x /= 25.4, current_y /= 25.4;
 
-  ballX = current_x - ballX;
-  ballY = current_y - ballY;
+  Brain.Screen.printAt(10, 32, "%d %d", (int)current_x, (int)current_y);
 
+  ballX = (int)current_x - ballX;
+  ballY = (int)current_y - ballY;
+
+  Brain.Screen.printAt(10, 44, "%d %d", ballX, ballY); // not printing correctly?
   return positionToString(ballX, ballY);
 }
 
@@ -143,7 +145,7 @@ void cacheGoals( void ) { // should also be a long-running thread should also be
           // get_id
           mapScore[i] = local_map.mapobj[i].classID; // MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE
           mapAll[i][0] = local_map.mapobj[i].classID;
-          // Brain.Screen.printAt(10, 20, getBallPosition(local_map.boxobj[i].depth).c_str()); // broken line
+          Brain.Screen.printAt(10, 20, getBallPosition(local_map.mapobj[i]).c_str()); // broken line
         }
       }
       stringSend = arrToString(mapScore);

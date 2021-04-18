@@ -151,11 +151,9 @@ int main() {
     // local storage for latest data from the Jetson Nano
     static MAP_RECORD       local_map;
 
-    // RUn at about 15Hz
+    // Run at about 15Hz
     int32_t loop_time = 66;
 
-    // start the status update display
-    
     thread t1(dashboardTask);
     thread distanceSensor(distSensorControl); // assumes dist sensor starts UP
     thread goals(cacheGoals);
