@@ -148,7 +148,7 @@ void workerDuties(){
   //intake.spin(forward, 100, vex::velocityUnits::pct);
   //roller.spin(forward, 100, vex::velocityUnits::pct);
   //robotDrive.turnFor(left, 360, vex::rotationUnits::deg, 5, vex::velocityUnits::pct, false);
-  turnTo(180, 50);
+  turnTo(180, 20);
   //poop(100);
 
 }
