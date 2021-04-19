@@ -165,7 +165,7 @@ dashboardVexlink( int ox, int oy, int width, int height ) {
   
   Brain.Screen.printAt( ox + 10, oy += 15, " X:   %.2f", x);
   Brain.Screen.printAt( ox + 10, oy += 15, " Y:   %.2f", y);
-  Brain.Screen.printAt( ox + 10, oy += 15, " H:   %.2f", heading);
+  Brain.Screen.printAt( ox + 10, oy += 15, " H:   %.2f", heading*180/M_PI);
 }
 
 //

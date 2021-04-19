@@ -82,12 +82,22 @@ void driveAngleForAbs( int dist, int angleToDrive, int speed ) {
   driveAngleFor(dist, relativeDriveAngle, speed);
 }
 
+
+/******************************************TURN TO******************************************/
+
+
 int turnTo( float dest_heading, int vel ) {
   Brain.Screen.printAt(0, 15, "one");
   float current_x, current_y, current_heading;
-  link.get_local_location(current_x, current_y, current_heading); //rachelle help the current_heading isn't working it just always says zero
+  //link.get_local_location(current_x, current_y, current_heading); //rachelle help the current_heading isn't working it just always says zero
+  static MAP_RECORD  local_map;
+  jetson_comms.get_data( &local_map );
+  current_heading = local_map.pos.az*180/M_PI;
+  current_x = local_map.pos.x;
+  current_y = local_map.pos.x;
+  Brain.Screen.printAt(0,22, "%f", current_heading);
 
-  float change = dest_heading - (current_heading*180/M_PI) + 180;
+  float change = dest_heading - (current_heading + 180);
   Brain.Screen.printAt(0,34, "%f", change);
   change = change > 0 ? change : change + 360;
   Brain.Screen.printAt(0,44, "%f", change);
@@ -96,8 +106,13 @@ int turnTo( float dest_heading, int vel ) {
     Brain.Screen.printAt(0, 35, "two");
     robotDrive.turnFor(right, change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct, false);
     while (robotDrive.isTurning()) {
-      link.get_local_location(current_x, current_y, current_heading);
-      if (abs((int)dest_heading - (int)current_heading + 180) < 5) {
+      static MAP_RECORD  local_map;
+      jetson_comms.get_data( &local_map );
+      current_heading = local_map.pos.az*180/M_PI;
+      current_x = local_map.pos.x;
+      current_y = local_map.pos.x;
+      Brain.Screen.printAt(0,22, "%f", current_heading);
+      if (abs((int)dest_heading - ((int)current_heading + 180)) < 5) {
         robotDrive.stop();
         Brain.Screen.printAt(0, 55, "three");
         return 0;
@@ -108,10 +123,16 @@ int turnTo( float dest_heading, int vel ) {
     robotDrive.turnFor(left, 360 - change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct, false);
     while (robotDrive.isTurning()) {
       Brain.Screen.printAt(0, 75, "four.five");
-      link.get_local_location(current_x, current_y, current_heading);
-      if (abs((int)dest_heading - (int)current_heading + 180) < 5) {
+      static MAP_RECORD  local_map;
+      jetson_comms.get_data( &local_map );
+      current_heading = local_map.pos.az*180/M_PI;
+      current_x = local_map.pos.x;
+      current_y = local_map.pos.x;
+      Brain.Screen.printAt(0,100, "%f", current_heading);
+      if (abs((int)dest_heading - ((int)current_heading + 180)) < 10) {
         robotDrive.stop();
         Brain.Screen.printAt(0, 115, "five");
+        this_thread::sleep_for(20000);
         return 0;
       }
     }
@@ -120,12 +141,16 @@ int turnTo( float dest_heading, int vel ) {
   return 0;
 }
 
+/******************************************GO TO******************************************/
+
 void goTo( float dest_x, float dest_y, float dest_heading ) {   
 
   turnTo(dest_heading, 30);
 
   float start_x, start_y, start_heading, current_x, current_y, current_heading;
   link.get_local_location(start_x, start_y, start_heading);
+  
+
 
   // convert units to inches and degrees
   start_x /= 25.4;
