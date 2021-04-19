@@ -40,6 +40,7 @@ competition Competition;
 // data from the Jetson nano
 //
 ai::jetson  jetson_comms;
+float local_x, local_y, local_heading;
 
 /*----------------------------------------------------------------------------*/
 // Create a robot_link on PORT11 using the unique name robot_3063_1
@@ -126,7 +127,6 @@ bool firstAutoFlag = true;
 
 void autonomousMain(void) {
   Brain.Screen.printAt( 10, 10, "autonomousMain" );
-  // goTo(0, 0, 0);
   // ..........................................................................
   // The first time we enter this function we will launch our Isolation routine
   // When the field goes disabled after the isolation period this task will die
@@ -154,9 +154,12 @@ int main() {
     // Run at about 15Hz
     int32_t loop_time = 66;
 
+    // thread loc(updateLocation); // ALWAYS NEED TO RUN
     thread t1(dashboardTask);
-    thread distanceSensor(distSensorControl); // assumes dist sensor starts UP
+
+    // thread distanceSensor(distSensorControl); // assumes dist sensor starts UP
     thread goals(cacheGoals);
+
     // thread t2(testMovement);
     // thread accel(values);
     // thread iso(redIsolation);
@@ -175,6 +178,12 @@ int main() {
     while(1) {
         // get last map data
         jetson_comms.get_data( &local_map );
+        
+        link.get_local_location(local_x, local_y, local_heading);
+        local_x /= 25.4;
+        local_y /= 25.4;
+        local_heading *= 180/M_PI;
+        local_heading += 180;
 
         // set our location to be sent to partner robot
         link.set_remote_location( local_map.pos.x, local_map.pos.y, local_map.pos.az );

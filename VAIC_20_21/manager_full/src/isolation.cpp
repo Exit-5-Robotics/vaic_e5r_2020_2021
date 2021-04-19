@@ -31,11 +31,7 @@ void redIsolation() {
   thread intakeMid(intakeNoDrive);
   robotDrive.drive(fwd, 30, velocityUnits::pct);
 
-  float current_x, current_y, current_heading;
-  link.get_local_location(current_x, current_y, current_heading);
-  while (ballThree.value(analogUnits::mV) > 3300 || current_x < 5) {
-    link.get_local_location(current_x, current_y, current_heading);
-  };
+  while (ballThree.value(analogUnits::mV) > 3300 || local_x < 5);
   robotDrive.stop();
   intakeMid.join();
 

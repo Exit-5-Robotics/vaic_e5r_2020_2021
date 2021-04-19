@@ -38,6 +38,10 @@
 #define UP 1
 #define DOWN -1
 
+extern float local_x;
+extern float local_y;
+extern float local_heading;
+
 extern std::map<std::string, int> goalKeys;
 extern std::map<int, std::string> goalLocation;
 

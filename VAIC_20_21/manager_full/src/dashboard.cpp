@@ -48,6 +48,9 @@ dashboardJetson( int ox, int oy, int width, int height ) {
   Brain.Screen.printAt( ox + 10, oy += 15, "Timeouts  %d", jetson_comms.get_timeouts() );
   Brain.Screen.printAt( ox + 10, oy += 15, "data/sec  %d             ", total_data );
   Brain.Screen.printAt( ox + 10, oy += 15, "pkts/sec  %d             ", total_packets );
+  // Brain.Screen.printAt( ox + 10, oy += 15, "Local x        %f", local_x );
+  // Brain.Screen.printAt( ox + 10, oy += 15, "Local y        %f", local_y );
+  // Brain.Screen.printAt( ox + 10, oy += 15, "Local heading  %f", local_heading );
   Brain.Screen.printAt( ox + 10, oy += 15, "boxnum    %d", local_map.boxnum );
   Brain.Screen.printAt( ox + 10, oy += 15, "mapnum    %d", local_map.mapnum );
   
@@ -78,10 +81,10 @@ dashboardJetson( int ox, int oy, int width, int height ) {
   }
   for(int i=0;i<4;i++ ) {
     if( i < local_map.mapnum ) {
-      std::string pos = getBallPosition(local_map.mapobj[i]);
+      // std::string pos = getBallPosition(local_map.mapobj[i]);
 
-      int mapX = stringToX(pos);
-      int mapY = stringToY(pos);
+      // int mapX = stringToX(pos);
+      // int mapY = stringToY(pos);
 
       Brain.Screen.printAt( ox + 10, oy += 12, "map %d: a:%4d c:%4d X:%.2f Y:%.2f Z:%.1f",i,
                            local_map.mapobj[i].age,

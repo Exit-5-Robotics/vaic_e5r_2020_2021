@@ -42,10 +42,10 @@ std::map<int, std::string> goalLocation = { // converts goal position to the num
 bool testChange() {
   bool isDiff = false;
 
-  float first_x, first_y, first_heading, next_heading;
-  link.get_local_location(first_x, first_y, first_heading);
+  float first_heading, next_heading;
+  first_heading = local_heading;
   task::sleep(100);
-  link.get_local_location(first_x, first_y, next_heading);
+  next_heading = local_heading;
 
   if (first_heading != next_heading) isDiff = true;
 
@@ -112,29 +112,25 @@ string getBallPosition( MAP_OBJECTS mapObj ) {
 
   Brain.Screen.printAt(10, 20, "%d %d", ballX, ballY);
 
-  float current_x, current_y, current_heading;
-  link.get_local_location(current_x, current_y, current_heading);
-  current_x /= 25.4, current_y /= 25.4;
+  local_x /= 25.4, local_y /= 25.4;
 
-  Brain.Screen.printAt(10, 32, "%d %d", (int)current_x, (int)current_y);
+  Brain.Screen.printAt(10, 40, "%d %d", (int)local_x, (int)local_y);
 
-  ballX = (int)current_x - ballX;
-  ballY = (int)current_y - ballY;
+  ballX = (int)local_x - ballX;
+  ballY = (int)local_y - ballY;
 
-  Brain.Screen.printAt(10, 44, "%d %d", ballX, ballY); // not printing correctly?
+  Brain.Screen.printAt(10, 60, "%d %d", ballX, ballY); // not printing correctly?
   return positionToString(ballX, ballY);
 }
 
 void cacheGoals( void ) { // should also be a long-running thread should also be a long-running thread should also be a long-running thread should also be a long-running thread
   // move out
   static MAP_RECORD  local_map;
-  float current_x, current_y, current_heading;
   int mapnum;
   
   string stringSend;
   
   while (true) {
-    link.get_local_location(current_x, current_y, current_heading);
     jetson_comms.get_data( &local_map );
     mapnum = local_map.mapnum;
     
@@ -145,7 +141,10 @@ void cacheGoals( void ) { // should also be a long-running thread should also be
           // get_id
           mapScore[i] = local_map.mapobj[i].classID; // MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE
           mapAll[i][0] = local_map.mapobj[i].classID;
-          Brain.Screen.printAt(10, 20, getBallPosition(local_map.mapobj[i]).c_str()); // broken line
+          // Brain.Screen.printAt(10, 120, getBallPosition(local_map.mapobj[i]).c_str());
+          Brain.Screen.printAt(10, 140, "%f", local_x / 25.4);
+          Brain.Screen.printAt(10, 160, "%f", local_y / 25.4);
+          Brain.Screen.printAt(10, 180, "%f", local_heading*180/M_PI + 180);
         }
       }
       stringSend = arrToString(mapScore);
