@@ -14,10 +14,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sstream>
-#include <deque>
 #include <iostream>
 #include <map>
 #include <regex>
+#include <vector>
 
 #include "v5.h"
 #include "v5_vcs.h"
@@ -58,7 +58,18 @@ extern std::map<int, std::string> goalLocation;
 
 extern ai::jetson      jetson_comms;
 extern ai::robot_link  link;
+extern MAP_RECORD       local_map;
+extern bool driving;
+
 extern int mapScore[9];
+extern int mapAll[9][3];
+extern int inventory[3];
+
+struct ballOnField {
+  int classID;
+  std::string pos;
+};
+extern std::vector<ballOnField> ballsOnField;
 
 extern int dashboardTask( void );
 extern int testMovement( void );

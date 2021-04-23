@@ -9,9 +9,12 @@ extern int stringToX( std::string pos );
 extern int stringToY( std::string pos );
 
 extern std::string positionToString( int x_pos, int y_pos );
-extern std::string getBallPosition( MAP_OBJECTS mapObj );
+extern std::string getBallPosition( fifo_object_box boxObj );
 
 extern void cacheGoals( void );
 extern void loadGoalsInfo(const char *message, const char *linkname, int32_t index, double value);
-extern void receiveMessages( void );
 extern int getGoal( int x_pos, int y_pos );
+
+extern std::string getClosest( void );
+extern std::string getClosestOurColor( void );
+extern void receiveMessages( void );

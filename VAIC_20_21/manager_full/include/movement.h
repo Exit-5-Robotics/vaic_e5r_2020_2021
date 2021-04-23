@@ -1,4 +1,8 @@
 using namespace vex;
+#include "ai_jetson.h"
+
+void lookAround( void );
+void stopDriving( void );
 
 void driveAngle( int angleToDrive, int speed );
 void driveAngleAbs( int angleToDrive, int speed );
@@ -17,6 +21,7 @@ extern void intakeNoDrive( void );
 
 extern void descore( void );
 extern int adjustHold( void );
+extern int centerBall( fifo_object_box boxObj );
 
 extern int moveDistSensor( int direc ); // returns an int: 1 means it is in the UP position, -1 means it is in the DOWN position
 extern void distSensorControl( void );

@@ -6,11 +6,28 @@ const int rollerDistance = 400;
 const int intakeDriveSpeed = 10;
 
 
+void stopDriving( void ) {
+  robotDrive.stop();
+  driving = false;
+}
+
+void lookAround( void ) {
+  static int opponentScored = 0;
+  robotDrive.turnFor(right, 360, degrees, 20, velocityUnits::pct);
+  while(opponentScored == 0) {
+    for (int i=0; i<local_map.boxnum; i++) {
+      std::string ballPos = getBallPosition(local_map.boxobj[i]);  // fix please 
+      ballsOnField.push_back({local_map.boxobj[i].classID, ballPos});
+    }
+  }
+}
+
 void driveAngle( int angleToDrive, int speed ) {
   // drive at an angle relative to the current angle of the robot
-  int measureAngle = (angleToDrive + 45)%360;
+  int measureAngle = (angleToDrive + 405)%360;
   int tempAngle;
   float rightSpeed, leftSpeed;
+  driving = true;
   switch (measureAngle/90) {
     case 0:
       tempAngle = 90 - measureAngle;
@@ -51,10 +68,9 @@ void driveAngleAbs( int angleToDrive, int speed ) {
   // drive at an absolute angle
   // get starting location and heading (mainly just heading)
   // convert to degrees
-  local_heading *= 180/M_PI;
-  local_heading += 180;
 
   // find angle to drive at relative to current heading
+  driving = true;
   int relativeDriveAngle = (angleToDrive - (int)local_heading)%360;
   if (relativeDriveAngle < 0) relativeDriveAngle += 360;
   
@@ -63,6 +79,7 @@ void driveAngleAbs( int angleToDrive, int speed ) {
 
 void driveAngleFor( int dist, int angleToDrive, int speed ) {
   // drive at an angle for a distance in inches relative to current angle of robot
+  driving = true;
   int degreesDrive = dist*47;
   int currentRotation = robotDrive.rotation(deg);
   driveAngle(angleToDrive, speed);
@@ -72,9 +89,7 @@ void driveAngleFor( int dist, int angleToDrive, int speed ) {
 
 void driveAngleForAbs( int dist, int angleToDrive, int speed ) {
   // drive at an absolute angle for a distance in inches
-  // convert to degrees
-  local_heading *= 180/M_PI;
-  local_heading += 180;
+  driving = true;
 
   // find angle to drive at relative to current heading
   int relativeDriveAngle = (angleToDrive - (int)local_heading)%360;
@@ -83,14 +98,15 @@ void driveAngleForAbs( int dist, int angleToDrive, int speed ) {
 }
 
 int turnTo( float dest_heading, int vel ) {
+  driving = true;
 
-  float change = dest_heading - (local_heading*180/M_PI) + 180;
+  float change = dest_heading - local_heading;
   change = change > 0 ? change : change + 360;
 
   if (change < 180) {
     robotDrive.turnFor(right, change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct, false);
     while (robotDrive.isTurning()) {
-      if (abs((int)dest_heading - ((int)local_heading + 180)) < 5) {
+      if (abs((int)dest_heading - (int)local_heading) < 5) {
         robotDrive.stop();
         return 0;
       }
@@ -98,7 +114,7 @@ int turnTo( float dest_heading, int vel ) {
   } else {
     robotDrive.turnFor(left, 360 - change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct, false);
     while (robotDrive.isTurning()) {
-      if (abs((int)dest_heading - ((int)local_heading + 180)) < 5) {
+      if (abs((int)dest_heading - (int)local_heading) < 5) {
         robotDrive.stop();
         return 0;
       }
@@ -108,14 +124,10 @@ int turnTo( float dest_heading, int vel ) {
 }
 
 void goTo( float dest_x, float dest_y, float dest_heading ) {   
+  driving = true;
 
   turnTo(dest_heading, 30);
-
   // convert units to inches and degrees
-  local_x /= 25.4;
-  local_y /= 25.4;
-  local_heading *= 180/M_PI;
-  local_heading += 180;
 
   float change_x = dest_x - local_x;
   float change_y = dest_y - local_y;
@@ -127,7 +139,7 @@ void goTo( float dest_x, float dest_y, float dest_heading ) {
 
   driveAngleAbs(driveToAngle, 30);
   dest_x *= 25.4, dest_y *= 25.4;
-  while(abs((int)local_x - (int)dest_x) > 50);;
+  while(abs((int)local_x - (int)dest_x) > 50);
   robotDrive.stop();
 
   if (abs((int)local_y - (int)dest_y) > 50) {
@@ -180,10 +192,11 @@ void descore() {
   robotDrive.driveFor(reverse, 10, vex::distanceUnits::in, 30, vex::velocityUnits::pct);
 }
 
-void pickUp( float dist ) {
+void pickUpClosest( std::string ballPos ) {
   // TODO
-  intake(intakeDriveSpeed);
-  robotDrive.driveFor(fwd, dist, vex::distanceUnits::in, 30, vex::velocityUnits::pct);
+  goTo(stringToX(ballPos), stringToY(ballPos), local_heading); // ADJUST FOR ROBOT ADJUST FOR ROBOT ADJUST FOR ROBOT ADJUST FOR ROBOT
+  // intake(intakeDriveSpeed);
+  // robotDrive.driveFor(fwd, dist, vex::distanceUnits::in, 30, vex::velocityUnits::pct);
 }
 
 int adjustHold() {
@@ -196,12 +209,28 @@ int adjustHold() {
   return 0;
 }
 
+int centerBall( fifo_object_box boxObj ) {
+  // back up to 20 inches
+  while (boxObj.depth/25.4 < 20)
+    driveAngle(180, 20);
+  stopDriving();
+  Brain.Screen.printAt(160, 40, "%d", boxObj.x);
+
+  // center by driving sideways
+  while (boxObj.x > 190 || boxObj.x < 170) {
+    driveAngle((boxObj.x-180)/abs(boxObj.x-180)*90, (int)(abs(boxObj.x - 180)/2));
+    Brain.Screen.printAt(160, 80, "%d", boxObj.x/abs(boxObj.x)*90);
+    Brain.Screen.printAt(160, 40, "%d", boxObj.x);
+    Brain.Screen.printAt(160, 120, "%d", (int)(boxObj.depth/25.4));
+  }
+  stopDriving();
+
+  return 0;
+}
+
 int centerGoal() {
   int goalX = 160;
   int directionDrive, diff, currentBox = 5;
-
-  static MAP_RECORD  local_map;
-  jetson_comms.get_data( &local_map );
 
   if (local_map.boxnum > 0) {
     for(int i=0;i<4;i++ ) {
@@ -213,7 +242,6 @@ int centerGoal() {
     if (currentBox != 5) {
       diff = goalX - local_map.boxobj[currentBox].x;
       while (abs(diff) > 5) {
-        jetson_comms.get_data( &local_map );
         for(int i=0;i<4;i++ ) {
           if( i < local_map.boxnum ) {
             if (local_map.boxobj[i].classID == 2) currentBox = i;

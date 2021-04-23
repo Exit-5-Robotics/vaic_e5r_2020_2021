@@ -36,6 +36,10 @@ std::map<int, std::string> goalLocation = { // converts goal position to the num
   {8, "+00+00"},
 };
 
+std::vector<ballOnField> ballsOnField;
+
+int inventory[3] = {EMPTY, EMPTY, EMPTY};
+
 // goal height is about 12, 19, 26
 // so thresholds are 16, 22
 
@@ -106,33 +110,48 @@ int stringToY( string pos ) {
   return (pos[3] == '-') ? atoi(pos.substr(4, 2).c_str())*-1 : atoi(pos.substr(4, 2).c_str());
 }
 
-string getBallPosition( MAP_OBJECTS mapObj ) {
-  int ballX = (int)(mapObj.positionX/25.4);
-  int ballY = (int)(mapObj.positionY/25.4); 
+string getBallPosition( fifo_object_box boxObj ) {
+  int ballX; // = (int)(mapObj.positionX/25.4);
+  int ballY; // = (int)(mapObj.positionY/25.4);
+  // int ballZ = (int)(mapObj.positionZ/25.4);
 
-  Brain.Screen.printAt(10, 20, "%d %d", ballX, ballY);
+  // Brain.Screen.printAt(10, 20, "%d", ballX);
+  // Brain.Screen.printAt(50, 20, "%d", ballY);
+  // Brain.Screen.printAt(90, 20, "%d", ballZ);
+  // Brain.Screen.printAt(10, 40, "%d %d", (int)local_x, (int)local_y);
 
-  local_x /= 25.4, local_y /= 25.4;
-
-  Brain.Screen.printAt(10, 40, "%d %d", (int)local_x, (int)local_y);
-
-  ballX = (int)local_x - ballX;
-  ballY = (int)local_y - ballY;
+  ballX = (int)local_x;/* - ballX*/
+  ballY = (int)local_y;/* - ballY*/
 
   Brain.Screen.printAt(10, 60, "%d %d", ballX, ballY); // not printing correctly?
   return positionToString(ballX, ballY);
 }
 
+void idiot( void ) {
+  centerBall(local_map.boxobj[0]);
+}
+
 void cacheGoals( void ) { // should also be a long-running thread should also be a long-running thread should also be a long-running thread should also be a long-running thread
   // move out
-  static MAP_RECORD  local_map;
+
   int mapnum;
   
   string stringSend;
+  Brain.Screen.printAt(10, 100, "Starting");  
   
   while (true) {
-    jetson_comms.get_data( &local_map );
     mapnum = local_map.mapnum;
+    Brain.Screen.printAt(10, 120, "%.2f", local_x);
+    Brain.Screen.printAt(10, 140, "%.2f", local_y);
+    Brain.Screen.printAt(10, 160, "%.2f", local_heading);
+
+    Brain.Screen.printAt(10, 180, "%d", mapnum);
+
+    if (local_map.boxnum > 0) {
+      thread fuckyou(idiot);
+      fuckyou.join();
+      intake(10);
+    }
     
     if (mapnum > 0) {
       for (int i=0; i<mapnum; i++) {
@@ -141,10 +160,8 @@ void cacheGoals( void ) { // should also be a long-running thread should also be
           // get_id
           mapScore[i] = local_map.mapobj[i].classID; // MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE
           mapAll[i][0] = local_map.mapobj[i].classID;
+          // getBallPosition(local_map.mapobj[i]);
           // Brain.Screen.printAt(10, 120, getBallPosition(local_map.mapobj[i]).c_str());
-          Brain.Screen.printAt(10, 140, "%f", local_x / 25.4);
-          Brain.Screen.printAt(10, 160, "%f", local_y / 25.4);
-          Brain.Screen.printAt(10, 180, "%f", local_heading*180/M_PI + 180);
         }
       }
       stringSend = arrToString(mapScore);
@@ -168,6 +185,28 @@ void loadGoalsInfo(const char *message, const char *linkname, int32_t index, dou
     // convert received message to integer array
     // add the changed values to the mapAll
   ;
+}
+
+string getClosest( void ) {
+  int dist = 200; // distance to closest ball
+  string ballPos;
+  for (unsigned i=0; i<ballsOnField.size(); i++) {
+    if ((int)sqrt(pow(stringToX(ballsOnField.at(i).pos), 2) + pow(stringToY(ballsOnField.at(i).pos), 2)) < dist) {
+      ballPos = ballsOnField.at(i).pos;
+    }
+  }
+  return ballPos;
+}
+
+string getClosestOurColor( void ) {
+  int dist = 200; // distance to closest ball
+  string ballPos;
+  for (unsigned i=0; i<ballsOnField.size(); i++) {
+    if ((int)sqrt(pow(stringToX(ballsOnField.at(i).pos), 2) + pow(stringToY(ballsOnField.at(i).pos), 2)) < dist && ballsOnField.at(i).classID == OUR_COLOR) {
+      ballPos = ballsOnField.at(i).pos;
+    }
+  }
+  return ballPos;
 }
 
 void receiveMessages( void ) {

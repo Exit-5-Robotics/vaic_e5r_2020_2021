@@ -22,7 +22,6 @@ dashboardJetson( int ox, int oy, int width, int height ) {
   static int32_t     total_data = 0;
   static int32_t     total_packets = 0;
   static uint32_t    update_time = 0;
-  static MAP_RECORD  local_map;
   color grey = vex::color(0x404040);
 
   Brain.Screen.setClipRegion( ox, oy, width, height);
@@ -41,16 +40,12 @@ dashboardJetson( int ox, int oy, int width, int height ) {
   Brain.Screen.setFillColor( black );
   
   // get last map data
-  jetson_comms.get_data( &local_map );
 
   Brain.Screen.printAt( ox + 10, oy += 15, "Packets   %d", jetson_comms.get_packets() );
   Brain.Screen.printAt( ox + 10, oy += 15, "Errors    %d", jetson_comms.get_errors() );
   Brain.Screen.printAt( ox + 10, oy += 15, "Timeouts  %d", jetson_comms.get_timeouts() );
   Brain.Screen.printAt( ox + 10, oy += 15, "data/sec  %d             ", total_data );
   Brain.Screen.printAt( ox + 10, oy += 15, "pkts/sec  %d             ", total_packets );
-  // Brain.Screen.printAt( ox + 10, oy += 15, "Local x        %f", local_x );
-  // Brain.Screen.printAt( ox + 10, oy += 15, "Local y        %f", local_y );
-  // Brain.Screen.printAt( ox + 10, oy += 15, "Local heading  %f", local_heading );
   Brain.Screen.printAt( ox + 10, oy += 15, "boxnum    %d", local_map.boxnum );
   Brain.Screen.printAt( ox + 10, oy += 15, "mapnum    %d", local_map.mapnum );
   
@@ -91,8 +86,6 @@ dashboardJetson( int ox, int oy, int width, int height ) {
                            local_map.mapobj[i].classID,
                            (local_map.mapobj[i].positionX / 25.4),  // mm -> inches
                            (local_map.mapobj[i].positionY / 25.4),  // mm -> inches
-                          //  mapX,
-                          //  mapY,
                            (local_map.mapobj[i].positionZ / 25.4)); // mm -> inches
     }
     else {

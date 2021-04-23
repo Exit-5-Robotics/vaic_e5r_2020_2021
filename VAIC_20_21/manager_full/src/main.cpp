@@ -41,6 +41,8 @@ competition Competition;
 //
 ai::jetson  jetson_comms;
 float local_x, local_y, local_heading;
+MAP_RECORD       local_map;
+bool driving = false;
 
 /*----------------------------------------------------------------------------*/
 // Create a robot_link on PORT11 using the unique name robot_3063_1
@@ -86,11 +88,9 @@ void auto_Isolation(void) {
   // Insert autonomous user code here.
   // ..........................................................................
   if (OUR_COLOR == RED) {
-    // red-side isolation code
-    // cannot go to negative x values
+    redIsolation();
   } else if (OUR_COLOR == BLUE) {
-    // blue-side isolation code
-    // cannot go to positive x values
+    blueIsolation();
   }
 }
 
@@ -106,11 +106,10 @@ void auto_Isolation(void) {
 /*---------------------------------------------------------------------------*/
 
 void auto_Interaction(void) {
-  // ..........................................................................
-  // Insert autonomous user code here.
-  // ..........................................................................
-  Brain.Screen.printAt( 10, 90, "auto_Interaction" );
-
+  lookAround();
+  while (inventory[0] == EMPTY) {
+    
+  }
 }
 
 
@@ -149,13 +148,12 @@ int main() {
     vexcodeInit();
 
     // local storage for latest data from the Jetson Nano
-    static MAP_RECORD       local_map;
+    // static MAP_RECORD       local_map;
 
     // Run at about 15Hz
     int32_t loop_time = 66;
 
-    // thread loc(updateLocation); // ALWAYS NEED TO RUN
-    thread t1(dashboardTask);
+    // thread t1(dashboardTask);
 
     // thread distanceSensor(distSensorControl); // assumes dist sensor starts UP
     thread goals(cacheGoals);
@@ -179,11 +177,9 @@ int main() {
         // get last map data
         jetson_comms.get_data( &local_map );
         
-        link.get_local_location(local_x, local_y, local_heading);
-        local_x /= 25.4;
-        local_y /= 25.4;
-        local_heading *= 180/M_PI;
-        local_heading += 180;
+        local_x = local_map.pos.x/25.4;
+        local_y = local_map.pos.y/25.4;
+        local_heading = local_map.pos.az*180/M_PI + 180;
 
         // set our location to be sent to partner robot
         link.set_remote_location( local_map.pos.x, local_map.pos.y, local_map.pos.az );
