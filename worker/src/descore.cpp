@@ -87,5 +87,7 @@ void descore (){
 
     poopTower(100);
 
+    //update manager to new tower inventory
+
   }
 }
