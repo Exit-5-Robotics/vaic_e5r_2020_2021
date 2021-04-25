@@ -146,7 +146,7 @@ int turnTo( float dest_heading, int vel ) {
 
 float toNormalAngle(float og_angle){
   if(og_angle < 0){
-    return abs(og_angle) + 180;
+    return fabs(og_angle) + 180;
   }
   return og_angle;
 }
@@ -160,27 +160,27 @@ void snailTo(float dest_heading){
   dest_heading = toNormalAngle(dest_heading);
 
   //choosing direction to turn
-  if( abs(current_heading - dest_heading) < 180){
+  if( fabs(current_heading - dest_heading) < 180){
     if(current_heading > dest_heading){
-      //driveAuto(2); //right
+      driveAuto(2); //right
       Brain.Screen.printAt(0,10, "right");
     } else{
-      //driveAuto(3); //left
+      driveAuto(3); //left
       Brain.Screen.printAt(0,10, "left");
     }
   } else{
     if(current_heading > dest_heading){
-      //driveAuto(2); //right
+      driveAuto(2); //right
       Brain.Screen.printAt(0,10, "right");
     } else{
-      //driveAuto(3); //left
+      driveAuto(3); //left
       Brain.Screen.printAt(0,10, "left");
     }
   }
 
   //stopping once it reaches a certain angle
   if(current_heading < dest_heading){
-    if( abs(current_heading - dest_heading) > 180 ){
+    if( fabs(current_heading - dest_heading) > 180 ){
       while(current_heading > 0){ //1
         //update but not with toNormalHeading
         static MAP_RECORD  local_map;
@@ -207,7 +207,7 @@ void snailTo(float dest_heading){
       }
     }
   } else {
-    if( abs(current_heading - dest_heading) > 180 ){
+    if( fabs(current_heading - dest_heading) > 180 ){
       while(current_heading < 0){ //2
         //update but not with toNormalHeading
         static MAP_RECORD  local_map;
@@ -234,7 +234,7 @@ void snailTo(float dest_heading){
       }
     }
   }
-  Brain.Screen.printAt(0,40, "PAUSE FU");
+  Brain.Screen.printAt(0, 60, "PAUSE FU");
   pause();
 }
 
