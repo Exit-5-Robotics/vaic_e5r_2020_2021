@@ -242,7 +242,7 @@ void snailTo(float dest_heading){
 
 void goTo( float dest_x, float dest_y, float dest_heading ) {   
 
-  turnTo(dest_heading, 30);
+  snailTo(dest_heading);
 
   float start_x, start_y, start_heading, current_x, current_y, current_heading;
   static MAP_RECORD  local_map;
@@ -293,5 +293,5 @@ void goTo( float dest_x, float dest_y, float dest_heading ) {
     robotDrive.stop();
   }
 
-  turnTo(dest_heading, 30);
+  snailTo(dest_heading);
 }
