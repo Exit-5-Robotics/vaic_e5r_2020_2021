@@ -33,7 +33,7 @@ motor_group   rightDrive( backRightWheel, frontRightWheel );
 motor_group   rightDiagDrive( frontLeftWheel, backRightWheel );
 motor_group   leftDiagDrive( frontRightWheel, backLeftWheel );
 
-// bumper        goal(Brain.ThreeWirePort.D);
+bumper        goal(Brain.ThreeWirePort.D);
 smartdrive    robotDrive( leftDrive, rightDrive, tilt, 12.56, 14.125, 9, distanceUnits::in ); // might have to change values
 
 controller Controller1 = controller(primary); // 

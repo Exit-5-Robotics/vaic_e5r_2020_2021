@@ -37,7 +37,7 @@ typedef struct {
 	float	    prob;		  	    // The probability that this object is in this class (1.0 == 100%)
 } fifo_object_box;
 
-/// This structure represents a the robots location in refference to the center of the playing field
+/// This structure represents a the robots location in reference to the center of the playing field
 typedef struct {
 	int32_t		framecnt;       // This counter increments each frame
 	int32_t		status;         // 0 = All Good, != 0 = Not All Good

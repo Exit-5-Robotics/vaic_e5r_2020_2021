@@ -26,6 +26,7 @@
 #include "ai_robot_link.h"
 
 #include "robot-config.h"
+#include "navigation.h"
 #include "movement.h"
 #include "logic.h"
 
@@ -41,6 +42,8 @@
 extern float local_x;
 extern float local_y;
 extern float local_heading;
+
+extern int distPosition;
 
 extern std::map<std::string, int> goalKeys;
 extern std::map<int, std::string> goalLocation;

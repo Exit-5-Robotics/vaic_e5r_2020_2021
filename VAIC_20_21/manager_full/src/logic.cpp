@@ -111,29 +111,32 @@ int stringToY( string pos ) {
 }
 
 string getBallPosition( fifo_object_box boxObj ) {
-  int ballX; // = (int)(mapObj.positionX/25.4);
-  int ballY; // = (int)(mapObj.positionY/25.4);
-  // int ballZ = (int)(mapObj.positionZ/25.4);
+  // does not return height
+  int ballX = boxObj.x;
+  int ballY = boxObj.y;
+  int ballDist = (int)(boxObj.depth/25.4);
 
-  // Brain.Screen.printAt(10, 20, "%d", ballX);
-  // Brain.Screen.printAt(50, 20, "%d", ballY);
-  // Brain.Screen.printAt(90, 20, "%d", ballZ);
-  // Brain.Screen.printAt(10, 40, "%d %d", (int)local_x, (int)local_y);
+  float theta_x = atan((ballX - 180)/312);
+  float theta_y = atan((ballY - 126)/190);
 
-  ballX = (int)local_x;/* - ballX*/
-  ballY = (int)local_y;/* - ballY*/
+  float x = sin(theta_x) * cos(theta_y);
+  // float y = sin(theta_y);
+  float z = cos(theta_x) * cos(theta_y);
+
+  float forward = z*ballDist;
+  float sideways = x*ballDist;
+
+  float x_change = forward*sin(local_heading) + sideways*sin(local_heading); // ADD THE SIDEWAYS COMPONENT
+  float y_change = forward*cos(local_heading) + sideways*cos(local_heading); // add the sideways component
+
+  ballX = (int)(local_x + x_change);
+  ballY = (int)(local_y + y_change);
 
   Brain.Screen.printAt(10, 60, "%d %d", ballX, ballY); // not printing correctly?
   return positionToString(ballX, ballY);
 }
 
-void idiot( void ) {
-  centerBall(local_map.boxobj[0]);
-}
-
 void cacheGoals( void ) { // should also be a long-running thread should also be a long-running thread should also be a long-running thread should also be a long-running thread
-  // move out
-
   int mapnum;
   
   string stringSend;
@@ -141,16 +144,17 @@ void cacheGoals( void ) { // should also be a long-running thread should also be
   
   while (true) {
     mapnum = local_map.mapnum;
-    Brain.Screen.printAt(10, 120, "%.2f", local_x);
-    Brain.Screen.printAt(10, 140, "%.2f", local_y);
-    Brain.Screen.printAt(10, 160, "%.2f", local_heading);
+    Brain.Screen.printAt(10, 120, "%.2f %.2f %.2f", local_x, local_y, local_heading);
 
-    Brain.Screen.printAt(10, 180, "%d", mapnum);
+    Brain.Screen.printAt(10, 140, "%d %d", mapnum, local_map.boxnum);
 
     if (local_map.boxnum > 0) {
-      thread fuckyou(idiot);
-      fuckyou.join();
-      intake(10);
+      int printPlace = 180;
+      for (int i=0; i<local_map.boxnum; i++) {
+        Brain.Screen.printAt(10, printPlace, "%d %d %d %.2f", local_map.boxobj[i].classID, 
+          local_map.boxobj[i].x, local_map.boxobj[i].y, local_map.boxobj[i].depth/25.4);
+        printPlace += 20;
+      }
     }
     
     if (mapnum > 0) {
