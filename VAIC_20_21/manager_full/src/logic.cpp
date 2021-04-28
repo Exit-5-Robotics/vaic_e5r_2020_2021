@@ -163,22 +163,32 @@ void cacheGoals( void ) { // should also be a long-running thread should also be
     Brain.Screen.clearScreen();
     mapnum = local_map.mapnum;
     Brain.Screen.printAt(10, 120, "%.2f %.2f %.2f", local_x, local_y, local_heading);
-
-    Brain.Screen.printAt(10, 140, "%d %d", mapnum, local_map.boxnum);
-
     if (local_map.boxnum > 0) {
-      int printPlace = 180;
-      for (int i=0; i<local_map.boxnum; i++) {
-        if (local_map.boxobj[i].y < 115 && local_map.boxobj[i].classID != 2) // checks that it is SCORED and not the goal
-          Brain.Screen.printAt(300, printPlace, getBallPosition(local_map.boxobj[i]).c_str());
-          string ballPos = binBallPos(getBallPosition(local_map.boxobj[i]));
-          mapScore[goalKeys[ballPos]] = local_map.boxobj[i].classID;
-          mapAll[goalKeys[ballPos]][0] = local_map.mapobj[i].classID;
-        printPlace += 20;
+      // int printPlace = 140;
 
+      for (int i=0; i<local_map.boxnum; i++) {
+        if (local_map.boxobj[i].classID != 2) {
+          ballOnField ball;
+          ball.classID = local_map.boxobj[i].classID;
+          ball.pos = getBallPosition(local_map.boxobj[i]);
+          ballsOnField.push_back(ball);
+
+          if (local_map.boxobj[i].y < 115) // checks that it is SCORED
+            // Brain.Screen.printAt(10, printPlace, "%d", local_map.boxobj[i].y);
+            // Brain.Screen.printAt(300, printPlace, getBallPosition(local_map.boxobj[i]).c_str());
+            mapScore[goalKeys[ball.pos]] = local_map.boxobj[i].classID;
+            mapAll[goalKeys[ball.pos]][0] = local_map.mapobj[i].classID;
+          // printPlace += 20;
+        }
       }
       stringSend = arrToString(mapScore);
       Brain.Screen.printAt(10, 20, stringSend.c_str());
+      Brain.Screen.printAt(10, 40, "%d", ballsOnField.at(0).classID);
+      Brain.Screen.printAt(50, 40, ballsOnField.at(0).pos.c_str());
+      Brain.Screen.printAt(10, 60, "%d", ballsOnField.at(1).classID);
+      Brain.Screen.printAt(50, 60, ballsOnField.at(1).pos.c_str());
+      Brain.Screen.printAt(10, 80, "%d", ballsOnField.at(2).classID);
+      Brain.Screen.printAt(50, 80, ballsOnField.at(2).pos.c_str());
 
       LinkA.send(stringSend.c_str());
     }

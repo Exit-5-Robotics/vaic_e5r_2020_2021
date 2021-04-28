@@ -106,7 +106,7 @@ void auto_Isolation(void) {
 /*---------------------------------------------------------------------------*/
 
 void auto_Interaction(void) {
-  lookAround();
+  lookAround(); // in movement.cpp
   while (inventory[0] == EMPTY) {
     
   }
