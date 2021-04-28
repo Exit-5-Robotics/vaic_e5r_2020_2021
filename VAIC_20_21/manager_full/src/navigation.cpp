@@ -8,6 +8,13 @@ void bumpedIntoSomething( void ) {
   }
 }
 
+void driveAway( void ) {
+  if (testChange() == false && driving == false /*&& robotBusy == false*/){
+    // driveAngle
+    ;
+  }
+}
+
 void driveAngle( int angleToDrive, int speed ) {
   // drive at an angle relative to the current angle of the robot
   int measureAngle = (angleToDrive + 405)%360;

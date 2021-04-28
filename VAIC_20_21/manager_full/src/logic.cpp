@@ -97,7 +97,7 @@ string positionToString( int x_pos, int y_pos ) {
   string xStrDiff(x_diff, '0');
   string yStrDiff(y_diff, '0');
 
-  string s = SSTR(x_sign << xStrDiff << x_pos << y_sign << yStrDiff << y_pos);
+  string s = SSTR(x_sign << xStrDiff << abs(x_pos) << y_sign << yStrDiff << abs(y_pos));
   
   return s;
 }
@@ -116,8 +116,8 @@ string getBallPosition( fifo_object_box boxObj ) {
   int ballY = boxObj.y;
   int ballDist = (int)(boxObj.depth/25.4);
 
-  float theta_x = atan((ballX - 180)/312);
-  float theta_y = atan((ballY - 126)/190);
+  float theta_x = atan2((float)(ballX - 180), (float)312); // left-right angle of ball
+  float theta_y = atan2((float)(ballY - 126), (float)190); // up-down angle of ball
 
   float x = sin(theta_x) * cos(theta_y);
   // float y = sin(theta_y);
@@ -126,23 +126,41 @@ string getBallPosition( fifo_object_box boxObj ) {
   float forward = z*ballDist;
   float sideways = x*ballDist;
 
-  float x_change = forward*sin(local_heading) + sideways*sin(local_heading); // ADD THE SIDEWAYS COMPONENT
-  float y_change = forward*cos(local_heading) + sideways*cos(local_heading); // add the sideways component
+  float x_change = forward*sin(local_heading*M_PI/180) + sideways*sin(local_heading*M_PI/180);
+  float y_change = forward*cos(local_heading*M_PI/180) + sideways*cos(local_heading*M_PI/180);
 
   ballX = (int)(local_x + x_change);
   ballY = (int)(local_y + y_change);
 
-  Brain.Screen.printAt(10, 60, "%d %d", ballX, ballY); // not printing correctly?
+  return positionToString(ballX, ballY);
+}
+
+string binBallPos( string pos ) {
+  int ballX = stringToX(pos), ballY = stringToY(pos);
+  if (ballX > 36) {
+    ballX = 50;
+  } else if (ballX > -36) {
+    ballX = 0;
+  } else {
+    ballX = -50;
+  }
+  if (ballY > 36) {
+    ballY = 50;
+  } else if (ballY > -36) {
+    ballY = 0;
+  } else {
+    ballY = -50;
+  }
+
   return positionToString(ballX, ballY);
 }
 
 void cacheGoals( void ) { // should also be a long-running thread should also be a long-running thread should also be a long-running thread should also be a long-running thread
   int mapnum;
-  
   string stringSend;
-  Brain.Screen.printAt(10, 100, "Starting");  
   
   while (true) {
+    Brain.Screen.clearScreen();
     mapnum = local_map.mapnum;
     Brain.Screen.printAt(10, 120, "%.2f %.2f %.2f", local_x, local_y, local_heading);
 
@@ -151,27 +169,21 @@ void cacheGoals( void ) { // should also be a long-running thread should also be
     if (local_map.boxnum > 0) {
       int printPlace = 180;
       for (int i=0; i<local_map.boxnum; i++) {
-        Brain.Screen.printAt(10, printPlace, "%d %d %d %.2f", local_map.boxobj[i].classID, 
-          local_map.boxobj[i].x, local_map.boxobj[i].y, local_map.boxobj[i].depth/25.4);
+        if (local_map.boxobj[i].y < 115 && local_map.boxobj[i].classID != 2) // checks that it is SCORED and not the goal
+          Brain.Screen.printAt(300, printPlace, getBallPosition(local_map.boxobj[i]).c_str());
+          string ballPos = binBallPos(getBallPosition(local_map.boxobj[i]));
+          mapScore[goalKeys[ballPos]] = local_map.boxobj[i].classID;
+          mapAll[goalKeys[ballPos]][0] = local_map.mapobj[i].classID;
         printPlace += 20;
-      }
-    }
-    
-    if (mapnum > 0) {
-      for (int i=0; i<mapnum; i++) {
-        if ((local_map.mapobj[i].age < 100) && (local_map.mapobj[i].positionZ/25.4 > 22)) {
 
-          // get_id
-          mapScore[i] = local_map.mapobj[i].classID; // MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE MUST CHANGE
-          mapAll[i][0] = local_map.mapobj[i].classID;
-          // getBallPosition(local_map.mapobj[i]);
-          // Brain.Screen.printAt(10, 120, getBallPosition(local_map.mapobj[i]).c_str());
-        }
       }
       stringSend = arrToString(mapScore);
+      Brain.Screen.printAt(10, 20, stringSend.c_str());
 
       LinkA.send(stringSend.c_str());
     }
+
+    task::sleep(100);
   }
 }
 
