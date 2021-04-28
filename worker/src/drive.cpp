@@ -20,8 +20,8 @@ void driveAuto(int direction1){
   //DIRECTION SETTINGS
   //0 = BACKWARD
   //1 = FORWARD
-  //2 = CLOCKWISE
-  //3 = COUNTER CLOCKWISE
+  //2 = CLOCKWISE (right)
+  //3 = COUNTER CLOCKWISE (left)
   //4 = LEFT BACK
   //5 = RIGHT FORWARD
   //6 = LEFT FORWARD

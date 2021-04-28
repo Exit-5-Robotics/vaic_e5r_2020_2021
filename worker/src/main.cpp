@@ -144,11 +144,16 @@ get_obj(const char *message, const char *linkname, double i) {
 
 void workerDuties(){
   this_thread::sleep_for(10);
+  jetson_comms.get_data( &local_map );
+  while(jetson_comms.get_packets() == 0){
+    jetson_comms.get_data( &local_map );
+  }
+  
   setSpeed(40);
   //intake.spin(forward, 100, vex::velocityUnits::pct);
   //roller.spin(forward, 100, vex::velocityUnits::pct);
   //robotDrive.turnFor(left, 360, vex::rotationUnits::deg, 5, vex::velocityUnits::pct, false);
-  turnTo(180, 20);
+  snailTo(180);
   //poop(100);
 
 }
