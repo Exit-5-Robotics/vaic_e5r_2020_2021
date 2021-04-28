@@ -71,6 +71,7 @@ extern int inventory[3];
 struct ballOnField {
   int classID;
   std::string pos;
+  int age;
 };
 extern std::vector<ballOnField> ballsOnField;
 

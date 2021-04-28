@@ -156,7 +156,7 @@ string binBallPos( string pos ) {
 }
 
 void cacheGoals( void ) { // should also be a long-running thread should also be a long-running thread should also be a long-running thread should also be a long-running thread
-  int mapnum;
+  int mapnum; 
   string stringSend;
   
   while (true) {
@@ -171,7 +171,18 @@ void cacheGoals( void ) { // should also be a long-running thread should also be
           ballOnField ball;
           ball.classID = local_map.boxobj[i].classID;
           ball.pos = getBallPosition(local_map.boxobj[i]);
+          ball.age = 0;
           ballsOnField.push_back(ball);
+
+          for (auto currentBall = ballsOnField.begin(); currentBall != ballsOnField.end(); /* NOTHING */)
+          {
+            if ((*currentBall).age > 50) {
+              currentBall = ballsOnField.erase(currentBall);
+            } else {
+              (*currentBall).age++;
+              ++currentBall;
+            }
+          }  
 
           if (local_map.boxobj[i].y < 115) // checks that it is SCORED
             // Brain.Screen.printAt(10, printPlace, "%d", local_map.boxobj[i].y);
@@ -182,13 +193,6 @@ void cacheGoals( void ) { // should also be a long-running thread should also be
         }
       }
       stringSend = arrToString(mapScore);
-      Brain.Screen.printAt(10, 20, stringSend.c_str());
-      Brain.Screen.printAt(10, 40, "%d", ballsOnField.at(0).classID);
-      Brain.Screen.printAt(50, 40, ballsOnField.at(0).pos.c_str());
-      Brain.Screen.printAt(10, 60, "%d", ballsOnField.at(1).classID);
-      Brain.Screen.printAt(50, 60, ballsOnField.at(1).pos.c_str());
-      Brain.Screen.printAt(10, 80, "%d", ballsOnField.at(2).classID);
-      Brain.Screen.printAt(50, 80, ballsOnField.at(2).pos.c_str());
 
       LinkA.send(stringSend.c_str());
     }
