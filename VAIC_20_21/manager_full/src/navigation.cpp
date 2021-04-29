@@ -3,9 +3,11 @@
 using namespace vex;
 
 void bumpedIntoSomething( void ) {
-  if (tilt.acceleration(axisType::xaxis)==0 && distPosition==UP && dist.objectDistance(distanceUnits::mm)<200 && driving==true) {
+  if (tilt.acceleration(axisType::xaxis)==0 /*&& distPosition==UP && dist.objectDistance(distanceUnits::mm)<200*/ && driving==true) {
     robotDrive.stop();
   }
+  // robotDrive.driveFor(reverse, 10, inches, 30, velocityUnits::pct); // fix to whatever direction i need to drive
+  robotDrive.stop();
 }
 
 void driveAway( void ) {

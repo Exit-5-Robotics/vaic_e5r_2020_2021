@@ -13,14 +13,8 @@ void stopDriving( void ) {
 }
 
 void lookAround( void ) {
-  static int opponentScored = 0;
   robotDrive.turnFor(right, 360, degrees, 20, velocityUnits::pct);
-  while(opponentScored == 0) {
-    for (int i=0; i<local_map.boxnum; i++) {
-      std::string ballPos = getBallPosition(local_map.boxobj[i]);  // fix please 
-      ballsOnField.push_back({local_map.boxobj[i].classID, ballPos});
-    }
-  }
+  robotDrive.stop();
 }
 
 void intake( int speed ) {

@@ -35,6 +35,17 @@ std::map<int, std::string> goalLocation = { // converts goal position to the num
   {7, "+50-50"},
   {8, "+00+00"},
 };
+std::map<int, int> goalAngle = {
+  {0, 0},
+  {1, 90},
+  {2, 180},
+  {3, 270},
+  {4, 315},
+  {5, 225},
+  {6, 45},
+  {7, 135},
+  {8, -1}
+};
 
 std::vector<ballOnField> ballsOnField;
 
@@ -155,60 +166,41 @@ string binBallPos( string pos ) {
   return positionToString(ballX, ballY);
 }
 
-void cacheGoals( void ) { // should also be a long-running thread should also be a long-running thread should also be a long-running thread should also be a long-running thread
-  int mapnum; 
+void cacheGoals( void ) { // should also be a long-running thread should also be a long-running thread should also be a long-running thread
   string stringSend;
-  
-  while (true) {
-    Brain.Screen.clearScreen();
-    mapnum = local_map.mapnum;
-    Brain.Screen.printAt(10, 120, "%.2f %.2f %.2f", local_x, local_y, local_heading);
-    if (local_map.boxnum > 0) {
-      // int printPlace = 140;
+  Brain.Screen.printAt(10, 100, "Starting cache goals");
+  if (local_map.boxnum > 0) {
 
-      for (int i=0; i<local_map.boxnum; i++) {
-        if (local_map.boxobj[i].classID != 2) {
-          ballOnField ball;
-          ball.classID = local_map.boxobj[i].classID;
-          ball.pos = getBallPosition(local_map.boxobj[i]);
-          ball.age = 0;
-          ballsOnField.push_back(ball);
+    for (int i=0; i<local_map.boxnum; i++) {
+      if (local_map.boxobj[i].classID != 2) {
+        ballOnField ball;
+        ball.classID = local_map.boxobj[i].classID;
+        ball.pos = getBallPosition(local_map.boxobj[i]);
+        ball.age = 0;
+        ballsOnField.push_back(ball);
 
-          for (auto currentBall = ballsOnField.begin(); currentBall != ballsOnField.end(); /* NOTHING */)
-          {
-            if ((*currentBall).age > 50) {
-              currentBall = ballsOnField.erase(currentBall);
-            } else {
-              (*currentBall).age++;
-              ++currentBall;
-            }
-          }  
+        for (auto currentBall = ballsOnField.begin(); currentBall != ballsOnField.end(); /* NOTHING */)
+        {
+          if ((*currentBall).age > 50) {
+            currentBall = ballsOnField.erase(currentBall);
+          } else {
+            (*currentBall).age++;
+            ++currentBall;
+          }
+        }  
 
-          if (local_map.boxobj[i].y < 115) // checks that it is SCORED
-            // Brain.Screen.printAt(10, printPlace, "%d", local_map.boxobj[i].y);
-            // Brain.Screen.printAt(300, printPlace, getBallPosition(local_map.boxobj[i]).c_str());
-            mapScore[goalKeys[ball.pos]] = local_map.boxobj[i].classID;
-            mapAll[goalKeys[ball.pos]][0] = local_map.mapobj[i].classID;
-          // printPlace += 20;
-        }
+        if (local_map.boxobj[i].y < 115) // checks that it is SCORED
+          // Brain.Screen.printAt(10, printPlace, "%d", local_map.boxobj[i].y);
+          // Brain.Screen.printAt(300, printPlace, getBallPosition(local_map.boxobj[i]).c_str());
+          mapScore[goalKeys[ball.pos]] = local_map.boxobj[i].classID;
+          mapAll[goalKeys[ball.pos]][0] = local_map.mapobj[i].classID;
+        // printPlace += 20;
       }
-      stringSend = arrToString(mapScore);
-
-      LinkA.send(stringSend.c_str());
     }
+    stringSend = arrToString(mapScore);
 
-    task::sleep(100);
+    LinkA.send(stringSend.c_str());
   }
-}
-
-int getGoal( int x_pos, int y_pos ) {
-  string s = positionToString(x_pos, y_pos);
-  int goalNum = goalKeys.at(s);
-  
-  Brain.Screen.printAt(10, 40, s.c_str());
-  Brain.Screen.printAt(10, 60, "%d", goalNum);
-
-  return goalNum;
 }
 
 void loadGoalsInfo(const char *message, const char *linkname, int32_t index, double value) {
@@ -237,6 +229,20 @@ string getClosestOurColor( void ) {
     }
   }
   return ballPos;
+}
+
+int getClosestGoal( void ) {
+  int minDist = 100;
+  int getGoal = 0;
+  for (int i=0; i<8; i++) {
+    int goalX = stringToX(goalLocation[i]);
+    int goalY = stringToY(goalLocation[i]);
+    if (sqrt(pow((goalX - local_x),2) + pow((goalY - local_y),2)) < minDist) {
+      getGoal = i;
+      minDist = (int)sqrt(pow((goalX - local_x),2) + pow((goalY - local_y),2));
+    }
+  }
+  return getGoal;
 }
 
 void receiveMessages( void ) {
