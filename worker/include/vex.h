@@ -40,3 +40,5 @@ extern ai::jetson      jetson_comms;
 extern ai::robot_link  link;
 
 extern int dashboardTask( void );
+extern void (redIsolation());
+extern void (blueIsolation());
