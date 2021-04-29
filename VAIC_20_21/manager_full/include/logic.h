@@ -17,4 +17,5 @@ extern int getGoal( int x_pos, int y_pos );
 
 extern std::string getClosest( void );
 extern std::string getClosestOurColor( void );
+extern int getClosestGoal( void );
 extern void receiveMessages( void );

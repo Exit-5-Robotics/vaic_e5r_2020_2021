@@ -106,10 +106,21 @@ void auto_Isolation(void) {
 /*---------------------------------------------------------------------------*/
 
 void auto_Interaction(void) {
-  lookAround(); // in movement.cpp
-  while (inventory[0] == EMPTY) {
-    
+  Brain.Screen.printAt(10, 80, "Starting auto int");
+  while (true) {
+    if (local_x != 0) {
+      lookAround(); // in movement.cpp
+      // robotDrive.turnFor(right, 360, degrees, 20, velocityUnits::pct);
+      Brain.Screen.printAt(10, 20, "%d", getClosestGoal());
+      
+
+      task::sleep(5000);
+    }
+    task::sleep(16);
   }
+  // while (inventory[0] == EMPTY) {
+    
+  // }
 }
 
 
@@ -156,8 +167,7 @@ int main() {
     // thread t1(dashboardTask);
 
     // thread distanceSensor(distSensorControl); // assumes dist sensor starts UP
-    thread goals(cacheGoals);
-
+    thread prac(auto_Interaction);
     // thread t2(testMovement);
     // thread accel(values);
     // thread iso(redIsolation);
@@ -180,6 +190,10 @@ int main() {
         local_x = local_map.pos.x/25.4;
         local_y = local_map.pos.y/25.4;
         local_heading = local_map.pos.az*180/M_PI + 180;
+        Brain.Screen.printAt(10, 40, "%.2f %.2f %.2f", local_x, local_y, local_heading);
+        cacheGoals();
+        Brain.Screen.printAt(10, 60, "%d %d %d %d %d %d %d %d %d", mapScore[0], mapScore[1], mapScore[2], 
+          mapScore[3], mapScore[4], mapScore[5], mapScore[6], mapScore[7], mapScore[8]);
 
         // set our location to be sent to partner robot
         link.set_remote_location( local_map.pos.x, local_map.pos.y, local_map.pos.az );
