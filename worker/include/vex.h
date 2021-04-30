@@ -27,6 +27,8 @@
 #define RED    0
 #define BLUE   1
 #define OUR_COLOR    RED
+#define EMPTY 3
+#define OTHER_COLOR BLUE
 
 #define waitUntil(condition)                                                   \
   do {                                                                         \

@@ -26,6 +26,8 @@ void driveAuto(int direction1){
   //5 = RIGHT FORWARD
   //6 = LEFT FORWARD
   //7 = RIGHT BACK
+  //8 = LEFT
+  //9 = RIGHT
 
   switch(direction1){
     case 0: //BACKWARD
@@ -77,6 +79,13 @@ void driveAuto(int direction1){
     LB.spin(forward);
     break;
 
+    case 8: //LEFT
+
+    break;
+
+    case 9: //RIGHT
+
+    break;
   }
 }
 
