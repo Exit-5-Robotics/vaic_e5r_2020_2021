@@ -10,7 +10,7 @@ To do:
 - outline isolation
 - get data for isolation
 - impliment the matrix stuff
-- change descore so that the robot goes back to node it came from
+- DONE: change descore so that the robot goes back to node it came from
 - change descore so that it updates the matrix after it completes
 - test everything
 */
@@ -39,7 +39,7 @@ void navigateForever(){
     sideGoTo(centerNodes[count]);
     snailTo(nodeHeadings[count]);
 
-    descore();
+    descore(nodeHeadings[count]);
   }
 }
 

@@ -20,6 +20,7 @@ extern motor_group rightDiagDrive;
 extern inertial tilt;
 extern line ballChecker;
 extern bumper   goal;
+extern bumper   backStopper;
 extern smartdrive robotDrive;
 
 /*
