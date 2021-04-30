@@ -87,6 +87,8 @@ void descore (){
 
     poopTower(100);
 
+    //go back to node position
+    
     //update manager to new tower inventory
 
   }

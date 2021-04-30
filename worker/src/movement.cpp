@@ -238,6 +238,59 @@ void snailTo(float dest_heading){
   pause();
 }
 
+/***************************************SIDE GO TO****************************************/
+
+void sideGoTo(float finishCoordinate){ //MfinsihCoordinate is not in altered coordinate system
+
+  float currentX, currentY, currentHeading;
+  static MAP_RECORD  local_map;
+  jetson_comms.get_data( &local_map );
+  currentHeading = local_map.pos.az*180/M_PI;
+  currentX = local_map.pos.x + 1500;
+  currentY = local_map.pos.y + 1500;
+  finishCoordinate+= 1500;
+  
+  if(abs(currentHeading) > 60 && abs(currentHeading) < 110){ //moving along y axis 
+    while(abs(finishCoordinate - currentY) > 10){
+      static MAP_RECORD  local_map;
+      jetson_comms.get_data( &local_map );
+      currentHeading = local_map.pos.az*180/M_PI;
+      currentX = local_map.pos.x + 1500;
+      currentY = local_map.pos.y + 1500;
+      if( (currentY > finishCoordinate && currentHeading == abs(currentHeading) /*facing window wall*/) || (currentY < finishCoordinate && abs(currentHeading) != currentHeading/*facing whiteboard wall*/)){
+        //drive to the left
+        if(currentY < finishCoordinate){
+          break;
+        }
+      }else{
+        //drive to the right
+        if(currentY > finishCoordinate){
+          break;
+        }
+      }
+    } 
+  }else { // moving along x axis
+    while(abs(finishCoordinate - currentX) > 10){
+      static MAP_RECORD  local_map;
+      jetson_comms.get_data( &local_map );
+      currentHeading = local_map.pos.az*180/M_PI;
+      currentX = local_map.pos.x + 1500;
+      currentY = local_map.pos.y + 1500;
+      if((currentX > finishCoordinate && abs(currentHeading) > 160 /*facing cutting wall*/) || (currentX < finishCoordinate && abs(currentHeading) < 20/*facing table*/)){
+        //drive to the left
+        if(currentX < finishCoordinate){
+          break;
+        }
+      }else{
+        // drive to the right
+        if(currentX > finishCoordinate){
+          break;
+        }
+      }
+    }
+  }
+}
+
 /******************************************GO TO******************************************/
 
 void goTo( float dest_x, float dest_y, float dest_heading ) {   
