@@ -47,6 +47,7 @@ extern int distPosition;
 
 extern std::map<std::string, int> goalKeys;
 extern std::map<int, std::string> goalLocation;
+extern std::map<int, int> goalAngle;
 
 #define SSTR( x ) static_cast< std::ostringstream & >( \
         ( std::ostringstream() << std::dec << x ) ).str()

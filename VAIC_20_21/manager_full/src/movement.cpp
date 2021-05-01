@@ -13,17 +13,20 @@ void stopDriving( void ) {
 }
 
 void lookAround( void ) {
-  robotDrive.turnFor(right, 360, degrees, 20, velocityUnits::pct);
-  robotDrive.stop();
+  robotDrive.turnFor(right, 360, degrees, 10, velocityUnits::pct);
+  task::sleep(10000);
+  stopDriving();
 }
 
 void intake( int speed ) {
   while (ballThree.value(analogUnits::mV) > 3300) {
+    Brain.Screen.printAt(20, 180, "%d", ballThree.value(analogUnits::mV));
     robotDrive.drive(fwd, speed, vex::velocityUnits::pct);
     intakeWheels.spin(fwd, 100, vex::velocityUnits::pct);
   }
-  robotDrive.stop();
+  stopDriving();
   intakeWheels.spinFor(fwd, 720, degrees, 60, vex::velocityUnits::pct);
+  intakeWheels.stop();
 }
 
 void intakeNoDrive() {
@@ -38,10 +41,14 @@ void outtake() {
   // rightIntake.spinFor(rev, double rotation, vex::rotationUnits::deg, double velocity, velocityUnits units_v);
 }
 
-void score() {
+int score() {
   // ONLY RUN IF THE DESIRED SCORED BALL IS IN POSITION 3/ARRAY INDEX 0
-  botRoller.spinFor(fwd, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
-  topRoller.spinFor(fwd, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
+  robotDrive.drive(fwd, 10, velocityUnits::pct);
+  botRoller.spin(fwd, 100, vex::velocityUnits::pct);
+  topRoller.spin(fwd, 100, vex::velocityUnits::pct);
+  task::sleep(2000);
+  stopDriving();
+  return 0;
 }
 
 void poop() {
@@ -58,7 +65,7 @@ void descore() {
 
 void pickUpClosest( std::string ballPos ) {
   // TODO
-  goTo(stringToX(ballPos), stringToY(ballPos), local_heading); // ADJUST FOR ROBOT ADJUST FOR ROBOT ADJUST FOR ROBOT ADJUST FOR ROBOT
+  goToX(stringToX(ballPos), stringToY(ballPos), local_heading); // ADJUST FOR ROBOT ADJUST FOR ROBOT ADJUST FOR ROBOT ADJUST FOR ROBOT
   // intake(intakeDriveSpeed);
   // robotDrive.driveFor(fwd, dist, vex::distanceUnits::in, 30, vex::velocityUnits::pct);
 }
@@ -82,13 +89,9 @@ void moveBackFromBall( fifo_object_box boxObj ) {
 
 void centerBall( fifo_object_box boxObj ) {
   // center by driving sideways
-  while (boxObj.x > 190 || boxObj.x < 170) {
-    driveAngle((boxObj.x-180)/abs(boxObj.x-180)*90, (int)(abs(boxObj.x - 180)/2));
-    Brain.Screen.printAt(160, 40, "%d", boxObj.x);
-    Brain.Screen.printAt(160, 80, "%d", boxObj.x/abs(boxObj.x)*90);
-    Brain.Screen.printAt(160, 120, "%d", (int)(boxObj.depth/25.4));
-  }
-  stopDriving();
+  static MAP_RECORD currentMap;
+  jetson_comms.get_data( &currentMap );
+  
 }
 
 int centerGoal() {
@@ -160,9 +163,6 @@ int testMovement() { // just for testing
   
   
   while (true) {
-    if (local_map.boxnum > 0) {
-      thread fuck(idiot);
-    }
     // if (local_x != 0) {
     //   task::sleep(15000);
     //   redIsolation();
