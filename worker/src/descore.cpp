@@ -35,8 +35,8 @@ bool checkDescore(){
 
 //POOP function out of a tower
 void poopTower(int speed){
-  driveAutoDist(0, 45);
-  setSpeed(8);
+  //driveAutoDist(0, 45);
+  setSpeed(4);
   while(ballChecker.value(analogUnits::mV) < 3200){
     pooper.spin(forward, speed, pct);
     driveAuto(0);
@@ -46,7 +46,6 @@ void poopTower(int speed){
     driveAuto(0);
   }
   pooper.stop();
-  pause();
 }
 
 //POOP function just from the ground
@@ -78,10 +77,20 @@ void descore (float desired_heading){
         ballCount++;
       }
     }
+    
 
     while(!goal.pressing()){
+      jetson_comms.get_data( &local_map );
+      for(int i = 0; i < local_map.boxnum; i++){
+      jetson_comms.get_data( &local_map );
+
+      if(local_map.boxobj[i].classID != 2){
+        ballCount++;
+      }
+    }
+
       driveAuto(1);
-      if(ballCount<2){
+      if(ballCount<3){
         pooper.spin(forward, 80, pct);
       }
     }
@@ -90,12 +99,18 @@ void descore (float desired_heading){
     poopTower(100);
 
     //go back to node position
-    snailTo(desired_heading);
+    //snailTo(desired_heading);
+    setSpeed(40);
+    driveAutoDist(0, 200);
+    pooper.setVelocity(5, pct);
+    pooper.spinFor(reverse, 100, deg);
     while(!backStopper.pressing()){
+      //pooper.spin(reverse, 80, pct);
       driveAuto(0);
     }
-    snailTo(desired_heading);
-    driveAutoDist(1, 90);
+    //snailTo(desired_heading);
+    pooper.spinFor(forward, 100, deg);
+    driveAutoDist(1, 180);
     
 
     //update manager to new tower inventory

@@ -25,6 +25,7 @@ motor intakeRight = motor(PORT8, ratio18_1, true);
 motor intakeLeft = motor(PORT7, ratio18_1, false);
 motor_group intake (intakeLeft, intakeRight);
 motor_group pooper(roller, intakeLeft, intakeRight);
+motor middleDescorer = motor (PORT20, ratio18_1, false);
 
 inertial      tilt(PORT5);
 line          ballChecker(Brain.ThreeWirePort.H);

@@ -152,6 +152,7 @@ float toNormalAngle(float og_angle){
 }
 
 void snailTo(float dest_heading){
+  setSpeed(10);
   float current_heading;
   //rachelle help the current_heading isn't working it just always says zero
   static MAP_RECORD  local_map;
@@ -159,25 +160,25 @@ void snailTo(float dest_heading){
   current_heading = toNormalAngle(local_map.pos.az*180/M_PI);
   dest_heading = toNormalAngle(dest_heading);
 
-  Brain.Screen.printAt(0,180, "1currentHeading  %f", current_heading);
-  Brain.Screen.printAt(0,195, "1destHeading  %f", dest_heading);
+  //Brain.Screen.printAt(0,180, "1currentHeading  %f", current_heading);
+  //Brain.Screen.printAt(0,195, "1destHeading  %f", dest_heading);
 
   //choosing direction to turn
   if( fabs(current_heading - dest_heading) < 180){
     if(current_heading > dest_heading){
       driveAuto(3); //left
-      Brain.Screen.printAt(0,15, "left-1");
+      //Brain.Screen.printAt(0,15, "left-1");
     } else{
       driveAuto(2); //right
-      Brain.Screen.printAt(0,15, "right-2");
+      //Brain.Screen.printAt(0,15, "right-2");
     }
   } else{
     if(current_heading > dest_heading){
       driveAuto(2); //right
-      Brain.Screen.printAt(0,15, "right-3");
+      //Brain.Screen.printAt(0,15, "right-3");
     } else{
       driveAuto(3); //left
-      Brain.Screen.printAt(0,15, "left-4");
+      //Brain.Screen.printAt(0,15, "left-4");
     }
   }
 
@@ -189,14 +190,16 @@ void snailTo(float dest_heading){
         static MAP_RECORD  local_map;
         jetson_comms.get_data( &local_map );
         current_heading = toNormalAngle(local_map.pos.az*180/M_PI);
-        Brain.Screen.printAt(0,140, "ONE POINT ONE");
+        //Brain.Screen.printAt(0,140, "ONE POINT ONE");
+        //setSpeed(fabs(current_heading - dest_heading));    
       }
       while(current_heading > dest_heading){
         //update with toNormalAngle
         static MAP_RECORD  local_map;
         jetson_comms.get_data( &local_map );
         current_heading = toNormalAngle(local_map.pos.az*180/M_PI);
-        Brain.Screen.printAt(0,140, "ONE POINT TWO");
+        //Brain.Screen.printAt(0,140, "ONE POINT TWO");
+        //setSpeed(fabs(current_heading - dest_heading));  
       }
     } else {
       while(current_heading < dest_heading){ //3
@@ -204,7 +207,8 @@ void snailTo(float dest_heading){
         static MAP_RECORD  local_map;
         jetson_comms.get_data( &local_map );
         current_heading = toNormalAngle(local_map.pos.az*180/M_PI);
-        Brain.Screen.printAt(0,140, "THREE");
+        //Brain.Screen.printAt(0,140, "THREE");
+        //setSpeed(fabs(current_heading - dest_heading));  
       }
     }
   } else {
@@ -214,14 +218,16 @@ void snailTo(float dest_heading){
         static MAP_RECORD  local_map;
         jetson_comms.get_data( &local_map );
         current_heading = toNormalAngle(local_map.pos.az*180/M_PI);
-        Brain.Screen.printAt(0,140, "TWO POINT ONE");
+        //Brain.Screen.printAt(0,140, "TWO POINT ONE");
+        //setSpeed(fabs(current_heading - dest_heading));  
       }
       while(current_heading < dest_heading){
         //update with toNormalAngle
         static MAP_RECORD  local_map;
         jetson_comms.get_data( &local_map );
         current_heading = toNormalAngle(local_map.pos.az*180/M_PI);
-        Brain.Screen.printAt(0,140, "TWO POINT TWO");
+        //Brain.Screen.printAt(0,140, "TWO POINT TWO");
+        //setSpeed(fabs(current_heading - dest_heading));  
       }
     } else{
       while(current_heading > dest_heading){ //4
@@ -230,13 +236,15 @@ void snailTo(float dest_heading){
         jetson_comms.get_data( &local_map );
         current_heading = toNormalAngle(local_map.pos.az*180/M_PI);
         dest_heading = toNormalAngle(dest_heading);
-        Brain.Screen.printAt(0,140, "FOUR");
+        //Brain.Screen.printAt(0,140, "FOUR");
+        //setSpeed(fabs(current_heading - dest_heading));  
       }
     }
   }
-  Brain.Screen.printAt(0, 160, "PAUSE FU");
+  //Brain.Screen.printAt(0, 160, "PAUSE FU");
   pause();
-  Brain.Screen.printAt(0,210, "2currentHeading %f", current_heading);
+  setSpeed(30);
+  //Brain.Screen.printAt(0,210, "2currentHeading %f", current_heading);
 }
 
 /***************************************SIDE GO TO****************************************/
@@ -256,28 +264,38 @@ void sideGoTo(float finishCoordinate){ //MfinsihCoordinate is not in altered coo
   
   if(fabs(currentHeading) > 60 && fabs(currentHeading) < 110){ //moving along y axis 
     while(fabs(finishCoordinate - currentY) > 10){
+      //setSpeed(fabs(finishCoordinate - currentY));  
       static MAP_RECORD  local_map;
       jetson_comms.get_data( &local_map );
       currentHeading = local_map.pos.az*180/M_PI;
       currentX = local_map.pos.x + 1500;
       currentY = local_map.pos.y + 1500;
       
-      if( (currentY > finishCoordinate && currentHeading == fabs(currentHeading) /*facing window wall*/) || (currentY < finishCoordinate && fabs(currentHeading) != currentHeading/*facing whiteboard wall*/)){
+      if( (currentY > finishCoordinate && currentHeading == fabs(currentHeading) /*facing window wall - POSITIVE HEADINGS*/) || (currentY < finishCoordinate && fabs(currentHeading) != currentHeading/*facing whiteboard wall*/)){
         //drive to the left
         driveAuto(8);
-        if(currentY > finishCoordinate){
+        if(currentY < finishCoordinate && fabs(currentHeading) == currentHeading){
+          break;
+        }
+        if(currentY > finishCoordinate && fabs(currentHeading) != currentHeading){
           break;
         }
       }else{
         //drive to the right
         driveAuto(9);
-        if(currentY < finishCoordinate){
+        if(currentY < finishCoordinate && fabs(currentHeading) != currentHeading){
+          break;
+        }
+        if(currentY > finishCoordinate && fabs(currentHeading) == currentHeading){
           break;
         }
       }
+
+
     } 
   }else { // moving along x axis
     while(fabs(finishCoordinate - currentX) > 10){
+      //setSpeed(fabs(finishCoordinate - currentX)); 
       static MAP_RECORD  local_map;
       jetson_comms.get_data( &local_map );
       currentHeading = local_map.pos.az*180/M_PI;
@@ -286,13 +304,19 @@ void sideGoTo(float finishCoordinate){ //MfinsihCoordinate is not in altered coo
       if((currentX > finishCoordinate && fabs(currentHeading) > 160 /*facing cutting wall*/) || (currentX < finishCoordinate && fabs(currentHeading) < 20/*facing table*/)){
         //drive to the left
         driveAuto(8);
-        if(currentX < finishCoordinate){
+        if(currentX < finishCoordinate && fabs(currentHeading) > 160){
+          break;
+        }
+        if(currentX > finishCoordinate && fabs(currentHeading) < 20){
           break;
         }
       }else{
         // drive to the right
         driveAuto(9);
-        if(currentX > finishCoordinate){
+        if(currentX > finishCoordinate && fabs(currentHeading) > 160){
+          break;
+        }
+        if(currentX < finishCoordinate && fabs(currentHeading) < 20){
           break;
         }
       }

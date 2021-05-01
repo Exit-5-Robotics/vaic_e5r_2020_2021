@@ -22,6 +22,7 @@ extern line ballChecker;
 extern bumper   goal;
 extern bumper   backStopper;
 extern smartdrive robotDrive;
+extern motor middleDescorer;
 
 /*
 extern brain Brain;

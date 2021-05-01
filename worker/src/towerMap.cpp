@@ -36,7 +36,7 @@ std::map<int, std::string> goalLocation = { // converts goal position to the num
   {7, "+50-50"},
   {8, "+00+00"},
 };
-std::map<int, int> goalAngle = {
+std::map<int, int> goalAngle = { //me just guessing,  but converts goal position to heading of goal?????? - annica  ps. im dumb
   {0, 0},
   {1, 90},
   {2, 180},
@@ -50,7 +50,7 @@ std::map<int, int> goalAngle = {
 
 std::vector<ballOnField> ballsOnField;
 
-int inventory[3] = {EMPTY, EMPTY, EMPTY};
+//int inventory[3] = {EMPTY, EMPTY, EMPTY};
 
 // goal height is about 12, 19, 26
 // so thresholds are 16, 22

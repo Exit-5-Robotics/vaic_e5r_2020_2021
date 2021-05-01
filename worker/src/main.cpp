@@ -142,22 +142,66 @@ get_obj(const char *message, const char *linkname, double i) {
   Brain.Screen.clearScreen();
 }
 
+void redIsolation5(){ // starts near centerNode 5
+  setSpeed(50);
+  driveAuto(1);
+  this_thread::sleep_for(4500);
+  pause();
+  snailTo(90);
+  snailTo(90);
+
+  setSpeed(30);
+  float currentY;
+  static MAP_RECORD  local_map;
+  jetson_comms.get_data( &local_map );
+  currentY = local_map.pos.y;
+  while(currentY < -300){
+    driveAuto(9);
+    static MAP_RECORD  local_map;
+    jetson_comms.get_data( &local_map );
+    currentY = local_map.pos.y;
+  }
+  pause();
+  this_thread::sleep_for(1000);
+  driveAutoDist(9, 600);
+  middleDescorer.spinFor(forward, 135, degrees);
+  while(!backStopper.pressing()){
+    driveAuto(0);
+  }
+  pause();
+  setSpeed(30);
+}
+
+void descoreMiddle(){
+  driveAutoDist(1, 180);
+  this_thread::sleep_for(100);
+  while(!backStopper.pressing()){
+    driveAuto(0);
+  }
+  pause();
+  this_thread::sleep_for(100);
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void workerDuties(){
-  this_thread::sleep_for(10);
 
   jetson_comms.get_data( &local_map );
   while(jetson_comms.get_packets() == 0){
     jetson_comms.get_data( &local_map );
   }
-
-  this_thread::sleep_for(1000);
   
-  setSpeed(10);
-  //x: start: 930 
-  //sideGoTo(640);
-  //sideGoTo(1050);
-  //y: start:640 sideGoTo(1050);
-  //snailTo(300);
+  //this_thread::sleep_for(45000);
+  
+  if(OUR_COLOR){ //blue
+    //blueIsolation();
+  } else { //red
+    redIsolation5();
+  }
+
+  setSpeed(30);
+  while(1){
+    descoreMiddle();
+    descore(90);
+  }
 
 } 
 
