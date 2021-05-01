@@ -79,6 +79,8 @@ void auto_Isolation(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
+  pooper.setVelocity(70, pct);
+  pooper.spinFor(forward, 10, seconds);
   if (OUR_COLOR == RED) {
     // red-side isolation code
     // cannot go to negative x values
@@ -103,29 +105,31 @@ void blueIsolation5(){ // starts near centerNode 5
   driveAuto(1);
   this_thread::sleep_for(4500);
   pause();
-  snailTo(90);
-  snailTo(90);
-
+  
+  snailTo(270);
+  snailTo(270);
+  
   setSpeed(30);
   float currentY;
   static MAP_RECORD  local_map;
   jetson_comms.get_data( &local_map );
   currentY = local_map.pos.y;
   while(currentY < -300){
-    driveAuto(9);
+    driveAuto(8);
     static MAP_RECORD  local_map;
     jetson_comms.get_data( &local_map );
     currentY = local_map.pos.y;
   }
   pause();
   this_thread::sleep_for(1000);
-  driveAutoDist(9, 600);
+  driveAutoDist(8, 900);
   middleDescorer.setVelocity(40, pct);
-  middleDescorer.spinFor(forward, 4, seconds);
+  middleDescorer.spinFor(reverse, 4, seconds);
   middleDescorer.stop(brakeType::brake);
-  while(!backStopper.pressing()){
-    driveAuto(0);
-  }
+  driveAutoDist(0, 180);
+  //while(!backStopper.pressing()){
+  //  driveAuto(0);
+  //}
   pause();
   setSpeed(30);
 }
@@ -135,8 +139,8 @@ void redIsolation5(){ // starts near centerNode 5
   driveAuto(1);
   this_thread::sleep_for(4500);
   pause();
-  snailTo(-90);
-  snailTo(-90);
+  snailTo(90);
+  snailTo(90);
 
   setSpeed(30);
   float currentY;
@@ -144,20 +148,21 @@ void redIsolation5(){ // starts near centerNode 5
   jetson_comms.get_data( &local_map );
   currentY = local_map.pos.y;
   while(currentY > 300){
-    driveAuto(9);
+    driveAuto(8);
     static MAP_RECORD  local_map;
     jetson_comms.get_data( &local_map );
     currentY = local_map.pos.y;
   }
   pause();
   this_thread::sleep_for(1000);
-  driveAutoDist(9, 600);
+  driveAutoDist(8, 900);
   middleDescorer.setVelocity(40, pct);
-  middleDescorer.spinFor(forward, 4, seconds);
+  middleDescorer.spinFor(reverse, 4, seconds);
   middleDescorer.stop(brakeType::brake);
-  while(!backStopper.pressing()){
-    driveAuto(0);
-  }
+  driveAutoDist(0, 180);
+  //while(!backStopper.pressing()){
+   // driveAuto(0);
+  //}
   pause();
   setSpeed(30);
 }
@@ -165,9 +170,10 @@ void redIsolation5(){ // starts near centerNode 5
 void descoreMiddle(){
   driveAutoDist(1, 180);
   this_thread::sleep_for(100);
-  while(!backStopper.pressing()){
-    driveAuto(0);
-  }
+  //while(!backStopper.pressing()){
+  //  driveAuto(0);
+  //}
+  driveAutoDist(0, 180);
   pause();
   this_thread::sleep_for(100);
 }
@@ -190,10 +196,10 @@ void workerDuties(){
   setSpeed(30);
   while(1){
     descoreMiddle();
-    if(OUR_COLOR){
+    if(OUR_COLOR){ //blue
+      descore(270);
+    } else { //red
       descore(90);
-    } else {
-      descore(-90);
     }
     
   }
@@ -258,10 +264,10 @@ int main() {
 
     // start the status update display
     thread t1(dashboardTask);
+    //thread t2(workerDuties);
 
     // Set up callbacks for autonomous and driver control periods.
     Competition.autonomous(autonomousMain);
-
 
     // print through the controller to the terminal (vexos 1.0.12 is needed)
     // As USB is tied up with Jetson communications we cannot use
@@ -273,7 +279,7 @@ int main() {
 
     LinkA.received("object", get_obj);
 
-    //thread t2(workerDuties);
+    
 
     while(1) {
         // get last map data

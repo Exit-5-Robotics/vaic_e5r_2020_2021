@@ -39,12 +39,12 @@ void poopTower(int speed){
   setSpeed(4);
   while(ballChecker.value(analogUnits::mV) < 3200){
     pooper.spin(forward, speed, pct);
-    driveAuto(0);
   }
   while(ballChecker.value(analogUnits::mV) > 3200){
     pooper.spin(forward, speed, pct);
     driveAuto(0);
   }
+  pooper.spinFor(forward, 200, degrees);
   pooper.stop();
 }
 
@@ -67,7 +67,7 @@ void descore (float desired_heading){
   static MAP_RECORD  local_map;
   jetson_comms.get_data( &local_map );
 
-  if(checkDescore()){
+  //if(checkDescore()){
 
     int ballCount = 0;
     for(int i = 0; i < local_map.boxnum; i++){
@@ -115,5 +115,5 @@ void descore (float desired_heading){
 
     //update manager to new tower inventory
 
-  }
+  //}
 }
