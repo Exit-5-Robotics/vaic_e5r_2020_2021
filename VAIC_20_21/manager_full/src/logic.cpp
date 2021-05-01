@@ -48,6 +48,7 @@ std::map<int, int> goalAngle = {
 };
 
 std::vector<ballOnField> ballsOnField;
+mutex mu;
 
 int inventory[3] = {EMPTY, EMPTY, EMPTY};
 
@@ -99,7 +100,9 @@ int intLen( int n ) {
   return number_of_digits;
 }
 
-string positionToString( int x_pos, int y_pos ) {
+string positionToString( int x_pos, int y_pos ) { // converts integer positions to string
+  x_pos = (x_pos >= 100) ? 72 : (x_pos <= -100) ? -72 : x_pos;
+  y_pos = (y_pos >= 100) ? 72 : (y_pos <= -100) ? -72 : y_pos;
   int x_diff = (abs(x_pos/10) > 0) ? 0 : 1;
   int y_diff = (abs(y_pos/10) > 0) ? 0 : 1;
   char x_sign = (x_pos >= 0) ? '+' : '-';
@@ -140,8 +143,8 @@ string getBallPosition( fifo_object_box boxObj ) {
   float x_change = forward*sin(local_heading*M_PI/180) + sideways*sin(local_heading*M_PI/180);
   float y_change = forward*cos(local_heading*M_PI/180) + sideways*cos(local_heading*M_PI/180);
 
-  ballX = (int)(local_x + x_change);
-  ballY = (int)(local_y + y_change);
+  // ballX = (int)(local_x + x_change); // REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP
+  // ballY = (int)(local_y + y_change); // REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP REP
 
   return positionToString(ballX, ballY);
 }
@@ -169,38 +172,166 @@ string binBallPos( string pos ) {
 void cacheGoals( void ) { // should also be a long-running thread should also be a long-running thread should also be a long-running thread
   string stringSend;
   Brain.Screen.printAt(10, 100, "Starting cache goals");
-  if (local_map.boxnum > 0) {
+  while (true) {
+    if (local_map.boxnum > 0) {
+      for (int i=0; i<local_map.boxnum; i++) {
+        if (local_map.boxobj[i].classID != 2 && abs(local_map.boxobj[i].x - 180) < 50) {
+          ballOnField ball;
+          ball.classID = local_map.boxobj[i].classID;
+          ball.pos = getBallPosition(local_map.boxobj[i]);
+          ball.age = 0;
+          ballsOnField.push_back(ball);
 
+          for (auto currentBall = ballsOnField.begin(); currentBall != ballsOnField.end(); /* NOTHING */)
+          {
+            if ((*currentBall).age > 5) {
+              currentBall = ballsOnField.erase(currentBall);
+            } else {
+              (*currentBall).age++;
+              ++currentBall;
+            }
+          }
+
+          if (ballsOnField.size() > 50) { // clear if vector gets too big
+            std::vector<ballOnField>().swap(ballsOnField);
+          }
+
+          if (local_map.boxobj[i].y < 115) // checks that it is SCORED
+            // Brain.Screen.printAt(10, printPlace, "%d", local_map.boxobj[i].y);
+            Brain.Screen.printAt(300, 20, getBallPosition(local_map.boxobj[i]).c_str());
+            Brain.Screen.printAt(300, 80, "%d %d %d %d", local_map.boxobj[i].classID, local_map.boxobj[i].x, local_map.boxobj[i].y, local_map.boxobj[i].depth);
+            mu.lock();
+            mapScore[goalKeys[binBallPos(ball.pos)]] = local_map.boxobj[i].classID;
+            mapAll[goalKeys[binBallPos(ball.pos)]][0] = local_map.boxobj[i].classID;
+            mu.unlock();
+          // printPlace += 20;
+        }
+      }
+      stringSend = arrToString(mapScore);
+
+      LinkA.send(stringSend.c_str());
+    }
+  }
+}
+
+int switchUp( void ) {
+  int dump = 0;
+  for (int i=0; i<local_map.boxnum; i++) {
+    if (local_map.boxobj[i].classID != 2 && abs(local_map.boxobj[i].x - 180) < 20) {
+      if (local_map.boxobj[i].y > 140 && local_map.boxobj[i].classID == OUR_COLOR) {// checks that BOTTOM IS OTHER COLOR
+        return dump = 1; // move once
+      } else if (local_map.boxobj[i].y < 140 && local_map.boxobj[i].y > 115 && local_map.boxobj[i].classID == OUR_COLOR)
+        return dump = 2; // move twice
+    }
+  }
+  return dump;
+}
+
+int assessGoal( void ) {
+  Brain.Screen.printAt(10, 220, "Running Assess Goal");
+  Brain.Screen.printAt(10, 200, "%d", local_map.boxnum);
+  if (local_map.boxnum > 0) {
     for (int i=0; i<local_map.boxnum; i++) {
-      if (local_map.boxobj[i].classID != 2) {
+      if (local_map.boxobj[i].classID != 2 && abs(local_map.boxobj[i].x - 180) < 100) { // MAKES sure it's within center
         ballOnField ball;
         ball.classID = local_map.boxobj[i].classID;
         ball.pos = getBallPosition(local_map.boxobj[i]);
         ball.age = 0;
-        ballsOnField.push_back(ball);
 
-        for (auto currentBall = ballsOnField.begin(); currentBall != ballsOnField.end(); /* NOTHING */)
-        {
-          if ((*currentBall).age > 50) {
-            currentBall = ballsOnField.erase(currentBall);
-          } else {
-            (*currentBall).age++;
-            ++currentBall;
+        if (local_map.boxobj[i].y < 115 && local_map.boxobj[i].classID == OTHER_COLOR) {// checks that it is SCORED
+          Brain.Screen.printAt(50, 200, "other");
+          while (local_map.boxobj[i].depth < 21) 
+            robotDrive.drive(vex::reverse, 20, velocityUnits::pct);
+          stopDriving();
+          while (local_map.boxobj[i].x > 185 || local_map.boxobj[i].x < 175) {
+            Brain.Screen.printAt(160, 20, "X value: %d", local_map.boxobj[i].x);
+            driveAngle((local_map.boxobj[i].x-180)/abs(local_map.boxobj[i].x-180)*90, (int)(abs(local_map.boxobj[i].x - 180)/2));
           }
-        }  
+          stopDriving();
+          int dump = switchUp();
+          botRoller.spin(fwd, 50, vex::velocityUnits::pct);
+          intake(20);
+          stopDriving();
 
-        if (local_map.boxobj[i].y < 115) // checks that it is SCORED
-          // Brain.Screen.printAt(10, printPlace, "%d", local_map.boxobj[i].y);
-          // Brain.Screen.printAt(300, printPlace, getBallPosition(local_map.boxobj[i]).c_str());
-          mapScore[goalKeys[ball.pos]] = local_map.boxobj[i].classID;
-          mapAll[goalKeys[ball.pos]][0] = local_map.mapobj[i].classID;
-        // printPlace += 20;
+          if (dump == 0) {
+            botRoller.spin(fwd, 100, vex::velocityUnits::pct);
+            topRoller.spin(vex::reverse, 100, vex::velocityUnits::pct);
+            task::sleep(1000);
+            intake(10);
+            task::sleep(1000);
+            intake(10);
+            task::sleep(1000);
+          } else if (dump == 1) {
+            adjustHold();
+            score();
+          } else if (dump == 2) {
+            adjustHold();
+            intake(10);
+            score();
+            adjustHold();
+            score();
+          }
+          botRoller.stop();
+          topRoller.stop();
+          intakeWheels.stop();
+          stopDriving();
+          driveAngleFor(10, 180, 30);
+          return 0;
+        }
       }
     }
-    stringSend = arrToString(mapScore);
+    for (int i=0; i<local_map.boxnum; i++) {
+      if (local_map.boxobj[i].classID != 2 && abs(local_map.boxobj[i].x - 180) < 100) { // MAKES sure it's within center
+        ballOnField ball;
+        ball.classID = local_map.boxobj[i].classID;
+        ball.pos = getBallPosition(local_map.boxobj[i]);
+        ball.age = 0;
 
-    LinkA.send(stringSend.c_str());
+        if (local_map.boxobj[i].y < 150 && local_map.boxobj[i].classID == OTHER_COLOR) {// checks that it is SCORED
+          Brain.Screen.printAt(50, 200, "other");
+          while (local_map.boxobj[i].depth < 21) 
+            robotDrive.drive(vex::reverse, 20, velocityUnits::pct);
+          stopDriving();
+          while (local_map.boxobj[i].x > 185 || local_map.boxobj[i].x < 175) {
+            Brain.Screen.printAt(160, 20, "X value: %d", local_map.boxobj[i].x);
+            driveAngle((local_map.boxobj[i].x-180)/abs(local_map.boxobj[i].x-180)*90, (int)(abs(local_map.boxobj[i].x - 180)/2));
+          }
+          stopDriving();
+          int dump = switchUp();
+          botRoller.spin(fwd, 50, vex::velocityUnits::pct);
+          intake(20);
+          stopDriving();
+
+          if (dump == 0) {
+            botRoller.spin(fwd, 100, vex::velocityUnits::pct);
+            topRoller.spin(vex::reverse, 100, vex::velocityUnits::pct);
+            task::sleep(1000);
+            intake(10);
+            task::sleep(1000);
+            intake(10);
+            task::sleep(1000);
+          } else if (dump == 1) {
+            adjustHold();
+            score();
+          } else if (dump == 2) {
+            adjustHold();
+            intake(10);
+            score();
+            adjustHold();
+            score();
+          }
+          botRoller.stop();
+          topRoller.stop();
+          intakeWheels.stop();
+          stopDriving();
+          driveAngleFor(10, 180, 30);
+          return 0;
+        }
+      }
+    }
   }
+  return 0;
+  // robotDrive.driveFor(vex::reverse, 10, inches, 30, velocityUnits::pct);
 }
 
 void loadGoalsInfo(const char *message, const char *linkname, int32_t index, double value) {
@@ -232,14 +363,16 @@ string getClosestOurColor( void ) {
 }
 
 int getClosestGoal( void ) {
-  int minDist = 100;
+  int minDist = 500;
   int getGoal = 0;
+  float localX, localY, localH;
+  link.get_local_location(localX, localY, localH);
   for (int i=0; i<8; i++) {
     int goalX = stringToX(goalLocation[i]);
     int goalY = stringToY(goalLocation[i]);
-    if (sqrt(pow((goalX - local_x),2) + pow((goalY - local_y),2)) < minDist) {
+    if (sqrt(pow((goalX - localX),2) + pow((goalY - local_y),2)) < minDist) {
       getGoal = i;
-      minDist = (int)sqrt(pow((goalX - local_x),2) + pow((goalY - local_y),2));
+      minDist = (int)sqrt(pow((goalX - localX),2) + pow((goalY - local_y),2));
     }
   }
   return getGoal;

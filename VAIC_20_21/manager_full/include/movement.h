@@ -6,7 +6,7 @@ void stopDriving( void );
 
 extern void intake( int speed );
 extern void outtake( void );
-extern void score( void );
+extern int score( void );
 extern void poop( void );
 
 extern void intakeNoDrive( void );

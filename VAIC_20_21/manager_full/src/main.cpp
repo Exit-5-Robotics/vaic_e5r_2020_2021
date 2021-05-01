@@ -72,6 +72,7 @@ ai::robot_link       link( PORT11, "robot_3063_1", linkType::worker );
 //     go.join();
 //   }
 // }
+mutex mutoo;
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -106,23 +107,108 @@ void auto_Isolation(void) {
 /*---------------------------------------------------------------------------*/
 
 void auto_Interaction(void) {
-  Brain.Screen.printAt(10, 80, "Starting auto int");
+  // Brain.Screen.printAt(10, 80, "Starting auto int");
+  float localX, localY, localH;
   while (true) {
-    if (local_x != 0) {
-      lookAround(); // in movement.cpp
-      // robotDrive.turnFor(right, 360, degrees, 20, velocityUnits::pct);
-      Brain.Screen.printAt(10, 20, "%d", getClosestGoal());
-      
+    link.get_local_location(localX, localY, localH);
+    Brain.Screen.printAt(10, 40, "%.2f %.2f %.2f", local_x, local_y, local_heading);
+    if (localX != 0) {
+      task::sleep(15000);
+      Brain.Screen.printAt(10, 40, "%.2f %.2f %.2f", local_x, local_y, local_heading);
+      // int closestGoal = getClosestGoal();
+      int closestGoal = OUR_COLOR==BLUE ? 5 : 6;
+      int closestGoalX, closestGoalY;
 
-      task::sleep(5000);
+      Brain.Screen.printAt(10, 20, "%d", closestGoal);
+      
+      while(true) { // actual while loop
+        link.get_local_location(localX, localY, localH);
+        closestGoalX = stringToX(goalLocation[closestGoal]);
+        closestGoalY = stringToY(goalLocation[closestGoal]);
+        if (closestGoalX == 0 && closestGoalY != 0) {
+          int ySign = closestGoalY > 0 ? 1 : -1;
+          closestGoalY = (abs(closestGoalY) - 5)*ySign;
+          closestGoalX -= 10*ySign;
+          Brain.Screen.printAt(300, 160, "%d %d", closestGoalX, closestGoalY);
+          goToX(closestGoalX, closestGoalY, goalAngle[closestGoal]);
+          stopDriving();
+          task::sleep(250);
+          driveAngleFor(10, 90, 30);
+          task::sleep(250);
+          driveAngleFor(10, 180, 30);
+          task::sleep(500);
+        } else if (closestGoalY == 0 && closestGoalX != 0) {
+          int xSign = closestGoalX > 0 ? 1 : -1;
+          closestGoalX = (abs(closestGoalX) - 5)*xSign;
+          closestGoalY += 10*xSign;
+          Brain.Screen.printAt(300, 160, "%d %d", closestGoalX, closestGoalY);
+          goToY(closestGoalX, closestGoalY, goalAngle[closestGoal]);
+          stopDriving();
+          task::sleep(250);
+          driveAngleFor(10, 90, 30);
+          task::sleep(250);
+          driveAngleFor(10, 180, 30);
+          task::sleep(500);
+        } else if ((closestGoalX > 0 && closestGoalY > 0) || (closestGoalX < 0 && closestGoalY < 0)) {
+          // +50+50 --> +30+40, +50-50 --> +50-40, -50-50 --> -30-40, -50+50 --> -50+40
+          int xSign = closestGoalX > 0 ? 1 : -1;
+          closestGoalX = (abs(closestGoalX) - 20)*xSign;
+          closestGoalY = (abs(closestGoalY) - 10)*xSign;
+          goToX(closestGoalX, closestGoalY, goalAngle[closestGoal]);
+          goToY(closestGoalX, closestGoalY, goalAngle[closestGoal]);
+          stopDriving();
+          task::sleep(250);
+          driveAngleFor(10, 90, 30);
+          task::sleep(500);
+        } else {
+          int ySign = closestGoalY > 0 ? 1 : -1;
+          closestGoalY = (abs(closestGoalY) - 20)*ySign;
+          closestGoalX = (abs(closestGoalX) - 20)*ySign*-1;
+          goToX(closestGoalX, closestGoalY, goalAngle[closestGoal]);
+          goToY(closestGoalX, closestGoalY, goalAngle[closestGoal]);
+          stopDriving();
+          task::sleep(250);
+          driveAngleFor(10, 90, 30);
+          task::sleep(500);
+
+        }
+        robotDrive.stop();
+        assessGoal();
+        Brain.Screen.clearScreen();
+        driveAngleFor(10, 90, 30);
+        switch (closestGoal) {
+          case 0:
+            closestGoal = 6;
+            break;
+          case 6:
+            closestGoal = 1;
+            break;
+          case 1:
+            closestGoal = 7;
+            break;
+          case 7:
+            closestGoal = 2;
+            break;
+          case 2:
+            closestGoal = 5;
+            break;
+          case 5:
+            closestGoal = 3;
+            break;
+          case 3:
+            closestGoal = 4;
+            break;
+          default:
+            closestGoal = 0;
+            break;
+        }
+      }
     }
-    task::sleep(16);
   }
   // while (inventory[0] == EMPTY) {
     
   // }
 }
-
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -137,13 +223,6 @@ bool firstAutoFlag = true;
 
 void autonomousMain(void) {
   Brain.Screen.printAt( 10, 10, "autonomousMain" );
-  // ..........................................................................
-  // The first time we enter this function we will launch our Isolation routine
-  // When the field goes disabled after the isolation period this task will die
-  // When the field goes enabled for the second time this task will start again
-  // and we will enter the interaction period. 
-  // ..........................................................................
-
   if(firstAutoFlag)
     auto_Isolation();
   else 
@@ -165,12 +244,10 @@ int main() {
     int32_t loop_time = 66;
 
     // thread t1(dashboardTask);
-
+    
     // thread distanceSensor(distSensorControl); // assumes dist sensor starts UP
     thread prac(auto_Interaction);
-    // thread t2(testMovement);
-    // thread accel(values);
-    // thread iso(redIsolation);
+    prac.setPriority(100);
 
     // Set up callbacks for autonomous and driver control periods.
     Competition.autonomous(autonomousMain);
@@ -189,11 +266,7 @@ int main() {
         
         local_x = local_map.pos.x/25.4;
         local_y = local_map.pos.y/25.4;
-        local_heading = local_map.pos.az*180/M_PI + 180;
-        Brain.Screen.printAt(10, 40, "%.2f %.2f %.2f", local_x, local_y, local_heading);
-        cacheGoals();
-        Brain.Screen.printAt(10, 60, "%d %d %d %d %d %d %d %d %d", mapScore[0], mapScore[1], mapScore[2], 
-          mapScore[3], mapScore[4], mapScore[5], mapScore[6], mapScore[7], mapScore[8]);
+        local_heading = local_map.pos.az*180/M_PI;
 
         // set our location to be sent to partner robot
         link.set_remote_location( local_map.pos.x, local_map.pos.y, local_map.pos.az );

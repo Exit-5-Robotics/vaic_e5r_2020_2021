@@ -14,6 +14,7 @@ extern std::string getBallPosition( fifo_object_box boxObj );
 extern void cacheGoals( void );
 extern void loadGoalsInfo(const char *message, const char *linkname, int32_t index, double value);
 extern int getGoal( int x_pos, int y_pos );
+extern int assessGoal( void );
 
 extern std::string getClosest( void );
 extern std::string getClosestOurColor( void );

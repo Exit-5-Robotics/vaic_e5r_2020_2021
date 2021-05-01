@@ -10,8 +10,8 @@ message_link  LinkA( PORT9, "vex_robotics_team_3063_A", linkType::manager );
 // vex::message_link LinkC( PORT11, "vex_robotics_team_1234_A", linkType::worker );
 // vex::serial_link LinkD( PORT12, "vex_robotics_team_1234_B", linkType::worker );
 // sonar Balls = sonar(Brain.ThreeWirePort.B); // A is the output, B is the input https://api.vexcode.cloud/v5/html/classvex_1_1sonar.html#aeefdd6cb8826338561d0cf187643b14a
-line          ballThree(Brain.ThreeWirePort.C); // bottom ball
-line          ballZero(Brain.ThreeWirePort.E); // top ball
+line          ballZero(Brain.ThreeWirePort.C); // TOP ball
+line          ballThree(Brain.ThreeWirePort.D); // BOT ball
 vex::distance dist(PORT5);
 inertial      tilt( PORT10 );
 
@@ -33,7 +33,7 @@ motor_group   rightDrive( backRightWheel, frontRightWheel );
 motor_group   rightDiagDrive( frontLeftWheel, backRightWheel );
 motor_group   leftDiagDrive( frontRightWheel, backLeftWheel );
 
-bumper        goal(Brain.ThreeWirePort.D);
+bumper        goal(Brain.ThreeWirePort.E);
 smartdrive    robotDrive( leftDrive, rightDrive, tilt, 12.56, 14.125, 9, distanceUnits::in ); // might have to change values
 
 controller Controller1 = controller(primary); // 
