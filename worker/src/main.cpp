@@ -98,50 +98,6 @@ void auto_Isolation(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-void auto_Interaction(void) {
-  // ..........................................................................
-  // Insert autonomous user code here.
-  // ..........................................................................
-  Brain.Screen.printAt( 10, 90, "auto_Interaction" );
-
-}
-
-/*---------------------------------------------------------------------------*/
-/*                                                                           */
-/*                          AutonomousMain Task                              */
-/*                                                                           */
-/*  This task is used to control your robot during the autonomous phase of   */
-/*  a VEX Competition.                                                       */
-/*                                                                           */
-/*---------------------------------------------------------------------------*/
-
-bool firstAutoFlag = true;
-
-void autonomousMain(void) {
-  Brain.Screen.printAt( 10, 10, "autonomousMain" );
-  // ..........................................................................
-  // The first time we enter this function we will launch our Isolation routine
-  // When the field goes disabled after the isolation period this task will die
-  // When the field goes enabled for the second time this task will start again
-  // and we will enter the interaction period. 
-  // ..........................................................................
-
-  if(firstAutoFlag)
-    auto_Isolation();
-  else 
-    auto_Interaction();
-
-  firstAutoFlag = false;
-}
-
-/*----------------------------------------------------------------------------*/
-
-void 
-get_obj(const char *message, const char *linkname, double i) {
-  printf("%f", i);
-  Brain.Screen.clearScreen();
-}
-
 void blueIsolation5(){ // starts near centerNode 5
   setSpeed(50);
   driveAuto(1);
@@ -242,6 +198,52 @@ void workerDuties(){
 
 } 
 
+void auto_Interaction(void) {
+  // ..........................................................................
+  // Insert autonomous user code here.
+  // ..........................................................................
+  Brain.Screen.printAt( 10, 90, "auto_Interaction" );
+  workerDuties();
+
+}
+
+/*---------------------------------------------------------------------------*/
+/*                                                                           */
+/*                          AutonomousMain Task                              */
+/*                                                                           */
+/*  This task is used to control your robot during the autonomous phase of   */
+/*  a VEX Competition.                                                       */
+/*                                                                           */
+/*---------------------------------------------------------------------------*/
+
+bool firstAutoFlag = true;
+
+void autonomousMain(void) {
+  Brain.Screen.printAt( 10, 10, "autonomousMain" );
+  // ..........................................................................
+  // The first time we enter this function we will launch our Isolation routine
+  // When the field goes disabled after the isolation period this task will die
+  // When the field goes enabled for the second time this task will start again
+  // and we will enter the interaction period. 
+  // ..........................................................................
+
+  if(firstAutoFlag)
+    auto_Isolation();
+  else 
+    auto_Interaction();
+
+  firstAutoFlag = false;
+}
+
+/*----------------------------------------------------------------------------*/
+
+void 
+get_obj(const char *message, const char *linkname, double i) {
+  printf("%f", i);
+  Brain.Screen.clearScreen();
+}
+
+
 int main() {
     // Initializing Robot Configuration. DO NOT REMOVE!
     vexcodeInit();
@@ -269,7 +271,7 @@ int main() {
 
     LinkA.received("object", get_obj);
 
-    thread t2(workerDuties);
+    //thread t2(workerDuties);
 
     while(1) {
         // get last map data
