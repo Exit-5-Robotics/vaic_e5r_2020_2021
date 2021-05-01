@@ -120,7 +120,8 @@ void blueIsolation5(){ // starts near centerNode 5
   pause();
   this_thread::sleep_for(1000);
   driveAutoDist(9, 600);
-  middleDescorer.spinFor(forward, 135, degrees);
+  middleDescorer.setVelocity(40, pct);
+  middleDescorer.spinFor(forward, 4, seconds);
   middleDescorer.stop(brakeType::brake);
   while(!backStopper.pressing()){
     driveAuto(0);
@@ -151,7 +152,8 @@ void redIsolation5(){ // starts near centerNode 5
   pause();
   this_thread::sleep_for(1000);
   driveAutoDist(9, 600);
-  middleDescorer.spinFor(forward, 135, degrees);
+  middleDescorer.setVelocity(40, pct);
+  middleDescorer.spinFor(forward, 4, seconds);
   middleDescorer.stop(brakeType::brake);
   while(!backStopper.pressing()){
     driveAuto(0);
