@@ -39,6 +39,8 @@ competition Competition;
 // data from the Jetson nano
 //
 ai::jetson  jetson_comms;
+float local_x, local_y, local_heading;
+MAP_RECORD       local_map;
 
 /*----------------------------------------------------------------------------*/
 // Create a robot_link on PORT1 using the unique name robot_32456_1
@@ -58,8 +60,6 @@ ai::robot_link link( PORT11, "robot_3063_1", linkType::manager );
 #pragma message("building for the worker")
 ai::robot_link link( PORT11, "robot_3063_1", linkType::worker );
 #endif
-
-static MAP_RECORD       local_map;
 
 /*----------------------------------------------------------------------------*/
 
@@ -144,19 +144,22 @@ get_obj(const char *message, const char *linkname, double i) {
 
 void workerDuties(){
   this_thread::sleep_for(10);
+
   jetson_comms.get_data( &local_map );
   while(jetson_comms.get_packets() == 0){
     jetson_comms.get_data( &local_map );
   }
-  
-  setSpeed(40);
-  //intake.spin(forward, 100, vex::velocityUnits::pct);
-  //roller.spin(forward, 100, vex::velocityUnits::pct);
-  //robotDrive.turnFor(left, 360, vex::rotationUnits::deg, 5, vex::velocityUnits::pct, false);
-  snailTo(180);
-  //poop(100);
 
-}
+  this_thread::sleep_for(1000);
+  
+  setSpeed(10);
+  //x: start: 930 
+  //sideGoTo(640);
+  //sideGoTo(1050);
+  //y: start:640 sideGoTo(1050);
+  //snailTo(300);
+
+} 
 
 int main() {
     // Initializing Robot Configuration. DO NOT REMOVE!
@@ -190,6 +193,13 @@ int main() {
     while(1) {
         // get last map data
         jetson_comms.get_data( &local_map );
+        local_x = local_map.pos.x/25.4;
+        local_y = local_map.pos.y/25.4;
+        local_heading = local_map.pos.az*180/M_PI + 180;
+        Brain.Screen.printAt(10, 40, "%.2f %.2f %.2f", local_x, local_y, local_heading);
+        cacheGoals();
+        Brain.Screen.printAt(10, 60, "%d %d %d %d %d %d %d %d %d", mapScore[0], mapScore[1], mapScore[2], 
+          mapScore[3], mapScore[4], mapScore[5], mapScore[6], mapScore[7], mapScore[8]);
 
         // set our location to be sent to partner robot
         link.set_remote_location( local_map.pos.x, local_map.pos.y, local_map.pos.az );

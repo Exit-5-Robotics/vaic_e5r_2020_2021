@@ -26,6 +26,8 @@ void driveAuto(int direction1){
   //5 = RIGHT FORWARD
   //6 = LEFT FORWARD
   //7 = RIGHT BACK
+  //8 = LEFT
+  //9 = RIGHT
 
   switch(direction1){
     case 0: //BACKWARD
@@ -77,6 +79,21 @@ void driveAuto(int direction1){
     LB.spin(forward);
     break;
 
+    case 8: //LEFT
+    RF.spin(reverse);
+    RB.spin(forward);
+    LF.spin(forward);
+    LB.spin(reverse);
+
+    break;
+
+    case 9: //RIGHT
+    RF.spin(forward);
+    RB.spin(reverse);
+    LF.spin(reverse);
+    LB.spin(forward);
+
+    break;
   }
 }
 

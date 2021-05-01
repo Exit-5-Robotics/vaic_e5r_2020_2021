@@ -10,6 +10,7 @@ extern int turnTo( float dest_heading, int vel );
 
 float toNormalAngle(float og_angle);
 void snailTo(float dest_heading);
+void sideGoTo(float finishCoordinate);
 
 
 extern void poop( void );

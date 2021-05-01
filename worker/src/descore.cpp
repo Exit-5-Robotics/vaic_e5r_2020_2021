@@ -64,8 +64,10 @@ void poop(int speed){
   pause();
 }
 
-void descore (){
+void descore (float desired_heading){
   static MAP_RECORD  local_map;
+  jetson_comms.get_data( &local_map );
+
   if(checkDescore()){
 
     int ballCount = 0;
@@ -86,6 +88,15 @@ void descore (){
     pause();
 
     poopTower(100);
+
+    //go back to node position
+    snailTo(desired_heading);
+    while(!backStopper.pressing()){
+      driveAuto(0);
+    }
+    snailTo(desired_heading);
+    driveAutoDist(1, 90);
+    
 
     //update manager to new tower inventory
 

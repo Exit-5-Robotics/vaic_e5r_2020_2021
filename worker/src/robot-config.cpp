@@ -29,6 +29,7 @@ motor_group pooper(roller, intakeLeft, intakeRight);
 inertial      tilt(PORT5);
 line          ballChecker(Brain.ThreeWirePort.H);
 bumper        goal(Brain.ThreeWirePort.A);
+bumper        backStopper(Brain.ThreeWirePort.B); //UPDATE THIS PLZ
 /*                                                       A      B    C              */
 smartdrive    robotDrive( leftDrive, rightDrive, tilt, 12.56, 7.75, 10.9, distanceUnits::in ); 
   // A: circumference
