@@ -80,10 +80,18 @@ void driveAuto(int direction1){
     break;
 
     case 8: //LEFT
+    RF.spin(reverse);
+    RB.spin(forward);
+    LF.spin(forward);
+    LB.spin(reverse);
 
     break;
 
     case 9: //RIGHT
+    RF.spin(forward);
+    RB.spin(reverse);
+    LF.spin(reverse);
+    LB.spin(forward);
 
     break;
   }
