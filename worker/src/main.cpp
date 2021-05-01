@@ -142,7 +142,7 @@ get_obj(const char *message, const char *linkname, double i) {
   Brain.Screen.clearScreen();
 }
 
-void redIsolation5(){ // starts near centerNode 5
+void blueIsolation5(){ // starts near centerNode 5
   setSpeed(50);
   driveAuto(1);
   this_thread::sleep_for(4500);
@@ -165,6 +165,7 @@ void redIsolation5(){ // starts near centerNode 5
   this_thread::sleep_for(1000);
   driveAutoDist(9, 600);
   middleDescorer.spinFor(forward, 135, degrees);
+  middleDescorer.stop(brakeType::brake);
   while(!backStopper.pressing()){
     driveAuto(0);
   }
@@ -172,7 +173,7 @@ void redIsolation5(){ // starts near centerNode 5
   setSpeed(30);
 }
 
-void blueIsolation5(){ // starts near centerNode 5
+void redIsolation5(){ // starts near centerNode 5
   setSpeed(50);
   driveAuto(1);
   this_thread::sleep_for(4500);
@@ -195,6 +196,7 @@ void blueIsolation5(){ // starts near centerNode 5
   this_thread::sleep_for(1000);
   driveAutoDist(9, 600);
   middleDescorer.spinFor(forward, 135, degrees);
+  middleDescorer.stop(brakeType::brake);
   while(!backStopper.pressing()){
     driveAuto(0);
   }
@@ -222,7 +224,7 @@ void workerDuties(){
   //this_thread::sleep_for(45000);
   
   if(OUR_COLOR){ //blue
-    //blueIsolation();
+    blueIsolation5();
   } else { //red
     redIsolation5();
   }
@@ -231,9 +233,9 @@ void workerDuties(){
   while(1){
     descoreMiddle();
     if(OUR_COLOR){
-      descore(-90);
-    } else {
       descore(90);
+    } else {
+      descore(-90);
     }
     
   }
