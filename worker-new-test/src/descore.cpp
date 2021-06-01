@@ -1,4 +1,5 @@
 #include "vex.h"
+#include <vex_distance.h>
 // call descore() to check if descoring is necessary / descore
 
 bool checkDescore(){
@@ -35,22 +36,20 @@ bool checkDescore(){
 
 //POOP function out of a tower
 void poopTower(int speed){
-  //driveAutoDist(0, 45);
-  setSpeed(4);
-  while(ballChecker.value(analogUnits::mV) < 3200){
+  pooper.spin(forward, 100, percent);
+  wait(2, seconds);
+  //Brain.Screen.printAt(10, 220, "reflectivity: %d", ballChecker.reflectivity());
+  while(ballChecker.reflectivity() > 230){
     pooper.spin(forward, speed, pct);
   }
-  while(ballChecker.value(analogUnits::mV) > 3200){
-    pooper.spin(forward, speed, pct);
-    driveAuto(0);
-  }
-  pooper.spinFor(forward, 200, degrees);
-  pooper.stop();
+  intake.stop();
+  wait(2, seconds);
+  roller.stop();
 }
 
 //POOP function just from the ground
 void poop(int speed){
-  setSpeed(8);
+  /*setSpeed(8);
   while(ballChecker.value(analogUnits::mV) < 3200){
     pooper.spin(forward, speed, pct);
     driveAuto(1);
@@ -60,60 +59,32 @@ void poop(int speed){
     driveAuto(1);
   }
   pooper.stop();
-  pause();
+  pause();*/
 }
 
-void descore (float desired_heading){
-  static MAP_RECORD  local_map;
-  jetson_comms.get_data( &local_map );
+void driveToTower(){
+  driveAuto(1);
+  setSpeed(20);
+  while(!goal.pressing()){}
+  pause();
+  poopTower(100);
+}
 
+void descoreTower(int towerNum){
   //if(checkDescore()){
+    if(towerNum == 1 || towerNum == 6){ //just go foward
+      driveToTower();
+      driveAutoDist(0, 200, 10); pause();
+      driveAutoDist(8, 200, 10); pause();
+      toStartingPoint();
+    } else if (towerNum == 4 || towerNum == 7){ //turn right & go foward
 
-    int ballCount = 0;
-    for(int i = 0; i < local_map.boxnum; i++){
-      jetson_comms.get_data( &local_map );
+    } else if (towerNum == 0 || towerNum == 5){ //turn left & go foward
 
-      if(local_map.boxobj[i].classID != 2){
-        ballCount++;
-      }
+    } else if (towerNum == 3){ //turn from tower 1 or 6 & descore
+
+    } else { // 8 or 4, not sure how we're getting there yet
+
     }
-    
-
-    while(!goal.pressing()){
-      jetson_comms.get_data( &local_map );
-      for(int i = 0; i < local_map.boxnum; i++){
-      jetson_comms.get_data( &local_map );
-
-      if(local_map.boxobj[i].classID != 2){
-        ballCount++;
-      }
-    }
-
-      driveAuto(1);
-      if(ballCount<3){
-        pooper.spin(forward, 80, pct);
-      }
-    }
-    pause();
-
-    poopTower(100);
-
-    //go back to node position
-    //snailTo(desired_heading);
-    setSpeed(40);
-    driveAutoDist(0, 200);
-    pooper.setVelocity(5, pct);
-    pooper.spinFor(reverse, 100, deg);
-    while(!backStopper.pressing()){
-      //pooper.spin(reverse, 80, pct);
-      driveAuto(0);
-    }
-    //snailTo(desired_heading);
-    pooper.spinFor(forward, 100, deg);
-    driveAutoDist(1, 180);
-    
-
-    //update manager to new tower inventory
-
   //}
 }

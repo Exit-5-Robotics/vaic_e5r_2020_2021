@@ -29,9 +29,10 @@ motor middleDescorer = motor (PORT20, ratio18_1, false);
 
 inertial      tilt(PORT19);
 line          ballChecker(Brain.ThreeWirePort.H);
+//distance      ballChecker(PORT2);
 line          rightLine(Brain.ThreeWirePort.F);
 line          leftLine(Brain.ThreeWirePort.G);
-bumper        goal(Brain.ThreeWirePort.A);
+bumper        goal(Brain.ThreeWirePort.C);
 bumper        backStopper(Brain.ThreeWirePort.B); //UPDATE THIS PLZ
 
 /*                                                       A      B    C              */

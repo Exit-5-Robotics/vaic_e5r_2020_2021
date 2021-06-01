@@ -19,6 +19,7 @@ extern motor_group leftDiagDrive;
 extern motor_group rightDiagDrive;
 extern inertial tilt;
 extern line ballChecker;
+//extern distance ballChecker;
 extern line rightLine;
 extern line leftLine;
 extern bumper   goal;

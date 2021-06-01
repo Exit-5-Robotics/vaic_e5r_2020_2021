@@ -5,3 +5,4 @@ void toStartingPoint(void);
 void reset(void);
 double getHeading(void);
 void turnTo(int targetAngle);
+void toBestY(void);

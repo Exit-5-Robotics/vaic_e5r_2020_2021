@@ -11,6 +11,8 @@ double lineColorL;
 
 void reset(){
   this_thread::sleep_for(1000);
+  tilt.calibrate();
+  while(tilt.isCalibrating()){}
   tileColorL = leftLine.value(percentUnits::pct); //~2,750
   tileColorR = rightLine.value(percentUnits::pct); //~3,000
   lineColorR = tileColorR *0.6; //~6500
@@ -42,6 +44,15 @@ void turnTo(int targetAngle){
 }
 //possibly use jetson to check if one of the lines was missed/overshot
 
+void toBestY(){
+  while(!backStopper.pressing()){
+    driveAuto(0);
+    setSpeed(10);
+  }
+  pause();
+  driveAutoDist(1, 420, 10);
+}
+
 void toStartingPoint(){
 
   bool firstLine = false;
@@ -54,30 +65,27 @@ void toStartingPoint(){
   
   while(!timeToStop){
     if(fabs(rightLine.value(percentUnits::pct) - lineColorR) < 10){
-      //Brain.Screen.printAt(10, 100, "firstLine");
+      Brain.Screen.printAt(10, 100, "firstLine");
       firstLine = true;
-      pause();
-      driveAuto(9);
       setSpeed(5);
     }
     if(firstLine && fabs(leftLine.value(percentUnits::pct) - lineColorL) < 10){
-      //Brain.Screen.printAt(10, 120, "secondLine");
+      Brain.Screen.printAt(10, 120, "secondLine");
       secondLine = true;
       pause();
       driveAuto(8);
       setSpeed(5);
     }
     if(secondLine && fabs(rightLine.value(percentUnits::pct) - lineColorR) < 10){
-      //Brain.Screen.printAt(10, 140, "timeToStop");
+      Brain.Screen.printAt(10, 140, "timeToStop");
       timeToStop = true;
       pause();
     }
   }
   turnTo(270);
   pause();
+  toBestY();
 }
-
-
 
 void alignTower1(){
   //if its a check, currentTower = 0, so just do little wigglies

@@ -122,11 +122,11 @@ void blueIsolation5(){ // starts near centerNode 5
   }
   pause();
   this_thread::sleep_for(1000);
-  driveAutoDist(8, 900);
+  //driveAutoDist(8, 900);
   middleDescorer.setVelocity(40, pct);
   middleDescorer.spinFor(reverse, 4, seconds);
   middleDescorer.stop(brakeType::brake);
-  driveAutoDist(0, 180);
+  //driveAutoDist(0, 180);
   //while(!backStopper.pressing()){
   //  driveAuto(0);
   //}
@@ -155,11 +155,11 @@ void redIsolation5(){ // starts near centerNode 5
   }
   pause();
   this_thread::sleep_for(1000);
-  driveAutoDist(8, 900);
+  //driveAutoDist(8, 900);
   middleDescorer.setVelocity(40, pct);
   middleDescorer.spinFor(reverse, 4, seconds);
   middleDescorer.stop(brakeType::brake);
-  driveAutoDist(0, 180);
+  //driveAutoDist(0, 180);
   //while(!backStopper.pressing()){
    // driveAuto(0);
   //}
@@ -168,12 +168,12 @@ void redIsolation5(){ // starts near centerNode 5
 }
 
 void descoreMiddle(){
-  driveAutoDist(1, 180);
+  //driveAutoDist(1, 180);
   this_thread::sleep_for(100);
   //while(!backStopper.pressing()){
   //  driveAuto(0);
   //}
-  driveAutoDist(0, 180);
+  //driveAutoDist(0, 180);
   pause();
   this_thread::sleep_for(100);
 }
@@ -184,28 +184,22 @@ void updateSensors(){
     Brain.Screen.printAt(10, 60, "RightLine: %d", rightLine.value(percentUnits::pct));
     Brain.Screen.printAt(10, 80, "LightLine: %d", leftLine.value(percentUnits::pct));
     Brain.Screen.printAt(10, 160, "Angle: %f", getHeading());
+    Brain.Screen.printAt(10, 180, "BallChecker: %d", ballChecker.reflectivity());
   }
 }
 
 void workerDuties(){
-
-  /*jetson_comms.get_data( &local_map );
+/*
+  jetson_comms.get_data( &local_map );
   while(jetson_comms.get_packets() == 0){
     jetson_comms.get_data( &local_map );
   }*/
   thread stats(updateSensors);
   reset();
-
-  
-  //driveAuto(8);
-  //setSpeed(20);
-  
-  //driveAutoDist(1, 360);
-  //turnTo(270);
-
-  //this_thread::sleep_for(1000);
+  descoreTower(1);
 
   //toStartingPoint();
+  //driveToTower();
 
 } 
 

@@ -9,13 +9,12 @@
 
 using namespace vex;
 
-int RFv = 1;
-int RBv = 1;
-int LFv = 1;
-int LBv = 1;
+int RFv;
+int RBv;
+int LFv;
+int LBv;
 
 void setSpeed(int speed){
-  
   RF.setVelocity(RFv * speed, pct);
   RB.setVelocity(RBv * speed, pct);
   LF.setVelocity(LFv * speed, pct);
@@ -112,7 +111,7 @@ void pause(){
 }
 
 //DRIVE FOR DIRECTION AND DISTANCE
-void driveAutoDist(int direction1, int dist){ 
+void driveAutoDist(int direction1, int dist, int speed){ 
   //DIRECTION SETTINGS
   //0 = BACKWARD
   //1 = FORWARD
@@ -124,6 +123,7 @@ void driveAutoDist(int direction1, int dist){
   //7 = RIGHT BACK
   switch (direction1) {
     case 0: //BACKWARD
+    setSpeed(speed);
     RF.spinFor(forward, dist, degrees, false);  RFv = 1;
     RB.spinFor(forward, dist, degrees, false);  RBv = 1;
     LF.spinFor(forward, dist, degrees, false);  LFv = 1;
@@ -131,6 +131,7 @@ void driveAutoDist(int direction1, int dist){
     break;
 
     case 1: //FORWARD
+    setSpeed(speed);
     RF.spinFor(reverse, dist, degrees, false);  RFv = -1;
     RB.spinFor(reverse, dist, degrees, false);  RBv = -1;
     LF.spinFor(reverse, dist, degrees, false);  LFv = -1;
@@ -138,6 +139,7 @@ void driveAutoDist(int direction1, int dist){
     break;
 
     case 2: //CLOCKWISE
+    setSpeed(speed);
     RF.spinFor(forward, dist, degrees, false);  RFv = 1;
     RB.spinFor(forward, dist, degrees, false);  RBv = 1;
     LF.spinFor(reverse, dist, degrees, false);  LFv = -1;
@@ -145,6 +147,7 @@ void driveAutoDist(int direction1, int dist){
     break;
 
     case 3: //COUNTER CLOCKWISE
+    setSpeed(speed);
     RF.spinFor(reverse, dist, degrees, false);  RFv = -1;
     RB.spinFor(reverse, dist, degrees, false);  RBv = -1;
     LF.spinFor(forward, dist, degrees, false);  LFv = 1;
@@ -152,23 +155,42 @@ void driveAutoDist(int direction1, int dist){
     break;
 
     case 4: //LEFT BACK
+    setSpeed(speed);
     RB.spinFor(forward, dist, degrees, false);  RBv = 1;
     LF.spinFor(reverse, dist, degrees);         LFv = -1;
     break;
 
     case 5: //RIGHT FORWARD
+    setSpeed(speed);
     RB.spinFor(reverse, dist, degrees, false);  RBv = -1;
     LF.spinFor(reverse, dist, degrees);         LFv = -1;
     break;
     
     case 6: //LEFT FORWARD
+    setSpeed(speed);
     RF.spinFor(reverse, dist, degrees, false);  RFv = -1;
     LB.spinFor(reverse, dist, degrees);         LBv = -1;
     break;
 
     case 7: //RIGHT BACK
+    setSpeed(speed);
     RF.spinFor(forward, dist, degrees, false);  RFv = 1;
     LB.spinFor(forward, dist, degrees);         LBv = 1;
     break;
-    }
+
+    case 8: //LEFT
+    setSpeed(speed);
+    RF.spinFor(reverse, dist, degrees, false); RFv = -1;
+    RB.spinFor(forward, dist, degrees, false); RBv = 1;
+    LF.spinFor(forward,dist, degrees, false); LFv = 1;
+    LB.spinFor(reverse, dist, degrees); LBv = -1;
+    break;
+
+    case 9: //RIGHT
+    RF.spinFor(forward,dist, degrees, false); RFv = 1;
+    RB.spinFor(reverse,dist, degrees, false); RBv = -1;
+    LF.spinFor(reverse, dist, degrees, false); LFv = -1;
+    LB.spinFor(forward, dist, degrees); LBv = 1;
+    break;
+  }
 }

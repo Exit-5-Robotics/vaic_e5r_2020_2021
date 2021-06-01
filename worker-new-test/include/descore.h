@@ -1,5 +1,6 @@
 using namespace vex;
 
-void descore(float desired_heading);
+void descoreTower(int towerNum);
+void driveToTower(void);
 void poopTower(int speed);
 void poop(int speed);
