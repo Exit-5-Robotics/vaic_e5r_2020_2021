@@ -64,7 +64,7 @@ void poop(int speed){
 
 void driveToTower(){
   driveAuto(1);
-  setSpeed(20);
+  setSpeed(40);
   while(!goal.pressing()){}
   pause();
   poopTower(100);
@@ -76,11 +76,23 @@ void descoreTower(int towerNum){
       driveToTower();
       driveAutoDist(0, 200, 10); pause();
       driveAutoDist(8, 200, 10); pause();
-      toStartingPoint();
-    } else if (towerNum == 4 || towerNum == 7){ //turn right & go foward
-
+      toStartingPoint(9);
+    } else if (towerNum == 2 || towerNum == 7){ //turn right & go foward
+      //~330 degrees
+      turnTo(330);
+      driveToTower();
+      driveAutoDist(0, 720, 50);
+      turnTo(270);
+      driveAutoDist(0, 400, 50);
+      toStartingPoint(8);
     } else if (towerNum == 0 || towerNum == 5){ //turn left & go foward
-
+      //~220 degrees
+      turnTo(220);
+      driveToTower();
+      driveAutoDist(0, 720, 50);
+      turnTo(270);
+      driveAutoDist(0, 400, 50);
+      toStartingPoint(9);
     } else if (towerNum == 3){ //turn from tower 1 or 6 & descore
 
     } else { // 8 or 4, not sure how we're getting there yet

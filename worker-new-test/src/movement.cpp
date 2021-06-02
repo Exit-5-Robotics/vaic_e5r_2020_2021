@@ -42,7 +42,33 @@ void turnTo(int targetAngle){
   while(fabs(targetAngle - getHeading()) > 2){}
   pause();
 }
-//possibly use jetson to check if one of the lines was missed/overshot
+
+void PIDTurnTo(int targetAngle){
+  if((fabs(targetAngle - getHeading()) < 180 && getHeading() < targetAngle) || (fabs(targetAngle - getHeading()) > 180 && getHeading() > targetAngle)){ //CW
+    driveAuto(2);
+  } else { //CCW
+    driveAuto(3);
+  }
+
+  double Kp = 0.05;
+  double Ki = 0.04;
+  double Kd = 0.1;
+
+  double error = targetAngle - getHeading();
+  double errorSum = 0;
+  double previousError = error;
+  double errorChange;
+
+  while(fabs(targetAngle - getHeading()) > 0.5){
+    error = targetAngle - getHeading();
+    errorSum += error;
+    errorChange = error - previousError;
+    previousError = error;
+
+    setSpeed( (error*Kp) + (errorSum*Ki) + (errorChange * Kd));
+  }
+
+}
 
 void toBestY(){
   while(!backStopper.pressing()){
@@ -53,30 +79,50 @@ void toBestY(){
   driveAutoDist(1, 420, 10);
 }
 
-void toStartingPoint(){
-
+void toStartingPoint(int from){ //8: approaching from right, 8: approaching from left
   bool firstLine = false;
   bool secondLine = false;
   bool timeToStop = false;
 
   //pause();
-  driveAuto(9);
+  driveAuto(from);
   setSpeed(20);
   
   while(!timeToStop){
-    if(fabs(rightLine.value(percentUnits::pct) - lineColorR) < 10){
+    if(fabs(rightLine.value(percentUnits::pct) - lineColorR) < 10 && from == 9){
       Brain.Screen.printAt(10, 100, "firstLine");
       firstLine = true;
       setSpeed(5);
     }
-    if(firstLine && fabs(leftLine.value(percentUnits::pct) - lineColorL) < 10){
+    if(firstLine && fabs(leftLine.value(percentUnits::pct) - lineColorL) < 10 && from == 9){
       Brain.Screen.printAt(10, 120, "secondLine");
       secondLine = true;
       pause();
       driveAuto(8);
       setSpeed(5);
     }
-    if(secondLine && fabs(rightLine.value(percentUnits::pct) - lineColorR) < 10){
+    if(secondLine && fabs(rightLine.value(percentUnits::pct) - lineColorR) < 10 && from == 9){
+      Brain.Screen.printAt(10, 140, "timeToStop");
+      timeToStop = true;
+      pause();
+    }
+    //from 8
+    if(fabs(leftLine.value(percentUnits::pct) - lineColorR) < 10 && from == 8){
+      Brain.Screen.printAt(10, 100, "firstLine");
+      firstLine = true;
+      pause();
+      wait(0.5, seconds);
+      driveAuto(8);
+      setSpeed(5);
+    }
+    if(firstLine && fabs(rightLine.value(percentUnits::pct) - lineColorL) < 10 && from == 8){
+      Brain.Screen.printAt(10, 120, "secondLine");
+      secondLine = true;
+      pause();
+      driveAuto(9);
+      setSpeed(5);
+    }
+    if(secondLine && fabs(leftLine.value(percentUnits::pct) - lineColorR) < 10 && from == 8){
       Brain.Screen.printAt(10, 140, "timeToStop");
       timeToStop = true;
       pause();

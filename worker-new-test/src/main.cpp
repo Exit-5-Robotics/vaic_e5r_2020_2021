@@ -196,10 +196,13 @@ void workerDuties(){
   }*/
   thread stats(updateSensors);
   reset();
-  descoreTower(1);
 
-  //toStartingPoint();
-  //driveToTower();
+  driveAutoDist(1, 360, 20);
+  PIDTurnTo(270);
+  //turnTo(260);
+
+  //toStartingPoint(9);
+  //descoreTower(2);
 
 } 
 
