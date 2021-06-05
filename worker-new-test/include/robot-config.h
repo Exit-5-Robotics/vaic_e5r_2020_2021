@@ -22,6 +22,7 @@ extern line ballChecker;
 //extern distance ballChecker;
 extern line rightLine;
 extern line leftLine;
+extern optical forLine;
 extern bumper   goal;
 extern bumper   backStopper;
 extern smartdrive robotDrive;

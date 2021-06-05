@@ -29,6 +29,7 @@ motor middleDescorer = motor (PORT20, ratio18_1, false);
 
 inertial      tilt(PORT19);
 line          ballChecker(Brain.ThreeWirePort.H);
+optical       forLine(PORT20);
 //distance      ballChecker(PORT2);
 line          rightLine(Brain.ThreeWirePort.F);
 line          leftLine(Brain.ThreeWirePort.G);

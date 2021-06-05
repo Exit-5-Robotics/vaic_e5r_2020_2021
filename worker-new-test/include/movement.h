@@ -7,6 +7,5 @@ void toStartingPoint(int from);
 void toBestY(void);
 
 void turnTo(int targetAngle);
-void PIDTurnTo(int targetAngle);
 
 void alignTower0(void);

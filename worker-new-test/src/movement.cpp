@@ -1,9 +1,13 @@
 #include "vex.h"
 #include <cmath>
 #include <vex_imu.h>
-
+#include <iostream>
 using namespace vex;
 
+/*
+TO DO: 
+- 
+*/
 double tileColorR;
 double tileColorL;
 double lineColorR;
@@ -15,7 +19,7 @@ void reset(){
   while(tilt.isCalibrating()){}
   tileColorL = leftLine.value(percentUnits::pct); //~2,750
   tileColorR = rightLine.value(percentUnits::pct); //~3,000
-  lineColorR = tileColorR *0.6; //~6500
+  lineColorR = tileColorR *0.7; //~6500
   lineColorL = tileColorL *0.5; //~6500
   tilt.resetHeading();
   Brain.Screen.printAt(10, 20, "lineColorR: %f", lineColorR);
@@ -33,40 +37,41 @@ double getHeading(){
 }
 
 void turnTo(int targetAngle){
+  int turningDirection;
   if((fabs(targetAngle - getHeading()) < 180 && getHeading() < targetAngle) || (fabs(targetAngle - getHeading()) > 180 && getHeading() > targetAngle)){ //CW
     driveAuto(2);
+    turningDirection = 2;
   } else { //CCW
     driveAuto(3);
-  }
-  setSpeed(5);
-  while(fabs(targetAngle - getHeading()) > 2){}
-  pause();
-}
-
-void PIDTurnTo(int targetAngle){
-  if((fabs(targetAngle - getHeading()) < 180 && getHeading() < targetAngle) || (fabs(targetAngle - getHeading()) > 180 && getHeading() > targetAngle)){ //CW
-    driveAuto(2);
-  } else { //CCW
-    driveAuto(3);
+    turningDirection = 3;
   }
 
-  double Kp = 0.05;
-  double Ki = 0.04;
-  double Kd = 0.1;
+  double Kp = 0.8;
+  double Ki = 0.0008;
+  double Kd = 0.08;
 
-  double error = targetAngle - getHeading();
+  double error;
   double errorSum = 0;
-  double previousError = error;
+  double previousError = 0;
   double errorChange;
 
   while(fabs(targetAngle - getHeading()) > 0.5){
-    error = targetAngle - getHeading();
+    //finding error
+    error = -1 * fabs(targetAngle - getHeading());
+    if ( (turningDirection == 3 && ((targetAngle > getHeading() && fabs(targetAngle - getHeading()) >= 180) ||  (targetAngle < getHeading() && fabs(targetAngle - getHeading()) < 180))) || (turningDirection == 2 && ((targetAngle < getHeading() && fabs(targetAngle - getHeading()) >= 180 ) || (targetAngle > getHeading() && fabs(targetAngle - getHeading()) < 180))) ) {
+      error *= -1;
+    }
+
+    
     errorSum += error;
     errorChange = error - previousError;
     previousError = error;
 
     setSpeed( (error*Kp) + (errorSum*Ki) + (errorChange * Kd));
+    this_thread::sleep_for(20);  
   }
+  //Brain.Screen.printAt(10, 100, "Error: %f", error*Kp); Brain.Screen.printAt(10, 120, "ErrorSum: %f", errorSum*Ki); Brain.Screen.printAt(10, 140, "ErrorChange: %f", errorChange*Kd);  
+  pause();
 
 }
 
@@ -79,80 +84,64 @@ void toBestY(){
   driveAutoDist(1, 420, 10);
 }
 
-void toStartingPoint(int from){ //8: approaching from right, 8: approaching from left
+void toStartingPoint(int from){ //8: approaching from right, 9: approaching from left
   bool firstLine = false;
   bool secondLine = false;
-  bool timeToStop = false;
+  //bool timeToStop = false;
 
   //pause();
   driveAuto(from);
-  setSpeed(20);
-  
-  while(!timeToStop){
+  setSpeed(10);
+
+  while(!secondLine){
+     
     if(fabs(rightLine.value(percentUnits::pct) - lineColorR) < 10 && from == 9){
-      Brain.Screen.printAt(10, 100, "firstLine");
+      Brain.Screen.printAt(10, 100, "firstLine 9");
       firstLine = true;
       setSpeed(5);
     }
     if(firstLine && fabs(leftLine.value(percentUnits::pct) - lineColorL) < 10 && from == 9){
-      Brain.Screen.printAt(10, 120, "secondLine");
+      Brain.Screen.printAt(10, 120, "secondLine 9");
       secondLine = true;
       pause();
       driveAuto(8);
       setSpeed(5);
-    }
+    }/*
     if(secondLine && fabs(rightLine.value(percentUnits::pct) - lineColorR) < 10 && from == 9){
-      Brain.Screen.printAt(10, 140, "timeToStop");
+      Brain.Screen.printAt(10, 140, "timeToStop 9");
       timeToStop = true;
       pause();
-    }
+    }*/
     //from 8
-    if(fabs(leftLine.value(percentUnits::pct) - lineColorR) < 10 && from == 8){
-      Brain.Screen.printAt(10, 100, "firstLine");
+    if(fabs(leftLine.value(percentUnits::pct) - lineColorL) < 10 && from == 8){
+      Brain.Screen.printAt(10, 100, "firstLine 8");
       firstLine = true;
-      pause();
-      wait(0.5, seconds);
-      driveAuto(8);
       setSpeed(5);
     }
-    if(firstLine && fabs(rightLine.value(percentUnits::pct) - lineColorL) < 10 && from == 8){
-      Brain.Screen.printAt(10, 120, "secondLine");
+    if(firstLine && fabs(rightLine.value(percentUnits::pct) - lineColorR) < 10 && from == 8){
+      Brain.Screen.printAt(10, 120, "secondLine 8");
       secondLine = true;
       pause();
       driveAuto(9);
       setSpeed(5);
-    }
-    if(secondLine && fabs(leftLine.value(percentUnits::pct) - lineColorR) < 10 && from == 8){
-      Brain.Screen.printAt(10, 140, "timeToStop");
+    }/*
+    if(secondLine && fabs(leftLine.value(percentUnits::pct) - lineColorL) < 10 && from == 8){
+      Brain.Screen.printAt(10, 140, "timeToStop 8");
       timeToStop = true;
       pause();
-    }
+    }*/
   }
-  turnTo(270);
+  //turnTo(270);
   pause();
-  toBestY();
+  //toBestY();
 }
 
-void alignTower1(){
-  //if its a check, currentTower = 0, so just do little wigglies
-  //have different situations for if current tower = 2||3 to realign w/center
-}
-
-void alignTower0(){
-  //align & check descore, then run alignTower1()
-}
-
-void alignTower2(){
-  //align & check descore, then run alignTower1()
-}
-
-void alignTower3(){
-  //twist until facing middle tower, check middle tower & descore if neccessary, then spin again to align with tower1
-}
-
-void toOptimalY(){
-  //not sure if this is necessary, just turn & use jetston to check currentY to make sure robot is in good Ypos for corner tower checking
-  //possibly do this & then alignTower1() before turning to check corner towers
+void toFlipLine(){
+  driveAutoDist(9, 400, 30);
+  turnTo(0);
+  driveAutoDist(9, 800, 30);
+  turnTo(90);
+  toStartingPoint(9);
 }
 
 void scoutBalls(){
