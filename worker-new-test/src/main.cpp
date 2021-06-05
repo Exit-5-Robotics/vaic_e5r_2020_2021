@@ -186,6 +186,7 @@ void updateSensors(){
     Brain.Screen.printAt(10, 60, "RightLine: %d", rightLine.value(percentUnits::pct));
     Brain.Screen.printAt(10, 80, "LightLine: %d", leftLine.value(percentUnits::pct));
     Brain.Screen.printAt(10, 160, "Angle: %f", getHeading());
+    Brain.Screen.printAt(10, 180, "speed: %d", RF.velocity(percentUnits::pct));
     //Brain.Screen.printAt(10, 180, "BallChecker: %d", ballChecker.reflectivity());
   }
 }
@@ -199,12 +200,15 @@ void workerDuties(){
   thread stats(updateSensors);
   reset();
 
-  //driveAutoDist(1, 360, 20);
-  //turnTo(270);
+  turnTo(90);
+  
+  /*driveAutoDist(1, 360, 50);
+  turnTo(260);
+  driveAutoDist(9, 1000, 50);
 
-  toStartingPoint(9);
-  //descoreTower(2);
-
+  toStartingPoint(9, 270);
+  toFlipLine();
+  descoreTower(5);*/
 } 
 
 void auto_Interaction(void) {

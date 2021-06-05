@@ -19,10 +19,6 @@ void setSpeed(int speed){
   RB.setVelocity(RBv * speed, pct);
   LF.setVelocity(LFv * speed, pct);
   LB.setVelocity(LBv * speed, pct);
-  Brain.Screen.printAt(10, 200, "RF: %d", RF.velocity(percentUnits::pct));
-  Brain.Screen.printAt(80, 200, "RB: %d", RB.velocity(percentUnits::pct));
-  Brain.Screen.printAt(150, 200, "LF: %d", LF.velocity(percentUnits::pct));
-  Brain.Screen.printAt(220, 200, "LB: %d", LB.velocity(percentUnits::pct));
 }
 
 void driveAuto(int direction1){
@@ -176,7 +172,7 @@ void driveAutoDist(int direction1, int dist, int speed){
     RBv = 1; LFv = -1;
     setSpeed(speed);
     RB.spinFor(forward, dist, degrees, false);
-    LF.spinFor(reverse, dist, degrees);
+    LF.spinFor(forward, dist, degrees);
     break;
 
     case 5: //RIGHT FORWARD

@@ -72,31 +72,69 @@ void driveToTower(){
 
 void descoreTower(int towerNum){
   //if(checkDescore()){
-    if(towerNum == 1 || towerNum == 6){ //just go foward
-      driveToTower();
-      driveAutoDist(0, 200, 10); pause();
-      driveAutoDist(8, 200, 10); pause();
-      toStartingPoint(9);
-    } else if (towerNum == 2 || towerNum == 7){ //turn right & go foward
-      //~330 degrees
-      turnTo(330);
-      driveToTower();
-      driveAutoDist(0, 720, 50);
-      turnTo(270);
-      driveAutoDist(0, 400, 50);
-      toStartingPoint(8);
-    } else if (towerNum == 0 || towerNum == 5){ //turn left & go foward
-      //~220 degrees
+
+    switch(towerNum){
+      case 0:
       turnTo(220);
       driveToTower();
       driveAutoDist(0, 720, 50);
       turnTo(270);
-      driveAutoDist(0, 400, 50);
-      toStartingPoint(9);
-    } else if (towerNum == 3){ //turn from tower 1 or 6 & descore
-
-    } else { // 8 or 4, not sure how we're getting there yet
-
+      driveAutoDist(7, 700, 50);
+      toStartingPoint(9, 270);
+      break;
+      
+      case 1:
+      driveToTower();
+      driveAutoDist(0, 200, 10); pause();
+      driveAutoDist(8, 200, 10); pause();
+      toStartingPoint(9, 270);
+      break;
+      
+      case 2:
+      turnTo(330);
+      driveToTower();
+      driveAutoDist(0, 720, 50);
+      turnTo(270);
+      driveAutoDist(4, 700, 50);
+      toStartingPoint(8, 270);
+      break;
+      
+      case 3:
+      break;
+      
+      case 4:
+      break;
+      
+      case 5:
+      turnTo(33);
+      driveToTower();
+      driveAutoDist(0, 720, 50);
+      turnTo(90);
+      driveAutoDist(7, 700, 50);
+      toStartingPoint(9, 90);
+      break;
+      
+      case 6:
+      driveToTower();
+      driveAutoDist(0, 200, 10); pause();
+      driveAutoDist(8, 200, 10); pause();
+      toStartingPoint(9, 90);
+      break;
+      
+      case 7:
+      turnTo(150);
+      driveToTower();
+      driveAutoDist(0, 720, 50);
+      turnTo(90);
+      driveAutoDist(4, 700, 50);
+      toStartingPoint(8, 90);
+      break;
+      
+      case 8:
+      break;
+      
     }
+
+  
   //}
 }
