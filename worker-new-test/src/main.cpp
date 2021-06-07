@@ -200,8 +200,8 @@ void workerDuties(){
   thread stats(updateSensors);
   reset();
 
-  turnTo(90);
-  
+  //turnTo(90);
+  pooper.spin(forward, 100, percent);
   /*driveAutoDist(1, 360, 50);
   turnTo(260);
   driveAutoDist(9, 1000, 50);
