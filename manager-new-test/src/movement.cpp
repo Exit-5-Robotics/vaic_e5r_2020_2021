@@ -13,44 +13,33 @@ int distPosition = 1;
 TO DO: 
 - 
 */
-double tileColorR;
-double tileColorL;
 double lineColorR;
 double lineColorL;
 
 void reset(){
-  this_thread::sleep_for(1000);
   tilt.calibrate();
   while(tilt.isCalibrating()){}
-  tileColorL = leftLine.value(percentUnits::pct); //~2,750
-  tileColorR = rightLine.value(percentUnits::pct); //~3,000
-  lineColorR = tileColorR *0.75; //~6500
-  lineColorL = tileColorL *0.75; //~6500
-  tilt.resetHeading();
+  rightLine.setLightPower(100, percent);
+  leftLine.setLightPower(100, percent);
+  rightLine.setLight(ledState::on);
+  leftLine.setLight(ledState::on);
+  this_thread::sleep_for(1000);
+  lineColorR = leftLine.brightness(true) *2.5; //~6500
+  lineColorL = rightLine.brightness(true) *2.5; //~6500
   Brain.Screen.printAt(10, 20, "lineColorR: %f", lineColorR);
   Brain.Screen.printAt(10, 40, "lineColorL: %f", lineColorL);
 }
 
-double getHeading(){
-  if(!OUR_COLOR){ // if red, shift 180 degrees
-    if(tilt.heading() < 180){
-      return tilt.heading() + 180;
-    } else {
-      return tilt.heading() - 180;
-    }
-  } return tilt.heading();
-}
-
 double angleDifference(int target, int dir){
-  if( (dir == 2 && target < getHeading()) || (dir == 3 && target > getHeading()) ){
-    return fabs(target + getHeading() - 360);
+  if( (dir == 2 && target < tilt.heading()) || (dir == 3 && target > tilt.heading()) ){
+    return fabs(target + tilt.heading() - 360);
   }
-  return fabs(target - getHeading());
+  return fabs(target - tilt.heading());
 }
 
 void turnTo(int targetAngle){
   int turningDirection;
-  if((fabs(targetAngle - getHeading()) < 180 && getHeading() < targetAngle) || (fabs(targetAngle - getHeading()) > 180 && getHeading() > targetAngle)){ //CW
+  if((fabs(targetAngle - tilt.heading()) < 180 && tilt.heading() < targetAngle) || (fabs(targetAngle - tilt.heading()) > 180 && tilt.heading() > targetAngle)){ //CW
     driveAuto(2);
     turningDirection = 2;
   } else { //CCW
@@ -74,7 +63,7 @@ void turnTo(int targetAngle){
   while(angleDifference(targetAngle, turningDirection) > 0.5){
     //finding error
     error = -1 * angleDifference(targetAngle, turningDirection);
-    if ( (turningDirection == 3 && ((targetAngle > getHeading() && fabs(targetAngle - getHeading()) >= 180) ||  (targetAngle < getHeading() && fabs(targetAngle - getHeading()) < 180))) || (turningDirection == 2 && ((targetAngle < getHeading() && fabs(targetAngle - getHeading()) >= 180 ) || (targetAngle > getHeading() && fabs(targetAngle - getHeading()) < 180))) ) {
+    if ( (turningDirection == 3 && ((targetAngle > tilt.heading() && fabs(targetAngle - tilt.heading()) >= 180) ||  (targetAngle < tilt.heading() && fabs(targetAngle - tilt.heading()) < 180))) || (turningDirection == 2 && ((targetAngle < tilt.heading() && fabs(targetAngle - tilt.heading()) >= 180 ) || (targetAngle > tilt.heading() && fabs(targetAngle - tilt.heading()) < 180))) ) {
       error *= -1;
     }
     
@@ -98,42 +87,56 @@ void toBestY(){
     setSpeed(20);
   }
   pause();
-  driveAutoDist(0, 600, 20);
+  driveAutoDist(0, 800, 20);
 }
 
 void toStartingPoint(int from, int endDir){ //8: approaching from right, 9: approaching from left
+  bool fastCheck = false;
   bool firstLine = false;
   bool secondLine = false;
   bool done = false;
 
   driveAuto(from);
-  setSpeed(20);
+  setSpeed(10);
+
+  while (!fastCheck){
+    if((from == 8 && rightLine.brightness(true) > lineColorR)){
+      fastCheck = true;
+      from = 9;
+      driveAuto(9);
+    } else if ((from == 9 && leftLine.brightness(true) > lineColorL)){
+      fastCheck = true;
+      from = 8;
+      driveAuto(8);
+    }
+  }
+  Brain.Screen.printAt(10, 100, "fastLine finished");
+  /*
+  setSpeed(8);
 
   while(!done){
      
-    if(fabs(rightLine.value(percentUnits::pct) - lineColorR) < 10 && from == 9){
+    if(rightLine.brightness() > lineColorR && from == 9){
       //Brain.Screen.printAt(10, 100, "firstLine 9");
       firstLine = true;
-      setSpeed(5);
     }
-    if(firstLine && fabs(leftLine.value(percentUnits::pct) - lineColorL) < 10 && from == 9){
+    if(firstLine && leftLine.brightness() > lineColorL && from == 9){
       //Brain.Screen.printAt(10, 120, "secondLine 9");
       secondLine = true;
       pause();
     }
     //from 8
-    if(fabs(leftLine.value(percentUnits::pct) - lineColorL) < 10 && from == 8){
+    if(leftLine.brightness() > lineColorL && from == 8){
       //Brain.Screen.printAt(10, 100, "firstLine 8");
       firstLine = true;
-      setSpeed(5);
     }
-    if(firstLine && fabs(rightLine.value(percentUnits::pct) - lineColorR) < 10 && from == 8){
+    if(firstLine && rightLine.brightness() > lineColorR && from == 8){
       //Brain.Screen.printAt(10, 120, "secondLine 8");
       secondLine = true;
       pause();
     }
     //double check
-    if(secondLine && fabs(rightLine.value(percentUnits::pct) - lineColorR) > 10){
+    if(secondLine && rightLine.brightness() > lineColorR){
       firstLine = false;
       secondLine = false;
       setSpeed(20);
@@ -151,10 +154,10 @@ void toStartingPoint(int from, int endDir){ //8: approaching from right, 9: appr
       done = true;
     }
     
-  }
-  turnTo(endDir);
+  }*/
+  //turnTo(endDir);
   pause();
-  toBestY();
+  //toBestY();
 }
 
 void toFlipLine(){
@@ -180,20 +183,14 @@ void scoutBalls(){
 
 /////////////////////////////////////////BALL HANDLING//////////////////////////////
 
-void lookAround( void ) {
-  robotDrive.turnFor(right, 360, degrees, 10, velocityUnits::pct);
-  task::sleep(10000);
-  stopDriving();
-}
-
-void intake( int speed ) {
-  while (ballThree.value(analogUnits::mV) > 3300) {
-    Brain.Screen.printAt(20, 180, "%d", ballThree.value(analogUnits::mV));
-    robotDrive.drive(fwd, speed, vex::velocityUnits::pct);
-    intakeWheels.spin(fwd, 100, vex::velocityUnits::pct);
-  }
-  stopDriving();
-  intakeWheels.spinFor(fwd, 720, degrees, 60, vex::velocityUnits::pct);
+void intake() {
+  pause();
+  intakeWheels.spinFor(fwd, 800, degrees, 60, vex::velocityUnits::pct);
+  Brain.Screen.printAt(10, 120, "starting");
+  while (ballThree.value(analogUnits::mV) > 3300) {}
+  pause();
+  Brain.Screen.printAt(10, 140, "done");
+  intakeWheels.spinFor(fwd, 800, degrees, 60, vex::velocityUnits::pct);
   intakeWheels.stop();
 }
 
@@ -205,33 +202,22 @@ void intakeNoDrive() {
 }
 
 int score() {
-  // ONLY RUN IF THE DESIRED SCORED BALL IS IN POSITION 3/ARRAY INDEX 0
-  robotDrive.drive(fwd, 10, velocityUnits::pct);
-  botRoller.spin(fwd, 100, vex::velocityUnits::pct);
-  topRoller.spin(fwd, 100, vex::velocityUnits::pct);
-  task::sleep(2000);
-  stopDriving();
+  scoringRollers.setVelocity(100, percentUnits::pct);
+  scoringRollers.spinFor(fwd, 0.4, seconds);
+  topRoller.spinFor(fwd, 1, seconds);
   return 0;
 }
 
 void poop() {
   // ONLY RUN IF THE DESIRED POOPED BALL IS IN POSITION 2/ARRAY INDEX 1
+  //intake(intakeDriveSpeed);
   botRoller.spinFor(fwd, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct, false);
   topRoller.spinFor(reverse, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
 }
 
-void descore() {
-  while(!goal.pressing()) robotDrive.drive(fwd, 30, vex::velocityUnits::pct);
-  intake(intakeDriveSpeed);
-  robotDrive.driveFor(reverse, 10, vex::distanceUnits::in, 30, vex::velocityUnits::pct);
-}
-
 int adjustHold() {
-  while (ballZero.value(analogUnits::mV) > 3400) {
-    botRoller.spin(fwd, 100, vex::velocityUnits::pct);
-    topRoller.spin(fwd, 100, vex::velocityUnits::pct);
-  }
-  botRoller.stop();
+  botRoller.setVelocity(100, pct);
+  botRoller.spinFor(fwd, 0.8, seconds);
   topRoller.stop();
   return 0;
 }

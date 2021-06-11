@@ -137,11 +137,9 @@ void autonomousMain(void) {
 
 void updateSensors(){
   while(true){
-    //Brain.Screen.printAt(10, 60, "RightLine: %d", rightLine.value(percentUnits::pct));
-    //Brain.Screen.printAt(10, 80, "LightLine: %d", leftLine.value(percentUnits::pct));
-    Brain.Screen.printAt(10, 60, "RightLine: %d", rightLine.value(percentUnits::pct));
-    Brain.Screen.printAt(10, 80, "LightLine: %d", leftLine.value(percentUnits::pct));
-    Brain.Screen.printAt(10, 160, "Angle: %f", getHeading());
+    Brain.Screen.printAt(10, 60, "RightLine: %f", rightLine.brightness(true));
+    Brain.Screen.printAt(10, 80, "LeftLine: %f", leftLine.brightness(true));
+    Brain.Screen.printAt(10, 160, "Angle: %f", tilt.heading());
     Brain.Screen.printAt(10, 180, "speed: %d", RF.velocity(percentUnits::pct));
 
     //Brain.Screen.printAt(10, 180, "BallChecker: %d", ballChecker.reflectivity());
@@ -157,9 +155,25 @@ void managerDuties(){
   }*/
   thread stats(updateSensors);
   reset();
-
-  //LF.spin(forward);
-  toBestY();
+  
+  driveToTower();
+  /*
+  PLAN:
+    -use jetson only to see if we should descore
+    -run driveToTower, intake, & score no matter what
+    -check if we had a ball 
+      - if yes:
+        -back away and do the rest of this stuff in a thread while going back into position
+        -use vision sensor to go through collected balls individually
+          -use adjustHold to get it into position
+          -use vision to determine if it's out color
+            - if yes: store it in the top rollers & eject everything out using the intake so the top rollers can stay stationaru
+            - if no: poop
+    - if no:
+      - adjust hold to get individual balls into position
+      - if our color, score it
+      - in a thread while robot going back into position, poop out any other balls (just move intake & run poop for 5sec or somthing idk)
+  */
 
   //turnTo(90);
   

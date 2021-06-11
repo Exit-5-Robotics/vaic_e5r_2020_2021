@@ -13,14 +13,15 @@ message_link  LinkA( PORT9, "vex_robotics_team_3063_A", linkType::manager );
 line          ballZero(Brain.ThreeWirePort.C); // TOP ball
 line          ballThree(Brain.ThreeWirePort.D); // BOT ball
 vex::distance dist(PORT5);
-inertial      tilt( PORT10 );
+inertial      tilt( PORT12 );
 
-motor         leftIntake(PORT1, ratio18_1, false);
+motor         leftIntake(PORT3, ratio18_1, false);
 motor         rightIntake(PORT19, ratio18_1, true);
 motor_group   intakeWheels( leftIntake, rightIntake );
 
-motor         botRoller(PORT11, ratio18_1, false);
-motor         topRoller(PORT13, ratio18_1, false);
+motor         botRoller(PORT20, ratio18_1, false);
+motor         topRoller(PORT10, ratio18_1, false);
+motor_group   scoringRollers(botRoller, topRoller);
 motor         distMotor(PORT8, ratio18_1, true);
 
 motor         LB(PORT16, ratio18_1, false);
@@ -34,9 +35,9 @@ motor_group   rightDiagDrive( LF, RB );
 motor_group   leftDiagDrive( RF, LB );
 
 bumper        goal(Brain.ThreeWirePort.E);
-line          rightLine(Brain.ThreeWirePort.F);
-line          leftLine(Brain.ThreeWirePort.G);
-
+optical       rightLine(PORT1);
+optical       leftLine(PORT15);
+vision        colorSensor(PORT3);
 
 smartdrive    robotDrive( leftDrive, rightDrive, tilt, 12.56, 14.125, 9, distanceUnits::in ); // might have to change values
 
@@ -47,9 +48,9 @@ controller Controller1 = controller(primary); //
  */
 void vexcodeInit(void) {
   if (OUR_COLOR == RED) {
-    tilt.setHeading(270, deg);
+    tilt.setHeading(180, deg);
   } else if (OUR_COLOR == BLUE) {
-    tilt.setHeading(90, deg);
+    tilt.setHeading(0, deg);
   }
 }
 

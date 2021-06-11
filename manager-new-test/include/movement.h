@@ -4,7 +4,7 @@ using namespace vex;
 void lookAround( void );
 void stopDriving( void );
 
-extern void intake( int speed );
+extern void intake( void );
 extern void outtake( void );
 extern int score( void );
 extern void poop( void );

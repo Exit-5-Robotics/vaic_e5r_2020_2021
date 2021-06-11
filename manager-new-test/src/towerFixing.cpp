@@ -1,7 +1,33 @@
 #include "vex.h"
 #include <vex_distance.h>
-// call descore() to check if descoring is necessary / descore
 
+
+//TOWER FIXING LOGIC
+bool storingBall = true;
+
+void fixWithoutBall(int location){ // location of our color ball in tower that will be scored 0: bottom, 1:middle, 2:top
+  int ballsPooped = 0;
+  while(ballsPooped < location){
+    intake();
+    poop();
+  }
+  intake();
+  score();
+}
+
+void fixTower(){
+  //if(checkDescore()){
+      if(storingBall){
+        thread scoring(score);
+        intake();
+    } else {
+      fixWithoutBall(5);
+    }
+  //}
+}
+
+
+//DESCORE LOGIC
 bool checkDescore(){
   static MAP_RECORD  local_map;
 
@@ -34,12 +60,17 @@ bool checkDescore(){
   return false;
 }
 
+//MORE LIKE NAV BUT ITS FINEEEEEE
+
 void driveToTower(){
   driveAuto(1);
-  setSpeed(40);
+  setSpeed(50);
+  intakeWheels.spin(fwd, 100, vex::velocityUnits::pct);
+  thread adjust(adjustHold);
   while(!goal.pressing()){}
   pause();
-  poopTower(100);
+  Brain.Screen.printAt(10, 100, "intake");
+  fixTower();
 }
 
 void descoreTower(int towerNum){

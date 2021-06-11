@@ -36,19 +36,19 @@ void driveAuto(int direction1){
 
   switch(direction1){
     case 0: //BACKWARD
-    RFv = 1; RBv = 1; LFv = 1; LBv = 1;
-    RF.spin(forward); 
-    RB.spin(forward); 
-    LF.spin(forward); 
+    RFv = -1; RBv = -1; LFv = -1; LBv = -1;
+    RF.spin(reverse); 
+    RB.spin(reverse); 
+    LF.spin(reverse); 
     LB.spin(forward);
     break;
 
     case 1: //FORWARD
-    RFv = -1; RBv = -1; LFv = -1; LBv = -1;
-    RF.spin(reverse);
-    RB.spin(reverse);
-    LF.spin(reverse);
-    LB.spin(reverse);
+    RFv = 1; RBv = 1; LFv = 1; LBv = 1;
+    RF.spin(forward);
+    RB.spin(forward);
+    LF.spin(forward);
+    LB.spin(forward);
     break;
 
     case 2: //CLOCKWISE
@@ -112,6 +112,7 @@ void driveAuto(int direction1){
 
 //STOP ALL WHEELS
 void pause(){
+  robotDrive.stop();
   RF.stop();
   LF.stop();
   RB.stop();
@@ -131,21 +132,22 @@ void driveAutoDist(int direction1, int dist, int speed){
   //7 = RIGHT BACK
   switch (direction1) {
     case 0: //BACKWARD
-    RFv = 1; RBv = 1; LFv = 1; LBv = 1;
-    setSpeed(speed);
-    RF.spinFor(forward, dist, degrees, false);
-    RB.spinFor(forward, dist, degrees, false);
-    LF.spinFor(forward, dist, degrees, false);
-    LB.spinFor(forward, dist, degrees);
-    break;
-
-    case 1: //FORWARD
     RFv = -1; RBv = -1; LFv = -1; LBv = -1;
     setSpeed(speed);
     RF.spinFor(reverse, dist, degrees, false);
     RB.spinFor(reverse, dist, degrees, false);
     LF.spinFor(reverse, dist, degrees, false);
     LB.spinFor(reverse, dist, degrees);
+    break;
+
+    case 1: //FORWARD
+    RFv = 1; RBv = 1; LFv = 1; LBv = 1;
+    setSpeed(speed);
+    RF.spinFor(forward, dist, degrees, false);
+    RB.spinFor(forward, dist, degrees, false);
+    LF.spinFor(forward, dist, degrees, false);
+    LB.spinFor(forward, dist, degrees);
+    
     break;
 
     case 2: //CLOCKWISE
