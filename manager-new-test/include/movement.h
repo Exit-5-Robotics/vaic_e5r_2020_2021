@@ -13,6 +13,7 @@ extern void intakeNoDrive( void );
 
 extern void descore( void );
 extern int adjustHold( void );
+extern void adjustWIntake( void );
 
 //
 

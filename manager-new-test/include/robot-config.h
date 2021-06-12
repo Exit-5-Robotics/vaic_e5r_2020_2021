@@ -12,6 +12,7 @@ extern motor_group intakeWheels;
 extern motor botRoller;
 extern motor topRoller;
 extern motor_group scoringRollers;
+extern motor_group   intakeRollers;
 extern motor distMotor;
 extern motor LB;
 extern motor LF;
@@ -26,7 +27,10 @@ extern optical leftLine;
 extern inertial tilt;
 extern bumper goal;
 extern smartdrive robotDrive;
-extern vision colorSensor;
+extern optical colorSensor;
+
+
+// VEXcode devices
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

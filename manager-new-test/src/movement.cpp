@@ -4,7 +4,6 @@
 #include <iostream>
 using namespace vex;
 
-const int rollerDistance = 400;
 const int intakeDriveSpeed = 10;
 int distPosition = 1;
 
@@ -209,15 +208,19 @@ int score() {
 }
 
 void poop() {
-  // ONLY RUN IF THE DESIRED POOPED BALL IS IN POSITION 2/ARRAY INDEX 1
+  // run if the ball is in adjustHold position
   //intake(intakeDriveSpeed);
-  botRoller.spinFor(fwd, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct, false);
-  topRoller.spinFor(reverse, rollerDistance, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
+  botRoller.spinFor(fwd, 150, vex::rotationUnits::deg, 100, vex::velocityUnits::pct, false);
+  topRoller.spinFor(reverse, 300, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
 }
 
-int adjustHold() {
+int adjustHold(void) {
   botRoller.setVelocity(100, pct);
   botRoller.spinFor(fwd, 0.8, seconds);
-  topRoller.stop();
   return 0;
+}
+
+void adjustWIntake(){
+  intakeRollers.setVelocity(100, pct);
+  intakeRollers.spinFor(0.8, seconds);
 }

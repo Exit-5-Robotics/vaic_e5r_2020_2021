@@ -3,26 +3,56 @@
 
 
 //TOWER FIXING LOGIC
-bool storingBall = true;
+bool haveBall = true;
 
-void fixWithoutBall(int location){ // location of our color ball in tower that will be scored 0: bottom, 1:middle, 2:top
-  int ballsPooped = 0;
-  while(ballsPooped < location){
-    intake();
-    poop();
+void sortBalls(){
+  /*bool foundBall = false;
+  int ballsSorted = 0;
+  while(ballsSorted < 3 && !foundBall){
+    this_thread::sleep_for(1000);
+    int blueArea = 0, redArea = 0;
+    adjustWIntake();
+    //finding the color of the ball
+    colorSensor.takeSnapshot(BLUE_BALL);
+    if(colorSensor.largestObject.exists){
+      blueArea = colorSensor.largestObject.height * colorSensor.largestObject.width;
+    }
+    colorSensor.takeSnapshot(RED_BALL);
+    if(colorSensor.largestObject.exists){
+      redArea = colorSensor.largestObject.height * colorSensor.largestObject.width;
+    }
+    //seeing if that ball is our color
+    if( (OUR_COLOR && blueArea > redArea) || (!OUR_COLOR && redArea > blueArea) ){ // we found our color ball, store it
+      foundBall = true;
+      scoringRollers.setVelocity(100, pct);
+      scoringRollers.spinFor(0.1, seconds);
+      topRoller.spinFor(0.3, seconds);
+      Brain.Screen.printAt(10, 100, "yes");
+    } else{ //not our color, poop it
+      poop();
+      Brain.Screen.printAt(10, 100, "no");
+      Brain.Screen.printAt(10, 120, "redArea: %f: ", redArea);
+      Brain.Screen.printAt(10, 140, "blueArea: %f: ", blueArea);
+    }
+    ballsSorted++; 
   }
-  intake();
-  score();
+  this_thread::sleep_for(1000);
+  //empty any leftovers
+  intakeRollers.setVelocity(100, percent);
+  intakeRollers.spin(fwd);
+  topRoller.setBrake(hold);
+  this_thread::sleep_for(2500);
+  intakeRollers.stop();*/
 }
 
 void fixTower(){
   //if(checkDescore()){
-      if(storingBall){
-        thread scoring(score);
-        intake();
-    } else {
-      fixWithoutBall(5);
+    thread scoring(score);
+    intake();
+    if(!haveBall){
+
     }
+    thread sort(sortBalls);
   //}
 }
 

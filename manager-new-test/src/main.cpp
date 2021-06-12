@@ -1,3 +1,8 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// colorSensor          vision        8               
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*------------------------------------------------------------------------------*/
 /*    Module:       main.cpp                                                    */
 /*    Description:  V5 project                                                  */
@@ -142,7 +147,8 @@ void updateSensors(){
     Brain.Screen.printAt(10, 160, "Angle: %f", tilt.heading());
     Brain.Screen.printAt(10, 180, "speed: %d", RF.velocity(percentUnits::pct));
 
-    //Brain.Screen.printAt(10, 180, "BallChecker: %d", ballChecker.reflectivity());
+    
+    Brain.Screen.printAt(10, 100, "BallChecker: %f", colorSensor.hue());
   }
 }
 
@@ -156,7 +162,8 @@ void managerDuties(){
   thread stats(updateSensors);
   reset();
   
-  driveToTower();
+  //sortBalls();
+  //driveToTower();
   /*
   PLAN:
     -use jetson only to see if we should descore

@@ -22,6 +22,7 @@ motor_group   intakeWheels( leftIntake, rightIntake );
 motor         botRoller(PORT20, ratio18_1, false);
 motor         topRoller(PORT10, ratio18_1, false);
 motor_group   scoringRollers(botRoller, topRoller);
+motor_group   intakeRollers(botRoller, leftIntake, rightIntake);
 motor         distMotor(PORT8, ratio18_1, true);
 
 motor         LB(PORT16, ratio18_1, false);
@@ -37,7 +38,8 @@ motor_group   leftDiagDrive( RF, LB );
 bumper        goal(Brain.ThreeWirePort.E);
 optical       rightLine(PORT1);
 optical       leftLine(PORT15);
-vision        colorSensor(PORT3);
+
+optical       colorSensor(PORT8);
 
 smartdrive    robotDrive( leftDrive, rightDrive, tilt, 12.56, 14.125, 9, distanceUnits::in ); // might have to change values
 
