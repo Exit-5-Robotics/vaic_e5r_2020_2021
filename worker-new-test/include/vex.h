@@ -28,7 +28,6 @@
 #include "drive.h"
 #include "movement.h"
 #include "navigation.h"
-#include "towerMap.h"
 
 #include "robot-config.h"
 

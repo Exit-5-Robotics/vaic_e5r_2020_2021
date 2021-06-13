@@ -27,10 +27,15 @@ motor_group intake (intakeLeft, intakeRight);
 motor_group pooper(roller, intakeLeft, intakeRight);
 motor middleDescorer = motor (PORT20, ratio18_1, false);
 
-inertial      tilt(PORT5);
+inertial      tilt(PORT19);
 line          ballChecker(Brain.ThreeWirePort.H);
-bumper        goal(Brain.ThreeWirePort.A);
+optical       forLine(PORT20);
+//distance      ballChecker(PORT2);
+line          rightLine(Brain.ThreeWirePort.F);
+line          leftLine(Brain.ThreeWirePort.G);
+bumper        goal(Brain.ThreeWirePort.C);
 bumper        backStopper(Brain.ThreeWirePort.B); //UPDATE THIS PLZ
+
 /*                                                       A      B    C              */
 smartdrive    robotDrive( leftDrive, rightDrive, tilt, 12.56, 7.75, 10.9, distanceUnits::in ); 
   // A: circumference

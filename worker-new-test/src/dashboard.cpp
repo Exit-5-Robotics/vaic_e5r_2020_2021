@@ -156,7 +156,7 @@ dashboardVexlink( int ox, int oy, int width, int height ) {
   
   Brain.Screen.printAt( ox + 10, oy += 15, " X:   %.2f", x);
   Brain.Screen.printAt( ox + 10, oy += 15, " Y:   %.2f", y);
-  Brain.Screen.printAt( ox + 10, oy += 15, " H:   %.2f", toNormalAngle(heading*180/M_PI));
+  Brain.Screen.printAt( ox + 10, oy += 15, " H:   %.2f", heading);
 
   oy += 5;
   Brain.Screen.printAt( ox + 10, oy += 15, "Location: remote");
@@ -165,7 +165,7 @@ dashboardVexlink( int ox, int oy, int width, int height ) {
   
   Brain.Screen.printAt( ox + 10, oy += 15, " X:   %.2f", x);
   Brain.Screen.printAt( ox + 10, oy += 15, " Y:   %.2f", y);
-  Brain.Screen.printAt( ox + 10, oy += 15, " H:   %.2f", toNormalAngle(heading*180/M_PI));
+  Brain.Screen.printAt( ox + 10, oy += 15, " H:   %.2f", heading);
 }
 
 //
@@ -175,7 +175,7 @@ int
 dashboardTask() {
   while(true) {
     // status
-    dashboardJetson(    0, 0, 280, 240 );
+    //dashboardJetson(    0, 0, 280, 240 );
     dashboardVexlink( 279, 0, 201, 240 );
     // draw, at 30Hz
     Brain.Screen.render();

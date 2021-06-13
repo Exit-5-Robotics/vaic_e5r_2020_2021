@@ -106,8 +106,8 @@ void blueIsolation5(){ // starts near centerNode 5
   this_thread::sleep_for(4500);
   pause();
   
-  snailTo(270);
-  snailTo(270);
+  //snailTo(270);
+  //snailTo(270);
   
   setSpeed(30);
   float currentY;
@@ -122,11 +122,11 @@ void blueIsolation5(){ // starts near centerNode 5
   }
   pause();
   this_thread::sleep_for(1000);
-  driveAutoDist(8, 900);
+  //driveAutoDist(8, 900);
   middleDescorer.setVelocity(40, pct);
   middleDescorer.spinFor(reverse, 4, seconds);
   middleDescorer.stop(brakeType::brake);
-  driveAutoDist(0, 180);
+  //driveAutoDist(0, 180);
   //while(!backStopper.pressing()){
   //  driveAuto(0);
   //}
@@ -139,8 +139,8 @@ void redIsolation5(){ // starts near centerNode 5
   driveAuto(1);
   this_thread::sleep_for(4500);
   pause();
-  snailTo(90);
-  snailTo(90);
+  //snailTo(90);
+  //snailTo(90);
 
   setSpeed(30);
   float currentY;
@@ -155,11 +155,11 @@ void redIsolation5(){ // starts near centerNode 5
   }
   pause();
   this_thread::sleep_for(1000);
-  driveAutoDist(8, 900);
+  //driveAutoDist(8, 900);
   middleDescorer.setVelocity(40, pct);
   middleDescorer.spinFor(reverse, 4, seconds);
   middleDescorer.stop(brakeType::brake);
-  driveAutoDist(0, 180);
+  //driveAutoDist(0, 180);
   //while(!backStopper.pressing()){
    // driveAuto(0);
   //}
@@ -168,42 +168,47 @@ void redIsolation5(){ // starts near centerNode 5
 }
 
 void descoreMiddle(){
-  driveAutoDist(1, 180);
+  //driveAutoDist(1, 180);
   this_thread::sleep_for(100);
   //while(!backStopper.pressing()){
   //  driveAuto(0);
   //}
-  driveAutoDist(0, 180);
+  //driveAutoDist(0, 180);
   pause();
   this_thread::sleep_for(100);
 }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void workerDuties(){
+///////////////////////////////////////////HAHAHAHAHA/////////////////////////////////////////////////////////////////
 
+void updateSensors(){
+  while(true){
+    //Brain.Screen.printAt(10, 60, "RightLine: %d", rightLine.value(percentUnits::pct));
+    //Brain.Screen.printAt(10, 80, "LightLine: %d", leftLine.value(percentUnits::pct));
+    Brain.Screen.printAt(10, 60, "RightLine: %d", rightLine.value(percentUnits::pct));
+    Brain.Screen.printAt(10, 80, "LightLine: %d", leftLine.value(percentUnits::pct));
+    Brain.Screen.printAt(10, 160, "Angle: %f", getHeading());
+    Brain.Screen.printAt(10, 180, "speed: %d", RF.velocity(percentUnits::pct));
+    //Brain.Screen.printAt(10, 180, "BallChecker: %d", ballChecker.reflectivity());
+  }
+}
+
+void workerDuties(){
+/*
   jetson_comms.get_data( &local_map );
   while(jetson_comms.get_packets() == 0){
     jetson_comms.get_data( &local_map );
-  }
-  
-  //this_thread::sleep_for(45000);
-  
-  if(OUR_COLOR){ //blue
-    blueIsolation5();
-  } else { //red
-    redIsolation5();
-  }
+  }*/
+  thread stats(updateSensors);
+  reset();
 
-  setSpeed(30);
-  while(1){
-    descoreMiddle();
-    if(OUR_COLOR){ //blue
-      descore(270);
-    } else { //red
-      descore(90);
-    }
-    
-  }
+  //turnTo(90);
+  pooper.spin(forward, 100, percent);
+  /*driveAutoDist(1, 360, 50);
+  turnTo(260);
+  driveAutoDist(9, 1000, 50);
 
+  toStartingPoint(9, 270);
+  toFlipLine();
+  descoreTower(5);*/
 } 
 
 void auto_Interaction(void) {
@@ -264,7 +269,7 @@ int main() {
 
     // start the status update display
     thread t1(dashboardTask);
-    //thread t2(workerDuties);
+    thread t2(workerDuties);
 
     // Set up callbacks for autonomous and driver control periods.
     Competition.autonomous(autonomousMain);
@@ -287,10 +292,10 @@ int main() {
         local_x = local_map.pos.x/25.4;
         local_y = local_map.pos.y/25.4;
         local_heading = local_map.pos.az*180/M_PI + 180;
-        Brain.Screen.printAt(10, 40, "%.2f %.2f %.2f", local_x, local_y, local_heading);
-        cacheGoals();
-        Brain.Screen.printAt(10, 60, "%d %d %d %d %d %d %d %d %d", mapScore[0], mapScore[1], mapScore[2], 
-          mapScore[3], mapScore[4], mapScore[5], mapScore[6], mapScore[7], mapScore[8]);
+        //Brain.Screen.printAt(10, 40, "%.2f %.2f %.2f", local_x, local_y, local_heading);
+        //cacheGoals();
+        //Brain.Screen.printAt(10, 60, "%d %d %d %d %d %d %d %d %d", mapScore[0], mapScore[1], mapScore[2], 
+        //  mapScore[3], mapScore[4], mapScore[5], mapScore[6], mapScore[7], mapScore[8]);
 
         // set our location to be sent to partner robot
         link.set_remote_location( local_map.pos.x, local_map.pos.y, local_map.pos.az );
