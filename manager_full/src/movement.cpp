@@ -19,7 +19,7 @@ void lookAround( void ) {
 }
 
 void intake( int speed ) {
-  while (ballThree.value(analogUnits::mV) > 3300) {
+  while (ballThree.value(analogUnits::mV) > 3200) {
     Brain.Screen.printAt(20, 180, "%d", ballThree.value(analogUnits::mV));
     robotDrive.drive(fwd, speed, vex::velocityUnits::pct);
     intakeWheels.spin(fwd, 100, vex::velocityUnits::pct);
@@ -48,6 +48,8 @@ int score() {
   topRoller.spin(fwd, 100, vex::velocityUnits::pct);
   task::sleep(2000);
   stopDriving();
+  botRoller.stop();
+  topRoller.stop();
   return 0;
 }
 

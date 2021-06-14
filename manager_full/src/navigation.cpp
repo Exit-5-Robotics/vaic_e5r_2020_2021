@@ -107,8 +107,9 @@ int turnTo( float dest_heading, int vel ) {
   float current_x, current_y, current_heading;
   link.get_local_location(current_x, current_y, current_heading);
 
-  float change = dest_heading - (current_heading*180/M_PI);
+  int change = (int)(dest_heading - (current_heading*180/M_PI));
   change = change > 0 ? change : change + 360;
+  change %= 360;
 
   if (change < 180) {
     robotDrive.turnFor(right, change, vex::rotationUnits::deg, vel, vex::velocityUnits::pct, false);
@@ -155,7 +156,7 @@ void goToX( float dest_x, float dest_y, float dest_heading ) {
   Brain.Screen.printAt(300, 60, "%d", driveToAngle);
 
   current_x = start_x, current_y = start_y, current_heading = start_heading;
-  driveAngleAbs(driveToAngle, 30);
+  driveAngleAbs(driveToAngle, 50);
   Brain.Screen.printAt(10, 80, "Driving");
   dest_x *= 25.4, dest_y *= 25.4, current_x*=25.4, current_y*=25.4;
   int test_x;
@@ -200,7 +201,7 @@ void goToY( float dest_x, float dest_y, float dest_heading ) {
   Brain.Screen.printAt(300, 60, "%d", driveToAngle);
 
   current_x = start_x, current_y = start_y, current_heading = start_heading;
-  driveAngleAbs(driveToAngle, 30);
+  driveAngleAbs(driveToAngle, 50);
   Brain.Screen.printAt(10, 80, "Driving");
   dest_x *= 25.4, dest_y *= 25.4, current_x*=25.4, current_y*=25.4;
   int test_y;

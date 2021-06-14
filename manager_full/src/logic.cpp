@@ -280,55 +280,55 @@ int assessGoal( void ) {
         }
       }
     }
-    for (int i=0; i<local_map.boxnum; i++) {
-      if (local_map.boxobj[i].classID != 2 && abs(local_map.boxobj[i].x - 180) < 100) { // MAKES sure it's within center
-        ballOnField ball;
-        ball.classID = local_map.boxobj[i].classID;
-        ball.pos = getBallPosition(local_map.boxobj[i]);
-        ball.age = 0;
+    // for (int i=0; i<local_map.boxnum; i++) {
+    //   if (local_map.boxobj[i].classID != 2 && abs(local_map.boxobj[i].x - 180) < 100) { // MAKES sure it's within center
+    //     ballOnField ball;
+    //     ball.classID = local_map.boxobj[i].classID;
+    //     ball.pos = getBallPosition(local_map.boxobj[i]);
+    //     ball.age = 0;
 
-        if (local_map.boxobj[i].y < 150 && local_map.boxobj[i].classID == OTHER_COLOR) {// checks that it is SCORED
-          Brain.Screen.printAt(50, 200, "other");
-          while (local_map.boxobj[i].depth < 21) 
-            robotDrive.drive(vex::reverse, 20, velocityUnits::pct);
-          stopDriving();
-          while (local_map.boxobj[i].x > 185 || local_map.boxobj[i].x < 175) {
-            Brain.Screen.printAt(160, 20, "X value: %d", local_map.boxobj[i].x);
-            driveAngle((local_map.boxobj[i].x-180)/abs(local_map.boxobj[i].x-180)*90, (int)(abs(local_map.boxobj[i].x - 180)/2));
-          }
-          stopDriving();
-          int dump = switchUp();
-          botRoller.spin(fwd, 50, vex::velocityUnits::pct);
-          intake(20);
-          stopDriving();
+    //     if (local_map.boxobj[i].y < 150 && local_map.boxobj[i].classID == OTHER_COLOR) {// checks that it is SCORED
+    //       Brain.Screen.printAt(50, 200, "other");
+    //       while (local_map.boxobj[i].depth < 21) 
+    //         robotDrive.drive(vex::reverse, 20, velocityUnits::pct);
+    //       stopDriving();
+    //       while (local_map.boxobj[i].x > 185 || local_map.boxobj[i].x < 175) {
+    //         Brain.Screen.printAt(160, 20, "X value: %d", local_map.boxobj[i].x);
+    //         driveAngle((local_map.boxobj[i].x-180)/abs(local_map.boxobj[i].x-180)*90, (int)(abs(local_map.boxobj[i].x - 180)/2));
+    //       }
+    //       stopDriving();
+    //       int dump = switchUp();
+    //       botRoller.spin(fwd, 50, vex::velocityUnits::pct);
+    //       intake(20);
+    //       stopDriving();
 
-          if (dump == 0) {
-            botRoller.spin(fwd, 100, vex::velocityUnits::pct);
-            topRoller.spin(vex::reverse, 100, vex::velocityUnits::pct);
-            task::sleep(1000);
-            intake(10);
-            task::sleep(1000);
-            intake(10);
-            task::sleep(1000);
-          } else if (dump == 1) {
-            adjustHold();
-            score();
-          } else if (dump == 2) {
-            adjustHold();
-            intake(10);
-            score();
-            adjustHold();
-            score();
-          }
-          botRoller.stop();
-          topRoller.stop();
-          intakeWheels.stop();
-          stopDriving();
-          driveAngleFor(10, 180, 30);
-          return 0;
-        }
-      }
-    }
+    //       if (dump == 0) {
+    //         botRoller.spin(fwd, 100, vex::velocityUnits::pct);
+    //         topRoller.spin(vex::reverse, 100, vex::velocityUnits::pct);
+    //         task::sleep(1000);
+    //         intake(10);
+    //         task::sleep(1000);
+    //         intake(10);
+    //         task::sleep(1000);
+    //       } else if (dump == 1) {
+    //         adjustHold();
+    //         score();
+    //       } else if (dump == 2) {
+    //         adjustHold();
+    //         intake(10);
+    //         score();
+    //         adjustHold();
+    //         score();
+    //       }
+    //       botRoller.stop();
+    //       topRoller.stop();
+    //       intakeWheels.stop();
+    //       stopDriving();
+    //       driveAngleFor(10, 180, 30);
+    //       return 0;
+    //     }
+    //   }
+    // }
   }
   return 0;
   // robotDrive.driveFor(vex::reverse, 10, inches, 30, velocityUnits::pct);

@@ -33,8 +33,8 @@
 #define EMPTY 3
 #define BLUE 1
 #define RED 0
-#define OUR_COLOR RED
-#define OTHER_COLOR BLUE
+#define OUR_COLOR BLUE
+#define OTHER_COLOR RED
 
 #define UP 1
 #define DOWN -1

@@ -88,11 +88,22 @@ void auto_Isolation(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-  if (OUR_COLOR == RED) {
-    redIsolation();
-  } else if (OUR_COLOR == BLUE) {
-    blueIsolation();
+  // if (OUR_COLOR == RED) {
+  //   redIsolation();
+  // } else if (OUR_COLOR == BLUE) {
+  //   blueIsolation();
+  // }
+  robotDrive.drive(fwd, 10, velocityUnits::pct);  
+  while(ballThree.value(analogUnits::mV) > 3200) {
+    intakeWheels.spin(fwd, 100, vex::velocityUnits::pct);
+    Brain.Screen.printAt(10, 20, "%d", ballThree.value(analogUnits::mV));
   }
+  task::sleep(8000);
+  botRoller.spin(fwd, 100, vex::velocityUnits::pct);
+  topRoller.spin(fwd, 100, vex::velocityUnits::pct);
+  task::sleep(2000);
+  intakeWheels.stop();
+  task::sleep(20000);
 }
 
 
@@ -107,101 +118,168 @@ void auto_Isolation(void) {
 /*---------------------------------------------------------------------------*/
 
 void auto_Interaction(void) {
-  // Brain.Screen.printAt(10, 80, "Starting auto int");
+  driveAngleFor(20, 180, 50);
+  robotDrive.turnFor(left, 30, deg, 30, velocityUnits::pct);
   float localX, localY, localH;
-  while (true) {
+  // int closestGoal = getClosestGoal();
+  int closestGoal = (OUR_COLOR==BLUE) ? 0 : 2;
+  int closestGoalX, closestGoalY;
+  int moveCount = 0;
+  bool backwards = false;
+
+  Brain.Screen.printAt(10, 20, "%d", closestGoal);
+  
+  while(true) { // actual while loop
+    if (robotDrive.isMoving()) moveCount = 0;
+    moveCount++;
+    if (moveCount > 50) {
+      driveAngleFor(10, 90, 30);
+      driveAngleFor(10, 225, 30);
+    }
     link.get_local_location(localX, localY, localH);
-    Brain.Screen.printAt(10, 40, "%.2f %.2f %.2f", local_x, local_y, local_heading);
-    if (localX != 0) {
-      task::sleep(15000);
-      Brain.Screen.printAt(10, 40, "%.2f %.2f %.2f", local_x, local_y, local_heading);
-      // int closestGoal = getClosestGoal();
-      int closestGoal = OUR_COLOR==BLUE ? 5 : 6;
-      int closestGoalX, closestGoalY;
-
-      Brain.Screen.printAt(10, 20, "%d", closestGoal);
-      
-      while(true) { // actual while loop
-        link.get_local_location(localX, localY, localH);
-        closestGoalX = stringToX(goalLocation[closestGoal]);
-        closestGoalY = stringToY(goalLocation[closestGoal]);
-        if (closestGoalX == 0 && closestGoalY != 0) {
-          int ySign = closestGoalY > 0 ? 1 : -1;
-          closestGoalY = (abs(closestGoalY) - 5)*ySign;
-          closestGoalX -= 10*ySign;
-          Brain.Screen.printAt(300, 160, "%d %d", closestGoalX, closestGoalY);
-          goToX(closestGoalX, closestGoalY, goalAngle[closestGoal]);
-          stopDriving();
-          task::sleep(250);
-          driveAngleFor(10, 90, 30);
-          task::sleep(250);
-          driveAngleFor(10, 180, 30);
-          task::sleep(500);
-        } else if (closestGoalY == 0 && closestGoalX != 0) {
-          int xSign = closestGoalX > 0 ? 1 : -1;
-          closestGoalX = (abs(closestGoalX) - 5)*xSign;
-          closestGoalY += 10*xSign;
-          Brain.Screen.printAt(300, 160, "%d %d", closestGoalX, closestGoalY);
-          goToY(closestGoalX, closestGoalY, goalAngle[closestGoal]);
-          stopDriving();
-          task::sleep(250);
-          driveAngleFor(10, 90, 30);
-          task::sleep(250);
-          driveAngleFor(10, 180, 30);
-          task::sleep(500);
-        } else if ((closestGoalX > 0 && closestGoalY > 0) || (closestGoalX < 0 && closestGoalY < 0)) {
-          // +50+50 --> +30+40, +50-50 --> +50-40, -50-50 --> -30-40, -50+50 --> -50+40
-          int xSign = closestGoalX > 0 ? 1 : -1;
-          closestGoalX = (abs(closestGoalX) - 20)*xSign;
-          closestGoalY = (abs(closestGoalY) - 10)*xSign;
-          goToX(closestGoalX, closestGoalY, goalAngle[closestGoal]);
-          goToY(closestGoalX, closestGoalY, goalAngle[closestGoal]);
-          stopDriving();
-          task::sleep(250);
-          driveAngleFor(10, 90, 30);
-          task::sleep(500);
-        } else {
-          int ySign = closestGoalY > 0 ? 1 : -1;
-          closestGoalY = (abs(closestGoalY) - 20)*ySign;
-          closestGoalX = (abs(closestGoalX) - 20)*ySign*-1;
-          goToX(closestGoalX, closestGoalY, goalAngle[closestGoal]);
-          goToY(closestGoalX, closestGoalY, goalAngle[closestGoal]);
-          stopDriving();
-          task::sleep(250);
-          driveAngleFor(10, 90, 30);
-          task::sleep(500);
-
-        }
-        robotDrive.stop();
-        assessGoal();
-        Brain.Screen.clearScreen();
-        driveAngleFor(10, 90, 30);
-        switch (closestGoal) {
-          case 0:
-            closestGoal = 6;
-            break;
-          case 6:
-            closestGoal = 1;
-            break;
-          case 1:
-            closestGoal = 7;
-            break;
-          case 7:
-            closestGoal = 2;
-            break;
-          case 2:
-            closestGoal = 5;
-            break;
-          case 5:
-            closestGoal = 3;
-            break;
-          case 3:
+    closestGoalX = stringToX(goalLocation[closestGoal]);
+    closestGoalY = stringToY(goalLocation[closestGoal]);
+    if (closestGoalX == 0 && closestGoalY != 0) {
+      int ySign = closestGoalY > 0 ? 1 : -1;
+      closestGoalY = (abs(closestGoalY) - 5)*ySign;
+      closestGoalX -= 10*ySign;
+      Brain.Screen.printAt(300, 160, "%d %d", closestGoalX, closestGoalY);
+      goToX(closestGoalX, closestGoalY, goalAngle[closestGoal]);
+      stopDriving();
+      task::sleep(250);
+      driveAngleFor(10, 90, 30);
+      task::sleep(250);
+      driveAngleFor(10, 180, 30);
+      task::sleep(500);
+    } else if (closestGoalY == 0 && closestGoalX != 0) {
+      int xSign = closestGoalX > 0 ? 1 : -1;
+      closestGoalX = (abs(closestGoalX) - 5)*xSign;
+      closestGoalY += 10*xSign;
+      Brain.Screen.printAt(300, 160, "%d %d", closestGoalX, closestGoalY);
+      goToY(closestGoalX, closestGoalY, goalAngle[closestGoal]);
+      stopDriving();
+      task::sleep(250);
+      driveAngleFor(10, 90, 30);
+      task::sleep(250);
+      driveAngleFor(10, 180, 30);
+      task::sleep(500);
+    } else if ((closestGoalX > 0 && closestGoalY > 0) || (closestGoalX < 0 && closestGoalY < 0)) {
+      // +50+50 --> +30+40, +50-50 --> +50-40, -50-50 --> -30-40, -50+50 --> -50+40
+      int xSign = closestGoalX > 0 ? 1 : -1;
+      closestGoalX = (abs(closestGoalX) - 20)*xSign;
+      closestGoalY = (abs(closestGoalY) - 10)*xSign;
+      goToX(closestGoalX, closestGoalY, goalAngle[closestGoal]);
+      goToY(closestGoalX, closestGoalY, goalAngle[closestGoal]);
+      stopDriving();
+      task::sleep(250);
+      driveAngleFor(10, 90, 30);
+      task::sleep(500);
+    } else {
+      int ySign = closestGoalY > 0 ? 1 : -1;
+      closestGoalY = (abs(closestGoalY) - 20)*ySign;
+      closestGoalX = (abs(closestGoalX) - 20)*ySign*-1;
+      goToX(closestGoalX, closestGoalY, goalAngle[closestGoal]);
+      goToY(closestGoalX, closestGoalY, goalAngle[closestGoal]);
+      stopDriving();
+      task::sleep(250);
+      driveAngleFor(10, 90, 30);
+      task::sleep(500);
+    }
+    robotDrive.stop();
+    assessGoal();
+    Brain.Screen.clearScreen();
+    driveAngleFor(10, 90, 30);
+    if (OUR_COLOR == BLUE) {
+      switch (closestGoal) {
+        case 4:
+          backwards = false;
+          closestGoal = 0;
+          break;
+        case 0:
+          if (backwards) {
             closestGoal = 4;
-            break;
-          default:
+          } else {
+            closestGoal = 6;
+          }
+          break;
+        case 6:
+          if (backwards) {
             closestGoal = 0;
-            break;
-        }
+          } else {
+            closestGoal = 1;
+          }
+          break;
+        case 1:
+          if (backwards) {
+            closestGoal = 6;
+          } else {
+            closestGoal = 7;
+          }
+          break;
+        case 7:
+          if (backwards) {
+            closestGoal = 1;
+          } else {
+            closestGoal = 2;
+          }
+          break;
+        case 2:
+          if (backwards) {
+            closestGoal = 7;
+          } else {
+            closestGoal = 5;
+          }
+          break;
+        case 5:
+          backwards = true;
+          closestGoal = 2;
+          break;
+      }
+    } else {
+      switch (closestGoal) {
+        case 7:
+          backwards = false;
+          closestGoal = 2;
+          break;
+        case 2:
+          if (backwards) {
+            closestGoal = 7;
+          } else {
+            closestGoal = 5;
+          }
+          break;
+        case 5:
+          if (backwards) {
+            closestGoal = 2;
+          } else {
+            closestGoal = 3;
+          }
+          break;
+        case 3:
+          if (backwards) {
+            closestGoal = 5;
+          } else {
+            closestGoal = 4;
+          }
+          break;
+        case 4:
+          if (backwards) {
+            closestGoal = 3;
+          } else {
+            closestGoal = 0;
+          }
+          break;
+        case 0:
+          if (backwards) {
+            closestGoal = 4;
+          } else {
+            closestGoal = 6;
+          }
+          break;
+        case 6:
+          backwards = true;
+          closestGoal = 0;
+          break;
       }
     }
   }
@@ -231,6 +309,19 @@ void autonomousMain(void) {
   firstAutoFlag = false;
 }
 
+void testThread( void ) {
+  float localX, localY, localH;
+  while (true) { // remove
+    link.get_local_location(localX, localY, localH); // remove
+    Brain.Screen.printAt(10, 40, "%.2f %.2f %.2f", local_x, local_y, local_heading); // remove
+    if (localX != 0) { // remove
+      task::sleep(15000); // remove
+      Brain.Screen.printAt(10, 40, "%.2f %.2f %.2f", local_x, local_y, local_heading); // remove
+      auto_Interaction();
+    }
+  }
+}
+
 /*----------------------------------------------------------------------------*/
 
 int main() {
@@ -244,10 +335,11 @@ int main() {
     int32_t loop_time = 66;
 
     // thread t1(dashboardTask);
+    // thread iso(auto_Isolation);
     
     // thread distanceSensor(distSensorControl); // assumes dist sensor starts UP
-    thread prac(auto_Interaction);
-    prac.setPriority(100);
+    // thread prac(testThread);
+    // prac.setPriority(100);
 
     // Set up callbacks for autonomous and driver control periods.
     Competition.autonomous(autonomousMain);

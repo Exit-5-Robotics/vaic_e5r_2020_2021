@@ -5,8 +5,8 @@ using namespace vex;
 void redIsolation() {
   /* (x, -y) ball, then (x, 0) ball, then (x, y) ball if time permits */
   driveAngleFor(10, 90, 50);
-  goToX(40, -48, 180);
-  goToY(40, -48, 180);
+  goToX(-40, 48, 180);
+  goToY(-40, 48, 180);
   task::sleep(500);
   robotDrive.turnFor(left, 45, degrees, 30, velocityUnits::pct);
   thread intakeCornerFirst(intakeNoDrive);
@@ -23,11 +23,11 @@ void redIsolation() {
 
   robotDrive.driveFor(reverse, 30, inches, 30, velocityUnits::pct);
   robotDrive.turnFor(right, 45, degrees, 30, velocityUnits::pct);
-  goToX(35, -7, 180);
-  goToY(35, -7, 180);
+  goToX(-35, 7, 180);
+  goToY(-35, 7, 180);
 
   robotDrive.turnFor(right, 90, degrees, 30, velocityUnits::pct);
-  if (testChange()) turnTo(270, 20);
+  if (testChange()) turnTo(90, 20);
   
   intakeWheels.spin(fwd, 100, velocityUnits::pct);
   thread intakeMid(intakeNoDrive);
@@ -41,7 +41,7 @@ void redIsolation() {
   thread moveMid(adjustHold);
   robotDrive.driveFor(reverse, 10, inches, 30, velocityUnits::pct);
   robotDrive.turnFor(left, 40, deg, 40, velocityUnits::pct);
-  turnTo(180, 20);
+  turnTo(0, 20);
   robotDrive.turnFor(left, 90, deg, 30, velocityUnits::pct);
   if (testChange()) turnTo(90, 20);
   moveMid.join();
@@ -80,8 +80,8 @@ void redIsolation() {
 void blueIsolation() {
   // (-x, y) ball, then (-x, 0) ball, then (-x, -y) ball if time permits
   driveAngleFor(10, 90, 50);
-  goToX(-40, 48, 180);
-  goToY(-40, 48, 180);
+  goToX(40, -48, 180);
+  goToY(40, -48, 180);
   task::sleep(500);
   robotDrive.turnFor(left, 45, degrees, 30, velocityUnits::pct);
   thread intakeCornerFirst(intakeNoDrive);
@@ -98,11 +98,11 @@ void blueIsolation() {
 
   robotDrive.driveFor(reverse, 30, inches, 30, velocityUnits::pct);
   robotDrive.turnFor(right, 45, degrees, 30, velocityUnits::pct);
-  goToX(-35, 7, 180);
-  goToY(-35, 7, 180);
+  goToX(35, -7, 180);
+  goToY(35, -7, 180);
 
   robotDrive.turnFor(right, 90, degrees, 30, velocityUnits::pct);
-  if (testChange()) turnTo(90, 20);
+  if (testChange()) turnTo(270, 20);
   
   intakeWheels.spin(fwd, 100, velocityUnits::pct);
   thread intakeMid(intakeNoDrive);
