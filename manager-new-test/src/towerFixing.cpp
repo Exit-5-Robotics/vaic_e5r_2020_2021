@@ -6,43 +6,34 @@
 bool haveBall = true;
 
 void sortBalls(){
-  /*bool foundBall = false;
+  bool foundBall = false;
   int ballsSorted = 0;
   while(ballsSorted < 3 && !foundBall){
-    this_thread::sleep_for(1000);
-    int blueArea = 0, redArea = 0;
     adjustWIntake();
-    //finding the color of the ball
-    colorSensor.takeSnapshot(BLUE_BALL);
-    if(colorSensor.largestObject.exists){
-      blueArea = colorSensor.largestObject.height * colorSensor.largestObject.width;
-    }
-    colorSensor.takeSnapshot(RED_BALL);
-    if(colorSensor.largestObject.exists){
-      redArea = colorSensor.largestObject.height * colorSensor.largestObject.width;
-    }
+    this_thread::sleep_for(2000);
     //seeing if that ball is our color
-    if( (OUR_COLOR && blueArea > redArea) || (!OUR_COLOR && redArea > blueArea) ){ // we found our color ball, store it
+    if( (OUR_COLOR && colorSensor.color().rgb()/10000000 !=1) || (!OUR_COLOR && colorSensor.color().rgb()/10000000 ==1 )){ // we found our color ball, store it
       foundBall = true;
+      Brain.Screen.printAt(10, 100, "color: %d", colorSensor.color().rgb()/10000000);
       scoringRollers.setVelocity(100, pct);
-      scoringRollers.spinFor(0.1, seconds);
-      topRoller.spinFor(0.3, seconds);
-      Brain.Screen.printAt(10, 100, "yes");
+      scoringRollers.spinFor(0.15, seconds);
+      topRoller.spin(fwd);
+      while(ballZero.value(pct) > 64){Brain.Screen.printAt(10, 140, "hit top");}
+      //Brain.Screen.printAt(10, 140, "stopValue: %d", ballZero.value(pct));
+      topRoller.stop();
+      topRoller.setBrake(hold);
     } else{ //not our color, poop it
       poop();
-      Brain.Screen.printAt(10, 100, "no");
-      Brain.Screen.printAt(10, 120, "redArea: %f: ", redArea);
-      Brain.Screen.printAt(10, 140, "blueArea: %f: ", blueArea);
     }
     ballsSorted++; 
   }
-  this_thread::sleep_for(1000);
+  this_thread::sleep_for(2000);
   //empty any leftovers
   intakeRollers.setVelocity(100, percent);
   intakeRollers.spin(fwd);
   topRoller.setBrake(hold);
   this_thread::sleep_for(2500);
-  intakeRollers.stop();*/
+  intakeRollers.stop();
 }
 
 void fixTower(){

@@ -1,7 +1,7 @@
 #include "vex.h"
 #include <cmath>
 #include <vex_imu.h>
-#include <iostream>
+#include <iostream> 
 using namespace vex;
 
 const int intakeDriveSpeed = 10;
@@ -216,11 +216,22 @@ void poop() {
 
 int adjustHold(void) {
   botRoller.setVelocity(100, pct);
-  botRoller.spinFor(fwd, 0.8, seconds);
+  botRoller.spin(fwd);
+  while(middleBall.objectDistance(mm) > 50 )
+  botRoller.stop();
   return 0;
 }
 
 void adjustWIntake(){
   intakeRollers.setVelocity(100, pct);
-  intakeRollers.spinFor(0.8, seconds);
+  intakeRollers.spin(fwd);
+  while(middleBall.objectDistance(mm) > 70 )
+  //Brain.Screen.printAt(10, 140, "stopMiddle: %f", middleBall.objectDistance(mm));
+  Brain.Screen.printAt(10, 140, "adjusting");
+  intakeRollers.stop();
+}
+
+int getRed(){
+  int redAmt = colorSensor.color().rgb();
+  return redAmt;
 }

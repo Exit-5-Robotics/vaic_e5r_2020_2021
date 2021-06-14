@@ -27,3 +27,4 @@ void toFlipLine(void);
 void turnTo(int targetAngle);
 
 void alignTower0(void);
+int getRed(void);

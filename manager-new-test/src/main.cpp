@@ -140,6 +140,7 @@ void autonomousMain(void) {
   firstAutoFlag = false;
 }
 
+
 void updateSensors(){
   while(true){
     Brain.Screen.printAt(10, 60, "RightLine: %f", rightLine.brightness(true));
@@ -147,8 +148,12 @@ void updateSensors(){
     Brain.Screen.printAt(10, 160, "Angle: %f", tilt.heading());
     Brain.Screen.printAt(10, 180, "speed: %d", RF.velocity(percentUnits::pct));
 
-    
-    Brain.Screen.printAt(10, 100, "BallChecker: %f", colorSensor.hue());
+    Brain.Screen.printAt(10, 120, "topBall: %d", ballZero.value(pct));
+    //anyways fuck u elaina
+    //and give me my freaking phone
+    //or ILL HIT U OVER THE HEAD WIH A STEEL CHANNEL
+    //not an aluminum one, a STEEL one
+    //duh cuz u know steel is denser and will kill
   }
 }
 
@@ -161,6 +166,7 @@ void managerDuties(){
   }*/
   thread stats(updateSensors);
   reset();
+  sortBalls();
   
   //sortBalls();
   //driveToTower();

@@ -1,7 +1,6 @@
 #include "vex.h"
 
 using namespace vex;
-using namespace std;
 
 // A global instance of brain used for printing to the V5 brain screen
 brain Brain;
@@ -11,6 +10,7 @@ message_link  LinkA( PORT9, "vex_robotics_team_3063_A", linkType::manager );
 // vex::serial_link LinkD( PORT12, "vex_robotics_team_1234_B", linkType::worker );
 // sonar Balls = sonar(Brain.ThreeWirePort.B); // A is the output, B is the input https://api.vexcode.cloud/v5/html/classvex_1_1sonar.html#aeefdd6cb8826338561d0cf187643b14a
 line          ballZero(Brain.ThreeWirePort.C); // TOP ball
+distance      middleBall(PORT5); // ball next to the optical sensor
 line          ballThree(Brain.ThreeWirePort.D); // BOT ball
 vex::distance dist(PORT5);
 inertial      tilt( PORT12 );

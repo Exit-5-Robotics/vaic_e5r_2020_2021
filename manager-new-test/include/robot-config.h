@@ -4,6 +4,7 @@ extern brain Brain;
 extern message_link LinkA;
 extern sonar Balls;
 extern line ballThree;
+extern distance middleBall;
 extern line ballZero;
 extern vex::distance dist;
 extern motor leftIntake;
