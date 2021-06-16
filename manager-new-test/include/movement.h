@@ -1,10 +1,14 @@
 using namespace vex;
 #include "ai_jetson.h"
 
+int getIntakeSpeed(void);
+
 void lookAround( void );
 void stopDriving( void );
+double getLineColor(char which);
+void driveToLine(int dir,int speed, int reverseTime, char whichSensor);
 
-extern void intake( void );
+extern void intake( bool useBot );
 extern void outtake( void );
 extern int score( void );
 extern void poop( void );
@@ -13,7 +17,7 @@ extern void intakeNoDrive( void );
 
 extern void descore( void );
 extern int adjustHold( void );
-extern void adjustWIntake( void );
+extern int adjustWIntake( void );
 
 //
 

@@ -146,9 +146,10 @@ void updateSensors(){
     Brain.Screen.printAt(10, 60, "RightLine: %f", rightLine.brightness(true));
     Brain.Screen.printAt(10, 80, "LeftLine: %f", leftLine.brightness(true));
     Brain.Screen.printAt(10, 160, "Angle: %f", tilt.heading());
-    Brain.Screen.printAt(10, 180, "speed: %d", RF.velocity(percentUnits::pct));
+    Brain.Screen.printAt(10, 180, "middleBall: %f", middleBall.objectDistance(mm));
 
-    Brain.Screen.printAt(10, 120, "topBall: %d", ballZero.value(pct));
+    //Brain.Screen.printAt(10, 120, "topBall: %d", ballZero.value(pct));
+    Brain.Screen.printAt(10, 220, "haveBall: %d", getBallStatus());
     //anyways fuck u elaina
     //and give me my freaking phone
     //or ILL HIT U OVER THE HEAD WIH A STEEL CHANNEL
@@ -166,10 +167,8 @@ void managerDuties(){
   }*/
   thread stats(updateSensors);
   reset();
-  sortBalls();
   
-  //sortBalls();
-  //driveToTower();
+  blueIsolation();
   /*
   PLAN:
     -use jetson only to see if we should descore

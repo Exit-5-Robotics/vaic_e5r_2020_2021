@@ -4,21 +4,23 @@
 
 //TOWER FIXING LOGIC
 bool haveBall = true;
+bool getBallStatus(){return haveBall;}
 
-void sortBalls(){
+int sortBalls(){
   bool foundBall = false;
   int ballsSorted = 0;
   while(ballsSorted < 3 && !foundBall){
-    adjustWIntake();
+    if(!adjustWIntake()){haveBall = false; return 0;} //if we return 0 then we didn't find any balls of our color in the robot
     this_thread::sleep_for(2000);
     //seeing if that ball is our color
     if( (OUR_COLOR && colorSensor.color().rgb()/10000000 !=1) || (!OUR_COLOR && colorSensor.color().rgb()/10000000 ==1 )){ // we found our color ball, store it
       foundBall = true;
+      haveBall = true;
       Brain.Screen.printAt(10, 100, "color: %d", colorSensor.color().rgb()/10000000);
       scoringRollers.setVelocity(100, pct);
       scoringRollers.spinFor(0.15, seconds);
       topRoller.spin(fwd);
-      while(ballZero.value(pct) > 64){Brain.Screen.printAt(10, 140, "hit top");}
+      while(ballZero.value(pct) > 64){}
       //Brain.Screen.printAt(10, 140, "stopValue: %d", ballZero.value(pct));
       topRoller.stop();
       topRoller.setBrake(hold);
@@ -34,16 +36,39 @@ void sortBalls(){
   topRoller.setBrake(hold);
   this_thread::sleep_for(2500);
   intakeRollers.stop();
+  //put kept ball back into nice momentumy position
+  this_thread::sleep_for(1000);
+  scoringRollers.setVelocity(100, pct);
+  scoringRollers.spin(reverse);
+  while(middleBall.objectDistance(mm) > 70){}
+  scoringRollers.stop();
+  return 1;
 }
 
 void fixTower(){
   //if(checkDescore()){
-    thread scoring(score);
-    intake();
-    if(!haveBall){
-
+      if(haveBall){
+        thread scoring(score);
+        intake(true);
+      }else{ //scoring if we don't have a ball stored
+      intake(true);
+      bool foundBall = false;
+      int ballsSorted = 0;
+      while(ballsSorted < 3 && !foundBall){
+        if(!adjustWIntake()){break;} //if we return 0 then we didn't find any balls of our color in the robot
+        this_thread::sleep_for(1000);
+        //seeing if that ball is our color
+        if( (OUR_COLOR && colorSensor.color().rgb()/10000000 !=1) || (!OUR_COLOR && colorSensor.color().rgb()/10000000 ==1 )){ // we found our color ball, store it
+          foundBall = true;
+          //Brain.Screen.printAt(10, 100, "color: %d", colorSensor.color().rgb()/10000000);
+          score();
+        } else{ //not our color, poop it
+          poop();
+        }
+        ballsSorted++; 
+      }
     }
-    thread sort(sortBalls);
+    thread sort(sortBalls); // back away & do this
   //}
 }
 
@@ -85,12 +110,11 @@ bool checkDescore(){
 
 void driveToTower(){
   driveAuto(1);
-  setSpeed(50);
-  intakeWheels.spin(fwd, 100, vex::velocityUnits::pct);
-  thread adjust(adjustHold);
+  setSpeed(20);
+  intakeWheels.spin(fwd, getIntakeSpeed(), vex::velocityUnits::pct);
   while(!goal.pressing()){}
+  intakeWheels.stop();
   pause();
-  Brain.Screen.printAt(10, 100, "intake");
   fixTower();
 }
 

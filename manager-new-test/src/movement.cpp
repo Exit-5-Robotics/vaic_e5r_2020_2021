@@ -4,9 +4,12 @@
 #include <iostream> 
 using namespace vex;
 
-const int intakeDriveSpeed = 10;
+const int intakeDriveSpeed = 50;
 int distPosition = 1;
 
+int getIntakeSpeed(){
+  return intakeDriveSpeed;
+}
 
 /*
 TO DO: 
@@ -14,6 +17,12 @@ TO DO:
 */
 double lineColorR;
 double lineColorL;
+
+double getLineColor(char which){
+  if (which == 'R'){
+    return lineColorR;
+  } return lineColorL;
+}
 
 void reset(){
   tilt.calibrate();
@@ -31,7 +40,11 @@ void reset(){
 
 double angleDifference(int target, int dir){
   if( (dir == 2 && target < tilt.heading()) || (dir == 3 && target > tilt.heading()) ){
-    return fabs(target + tilt.heading() - 360);
+    if(dir == 3){
+      return (360 - target) + tilt.heading();
+    } else {
+      return (360 - tilt.heading()) + target;
+    }
   }
   return fabs(target - tilt.heading());
 }
@@ -41,13 +54,16 @@ void turnTo(int targetAngle){
   if((fabs(targetAngle - tilt.heading()) < 180 && tilt.heading() < targetAngle) || (fabs(targetAngle - tilt.heading()) > 180 && tilt.heading() > targetAngle)){ //CW
     driveAuto(2);
     turningDirection = 2;
+    //Brain.Screen.printAt(10, 140, "driveDir: 2");
+    //if((fabs(targetAngle - tilt.heading()) < 180 && tilt.heading() < targetAngle)){}
   } else { //CCW
     driveAuto(3);
     turningDirection = 3;
+    //Brain.Screen.printAt(10, 140, "driveDir: 3");
   }
 
   double Kp = 0.7;
-  double Ki = 0.002;
+  double Ki = 0.005;
   double Kd = 0.08;
 
   double error;
@@ -58,10 +74,10 @@ void turnTo(int targetAngle){
   if(angleDifference(targetAngle, turningDirection) < 8){
     Kp = 2;
   }
-
+  Brain.Timer.reset();
   while(angleDifference(targetAngle, turningDirection) > 0.5){
     //finding error
-    error = -1 * angleDifference(targetAngle, turningDirection);
+    error = angleDifference(targetAngle, turningDirection);
     if ( (turningDirection == 3 && ((targetAngle > tilt.heading() && fabs(targetAngle - tilt.heading()) >= 180) ||  (targetAngle < tilt.heading() && fabs(targetAngle - tilt.heading()) < 180))) || (turningDirection == 2 && ((targetAngle < tilt.heading() && fabs(targetAngle - tilt.heading()) >= 180 ) || (targetAngle > tilt.heading() && fabs(targetAngle - tilt.heading()) < 180))) ) {
       error *= -1;
     }
@@ -73,7 +89,9 @@ void turnTo(int targetAngle){
     setSpeed( (error*Kp) + (errorSum*Ki) + (errorChange * Kd));
     this_thread::sleep_for(20);  
   }
-  Brain.Screen.printAt(10, 100, "done turning");
+  //Brain.Screen.printAt(10, 100, "error: %f", error);
+  //Brain.Screen.printAt(10, 120, "errorSum: %f", errorSum);
+  //Brain.Screen.printAt(10, 140, "previousError: %f", previousError);
   setSpeed(50);
   //Brain.Screen.printAt(10, 100, "Error: %f", error*Kp); Brain.Screen.printAt(10, 120, "ErrorSum: %f", errorSum*Ki); Brain.Screen.printAt(10, 140, "ErrorChange: %f", errorChange*Kd);  
   pause();
@@ -177,33 +195,58 @@ void scoutBalls(){
   //OR once we know additinall balls are needed, scout for a ball one at a time, alignTower1 and put the ball in the correct tower, then repeat as many times as necessary to fill tower
 }
 
-
+void driveToLine(int dir, int speed, int reverseTime, char whichSensor){ //only used when robot is supposed to be perpendicular to the line
+  Brain.Timer.reset();
+  int driveDirection = 1;
+  driveAuto(dir);
+  setSpeed(speed);
+  while( (rightLine.brightness(true) < getLineColor('R') && whichSensor == 'R') || (leftLine.brightness(true) < getLineColor('L') && whichSensor == 'L') ){
+    if(Brain.Timer.time(msec) >= reverseTime){ // in case the line is missed
+      if(driveDirection){
+        driveDirection = 0;
+        driveAuto(0);
+      } else {
+        driveDirection = 1;
+        driveAuto(1);
+      }
+      setSpeed(10);
+      Brain.Timer.reset();
+    }
+  }
+  robotDrive.stop(hold);
+}
 
 
 /////////////////////////////////////////BALL HANDLING//////////////////////////////
 
-void intake() {
-  pause();
-  intakeWheels.spinFor(fwd, 800, degrees, 60, vex::velocityUnits::pct);
+void intake(bool useBot) { //uses only spinny orange wheels to intake many balls
+  driveAuto(1);
+  setSpeed(5);
+  intakeWheels.setVelocity(intakeDriveSpeed, pct);
+  if(useBot){botRoller.spinFor(fwd, 600, degrees, 70, vex::velocityUnits::pct, false);}
+  //intakeWheels.spinFor(fwd, 800, degrees, 100, vex::velocityUnits::pct);
+  intakeWheels.spin(fwd);
   Brain.Screen.printAt(10, 120, "starting");
   while (ballThree.value(analogUnits::mV) > 3300) {}
-  pause();
   Brain.Screen.printAt(10, 140, "done");
-  intakeWheels.spinFor(fwd, 800, degrees, 60, vex::velocityUnits::pct);
+  intakeWheels.spinFor(fwd, 600, degrees, intakeDriveSpeed/2, vex::velocityUnits::pct);
   intakeWheels.stop();
+  pause();
 }
 
 void intakeNoDrive() {
   while (ballThree.value(analogUnits::mV) > 3300) {
-    intakeWheels.spin(fwd, 100, vex::velocityUnits::pct);
+    intakeWheels.spin(fwd, intakeDriveSpeed, vex::velocityUnits::pct);
   }
   intakeWheels.stop();
 }
 
 int score() {
   scoringRollers.setVelocity(100, percentUnits::pct);
-  scoringRollers.spinFor(fwd, 0.4, seconds);
-  topRoller.spinFor(fwd, 1, seconds);
+  scoringRollers.spin(fwd);
+  while(ballZero.value(pct) > 64){}
+  scoringRollers.stop();
+  topRoller.spinFor(fwd, 0.8, seconds);
   return 0;
 }
 
@@ -222,13 +265,21 @@ int adjustHold(void) {
   return 0;
 }
 
-void adjustWIntake(){
+int adjustWIntake(){
+  this_thread::sleep_for(1500);
   intakeRollers.setVelocity(100, pct);
   intakeRollers.spin(fwd);
-  while(middleBall.objectDistance(mm) > 70 )
+  Brain.Timer.reset();
+  while(middleBall.objectDistance(mm) > 70 ){
+    if(Brain.Timer.time() > 2000){
+      intakeRollers.stop();
+      return 0;
+    }
+  }
   //Brain.Screen.printAt(10, 140, "stopMiddle: %f", middleBall.objectDistance(mm));
-  Brain.Screen.printAt(10, 140, "adjusting");
+  //Brain.Screen.printAt(10, 140, "adjusting");
   intakeRollers.stop();
+  return 1;
 }
 
 int getRed(){
