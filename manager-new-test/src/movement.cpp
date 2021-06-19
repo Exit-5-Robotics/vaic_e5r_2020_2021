@@ -4,7 +4,7 @@
 #include <iostream> 
 using namespace vex;
 
-const int intakeDriveSpeed = 50;
+const int intakeDriveSpeed = 80;
 int distPosition = 1;
 
 int getIntakeSpeed(){
@@ -62,39 +62,46 @@ void turnTo(int targetAngle){
     //Brain.Screen.printAt(10, 140, "driveDir: 3");
   }
 
-  double Kp = 0.7;
+  double Kp = 1.2;
   double Ki = 0.005;
-  double Kd = 0.08;
+  double Kd = 2;
 
   double error;
   double errorSum = 0;
   double previousError = 0;
   double errorChange;
 
+  
   if(angleDifference(targetAngle, turningDirection) < 8){
     Kp = 2;
   }
   Brain.Timer.reset();
   while(angleDifference(targetAngle, turningDirection) > 0.5){
     //finding error
+
     error = angleDifference(targetAngle, turningDirection);
-    if ( (turningDirection == 3 && ((targetAngle > tilt.heading() && fabs(targetAngle - tilt.heading()) >= 180) ||  (targetAngle < tilt.heading() && fabs(targetAngle - tilt.heading()) < 180))) || (turningDirection == 2 && ((targetAngle < tilt.heading() && fabs(targetAngle - tilt.heading()) >= 180 ) || (targetAngle > tilt.heading() && fabs(targetAngle - tilt.heading()) < 180))) ) {
-      error *= -1;
-    }
     
     errorSum += error;
     errorChange = error - previousError;
     previousError = error;
+    int speed;
 
-    setSpeed( (error*Kp) + (errorSum*Ki) + (errorChange * Kd));
+    if(fabs(error) < 2){
+      speed = 5;
+    } else{
+      speed = (error*Kp) + /*(errorSum*Ki)*/ + (errorChange * Kd);
+    }
+    if ( (turningDirection == 3 && ((targetAngle > tilt.heading() && fabs(targetAngle - tilt.heading()) >= 180) ||  (targetAngle < tilt.heading() && fabs(targetAngle - tilt.heading()) < 180))) || (turningDirection == 2 && ((targetAngle < tilt.heading() && fabs(targetAngle - tilt.heading()) >= 180 ) || (targetAngle > tilt.heading() && fabs(targetAngle - tilt.heading()) < 180))) ) {
+      setSpeed(-1*speed);
+    } else {
+      setSpeed(speed);
+    }
     this_thread::sleep_for(20);  
+    Brain.Screen.printAt(10, 100, "error: %f", error);
+    Brain.Screen.printAt(10, 120, "errorChange: %f", errorChange);
   }
-  //Brain.Screen.printAt(10, 100, "error: %f", error);
-  //Brain.Screen.printAt(10, 120, "errorSum: %f", errorSum);
-  //Brain.Screen.printAt(10, 140, "previousError: %f", previousError);
-  setSpeed(50);
-  //Brain.Screen.printAt(10, 100, "Error: %f", error*Kp); Brain.Screen.printAt(10, 120, "ErrorSum: %f", errorSum*Ki); Brain.Screen.printAt(10, 140, "ErrorChange: %f", errorChange*Kd);  
   pause();
+  Brain.Screen.printAt(10, 140, "done");
 
 }
 

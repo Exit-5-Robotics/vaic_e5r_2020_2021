@@ -168,6 +168,7 @@ void managerDuties(){
   thread stats(updateSensors);
   reset();
   
+  //driveToTower();
   blueIsolation();
   /*
   PLAN:

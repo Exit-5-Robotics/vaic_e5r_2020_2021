@@ -109,8 +109,9 @@ bool checkDescore(){
 //MORE LIKE NAV BUT ITS FINEEEEEE
 
 void driveToTower(){
+  pause();
   driveAuto(1);
-  setSpeed(20);
+  setSpeed(40);
   intakeWheels.spin(fwd, getIntakeSpeed(), vex::velocityUnits::pct);
   while(!goal.pressing()){}
   intakeWheels.stop();
