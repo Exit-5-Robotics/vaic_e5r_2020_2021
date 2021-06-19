@@ -17,19 +17,7 @@ void blueIsolation() {
   driveToTower();
   //get back to the line asshole
   driveToLine(0, 40, 900, 'R');
-  turnTo(264);
-  toStartingPoint(8, 270);
-  turnTo(267);
-  driveToLine(1, 40, 3000, 'L');
-  driveAutoDist(0, 100, 20);
-  //score new tower
-  driveAutoDist(9, 200, 30);
-  turnTo(177);
-  driveToTower();
-  tilt.resetHeading();
-  //go to ending position to await interaction period
-  driveAutoDist(0, 200, 50);
-  driveAutoDist(8, 1200, 80);
-  turnTo(270);
-
+  turnTo(323);
+  driveAutoDist(1, 1500, 80);
+  score();
 }
