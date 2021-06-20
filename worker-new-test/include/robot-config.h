@@ -11,7 +11,7 @@ extern motor LB;
 extern motor roller;
 extern motor intakeLeft;
 extern motor intakeRight;
-extern motor_group intake;
+extern motor_group intakeArms;
 extern motor_group pooper;
 extern motor_group leftDrive;
 extern motor_group rightDrive;
@@ -27,6 +27,9 @@ extern bumper   goal;
 extern bumper   backStopper;
 extern smartdrive robotDrive;
 extern motor middleDescorer;
+extern motor storer;
+extern motor shelf;
+extern motor_group bothRollers;
 
 /*
 extern brain Brain;

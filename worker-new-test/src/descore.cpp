@@ -35,7 +35,7 @@ bool checkDescore(){
 }
 
 //POOP function out of a tower
-void poopTower(int speed){
+/*void poopTower(int speed){
   pooper.spin(forward, 100, percent);
   wait(2, seconds);
   //Brain.Screen.printAt(10, 220, "reflectivity: %d", ballChecker.reflectivity());
@@ -45,21 +45,76 @@ void poopTower(int speed){
   intake.stop();
   wait(2, seconds);
   roller.stop();
-}
+}*/
 
 //POOP function just from the ground
 void poop(int speed){
-  /*setSpeed(8);
-  while(ballChecker.value(analogUnits::mV) < 3200){
-    pooper.spin(forward, speed, pct);
-    driveAuto(1);
-  }
-  while(ballChecker.value(analogUnits::mV) > 3200){
-    pooper.spin(forward, speed, pct);
-    driveAuto(1);
+  bothRollers.setVelocity(100, pct);
+  bothRollers.spinFor(forward, 0.8, seconds);
+  storer.spinFor(0.8, seconds);
+}
+
+void poopEverything(){
+  getBall();
+  intakeArms.setVelocity(100, pct);
+  bothRollers.setVelocity(100, pct);
+  intakeArms.spin(forward);
+  bothRollers.spin(forward);
+  wait(2.5, seconds);
+  intakeArms.stop();
+  bothRollers.stop();
+}
+
+//-------------------------- SCORING THE TWOERS ----------------------------
+
+void score(){ //unshelves ball & scores
+  shelf.setVelocity(60, pct);
+  roller.setVelocity(100, pct);
+  storer.setVelocity(100, pct);
+  intakeArms.setVelocity(100, pct);
+
+  shelf.spinFor(reverse, 0.25, seconds);
+  roller.spin(reverse);
+  storer.spinFor(forward, 0.5, seconds);
+  intakeArms.spin(reverse);
+  wait(2, seconds);
+  intakeArms.stop();
+  roller.stop();
+}
+
+void store(){
+  roller.setVelocity(100, pct);
+  storer.setVelocity(100, pct);
+  roller.spin(forward);
+  storer.spinFor(reverse, 1, seconds);
+  roller.stop();
+  shelf.setVelocity(60, pct);
+  shelf.spinFor(90, degrees);
+  shelf.stop(hold);
+}
+
+void getBall(){
+  pooper.setVelocity(100, pct);
+  while(ballChecker.value(pct) > 65){
+    pooper.spin(forward);
   }
   pooper.stop();
-  pause();*/
+}
+
+void scoreTower(int whichBall){// 1: our color is bottom/first to intake ball, 2: our color is middle/sendond to intake ball
+  getBall();
+  if(whichBall == 1){
+    store();
+  } else {
+    //get rid of first ball
+    poop(100);
+    //get second ball
+    getBall();
+    //store second ball
+    store();
+  }
+  poopEverything();
+  score();
 }
 
 void driveToTower(){

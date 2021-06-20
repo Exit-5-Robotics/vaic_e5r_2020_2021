@@ -22,10 +22,12 @@ motor_group rightDiagDrive(LF, RB);
 
 motor roller = motor(PORT10, ratio18_1, true);
 motor intakeRight = motor(PORT8, ratio18_1, true);
-motor intakeLeft = motor(PORT7, ratio18_1, false);
-motor_group intake (intakeLeft, intakeRight);
+motor intakeLeft = motor(PORT19, ratio18_1, false);
+motor_group intakeArms (intakeLeft, intakeRight);
 motor_group pooper(roller, intakeLeft, intakeRight);
-motor middleDescorer = motor (PORT20, ratio18_1, false);
+motor storer = motor (PORT18, ratio18_1, true);
+motor_group bothRollers (roller, storer);
+motor shelf = motor(PORT11, true);
 
 inertial      tilt(PORT19);
 line          ballChecker(Brain.ThreeWirePort.H);

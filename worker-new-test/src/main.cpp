@@ -200,8 +200,9 @@ void workerDuties(){
   thread stats(updateSensors);
   reset();
 
-  //turnTo(90);
-  pooper.spin(forward, 100, percent);
+  scoreTower(1);
+
+  //turnTo(90); TEST THE TURN TO & SWITCH TO MANAGER'S IF NECISSARY
   /*driveAutoDist(1, 360, 50);
   turnTo(260);
   driveAutoDist(9, 1000, 50);
