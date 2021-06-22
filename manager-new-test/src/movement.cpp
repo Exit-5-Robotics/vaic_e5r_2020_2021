@@ -158,7 +158,7 @@ void scoutBalls(){
 
 void driveToLine(int dir, int speed, int reverseTime, char whichSensor){ //only used when robot is supposed to be perpendicular to the line
   Brain.Timer.reset();
-  int driveDirection = 1;
+  int driveDirection = dir;
   driveAuto(dir);
   setSpeed(speed);
   while( (rightLine.brightness(true) < getLineColor('R') && whichSensor == 'R') || (leftLine.brightness(true) < getLineColor('L') && whichSensor == 'L') ){
@@ -166,9 +166,15 @@ void driveToLine(int dir, int speed, int reverseTime, char whichSensor){ //only 
       if(driveDirection){
         driveDirection = 0;
         driveAuto(0);
-      } else {
+      } else if(driveDirection == 0) {
         driveDirection = 1;
         driveAuto(1);
+      } else if(driveDirection == 8) {
+        driveDirection = 9;
+        driveAuto(9);
+      }else if(driveDirection == 9) {
+        driveDirection = 8;
+        driveAuto(8);
       }
       setSpeed(15);
       Brain.Timer.reset();
@@ -181,7 +187,7 @@ void driveToLine(int dir, int speed, int reverseTime, char whichSensor){ //only 
 /////////////////////////////////////////BALL HANDLING//////////////////////////////
 
 void intake(bool useBot) { //uses only spinny orange wheels to intake many balls
-  driveAuto(1);
+  //driveAuto(1);
   setSpeed(5);
   intakeWheels.setVelocity(intakeDriveSpeed, pct);
   if(useBot){botRoller.spinFor(fwd, 600, degrees, 70, vex::velocityUnits::pct, false);}
@@ -218,12 +224,21 @@ void poop() {
   topRoller.spinFor(reverse, 300, vex::rotationUnits::deg, 100, vex::velocityUnits::pct);
 }
 
-int adjustHold(void) {
-  botRoller.setVelocity(100, pct);
+int adjustHold() {
+  this_thread::sleep_for(500);
+  intakeRollers.setVelocity(100, pct);
   botRoller.spin(fwd);
-  while(middleBall.objectDistance(mm) > 50 )
-  botRoller.stop();
-  return 0;
+  Brain.Timer.reset();
+  while(middleBall.objectDistance(mm) > 70 ){
+    if(Brain.Timer.time() > 2000){
+      intakeRollers.stop();
+      return 0;
+    }
+  }
+  //Brain.Screen.printAt(10, 140, "stopMiddle: %f", middleBall.objectDistance(mm));
+  //Brain.Screen.printAt(10, 140, "adjusting");
+  intakeRollers.stop();
+  return 1;
 }
 
 int adjustWIntake(){

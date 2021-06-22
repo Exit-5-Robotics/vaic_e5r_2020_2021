@@ -6,6 +6,7 @@ void mainLoop(){
 
 }
 
+/*
 void blueInteraction(){
   thread sort(adjustWIntake);
   driveAutoDist(0, 150, 60);
@@ -25,3 +26,4 @@ void redInteraction(){
   driveToTower(true);
   mainLoop();
 }
+*/

@@ -169,7 +169,7 @@ void managerDuties(){
   reset();
   
   blueIsolation();
-  blueInteraction();
+  //blueInteraction();
   /*
   PLAN:
     -use jetson only to see if we should descore
