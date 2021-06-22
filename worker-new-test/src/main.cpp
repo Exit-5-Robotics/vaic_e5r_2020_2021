@@ -100,73 +100,6 @@ void auto_Isolation(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-void blueIsolation5(){ // starts near centerNode 5
-  setSpeed(50);
-  driveAuto(1);
-  this_thread::sleep_for(4500);
-  pause();
-  
-  //snailTo(270);
-  //snailTo(270);
-  
-  setSpeed(30);
-  float currentY;
-  static MAP_RECORD  local_map;
-  jetson_comms.get_data( &local_map );
-  currentY = local_map.pos.y;
-  while(currentY < -300){
-    driveAuto(8);
-    static MAP_RECORD  local_map;
-    jetson_comms.get_data( &local_map );
-    currentY = local_map.pos.y;
-  }
-  pause();
-  this_thread::sleep_for(1000);
-  //driveAutoDist(8, 900);
-  middleDescorer.setVelocity(40, pct);
-  middleDescorer.spinFor(reverse, 4, seconds);
-  middleDescorer.stop(brakeType::brake);
-  //driveAutoDist(0, 180);
-  //while(!backStopper.pressing()){
-  //  driveAuto(0);
-  //}
-  pause();
-  setSpeed(30);
-}
-
-void redIsolation5(){ // starts near centerNode 5
-  setSpeed(50);
-  driveAuto(1);
-  this_thread::sleep_for(4500);
-  pause();
-  //snailTo(90);
-  //snailTo(90);
-
-  setSpeed(30);
-  float currentY;
-  static MAP_RECORD  local_map;
-  jetson_comms.get_data( &local_map );
-  currentY = local_map.pos.y;
-  while(currentY > 300){
-    driveAuto(8);
-    static MAP_RECORD  local_map;
-    jetson_comms.get_data( &local_map );
-    currentY = local_map.pos.y;
-  }
-  pause();
-  this_thread::sleep_for(1000);
-  //driveAutoDist(8, 900);
-  middleDescorer.setVelocity(40, pct);
-  middleDescorer.spinFor(reverse, 4, seconds);
-  middleDescorer.stop(brakeType::brake);
-  //driveAutoDist(0, 180);
-  //while(!backStopper.pressing()){
-   // driveAuto(0);
-  //}
-  pause();
-  setSpeed(30);
-}
-
 void descoreMiddle(){
   //driveAutoDist(1, 180);
   this_thread::sleep_for(100);
@@ -199,9 +132,8 @@ void workerDuties(){
   }*/
   thread stats(updateSensors);
   reset();
-
-  scoreTower(1);
-
+  
+  blueIsolation();
   //turnTo(90); TEST THE TURN TO & SWITCH TO MANAGER'S IF NECISSARY
   /*driveAutoDist(1, 360, 50);
   turnTo(260);

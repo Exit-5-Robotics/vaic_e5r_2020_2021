@@ -160,16 +160,16 @@ void updateSensors(){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void managerDuties(){
-  /*
-  jetson_comms.get_data( &local_map );
+  
+  /*jetson_comms.get_data( &local_map );
   while(jetson_comms.get_packets() == 0){
     jetson_comms.get_data( &local_map );
   }*/
-  thread stats(updateSensors);
+  //thread stats(updateSensors);
   reset();
   
-  //driveToTower();
   blueIsolation();
+  blueInteraction();
   /*
   PLAN:
     -use jetson only to see if we should descore

@@ -2,6 +2,7 @@ using namespace vex;
 
 void reset(void);
 double getHeading(void);
+double getLineColorR(void);
 
 void toStartingPoint(int from, int endDir);
 void toBestY(void);

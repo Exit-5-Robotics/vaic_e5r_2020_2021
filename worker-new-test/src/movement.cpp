@@ -26,6 +26,8 @@ void reset(){
   Brain.Screen.printAt(10, 40, "lineColorL: %f", lineColorL);
 }
 
+double getLineColorR(){return lineColorR;}
+
 double getHeading(){
   if(!OUR_COLOR){ // if red, shift 180 degrees
     if(tilt.heading() < 180){
@@ -67,17 +69,23 @@ void turnTo(int targetAngle){
   }
 
   while(angleDifference(targetAngle, turningDirection) > 0.5){
-    //finding error
-    error = -1 * angleDifference(targetAngle, turningDirection);
-    if ( (turningDirection == 3 && ((targetAngle > getHeading() && fabs(targetAngle - getHeading()) >= 180) ||  (targetAngle < getHeading() && fabs(targetAngle - getHeading()) < 180))) || (turningDirection == 2 && ((targetAngle < getHeading() && fabs(targetAngle - getHeading()) >= 180 ) || (targetAngle > getHeading() && fabs(targetAngle - getHeading()) < 180))) ) {
-      error *= -1;
-    }
+    error = angleDifference(targetAngle, turningDirection);
     
     errorSum += error;
     errorChange = error - previousError;
     previousError = error;
+    int speed;
 
-    setSpeed( (error*Kp) + (errorSum*Ki) + (errorChange * Kd));
+    if(fabs(error) < 2){
+      speed = 5;
+    } else{
+      speed = (error*Kp) + /*(errorSum*Ki)*/ + (errorChange * Kd);
+    }
+    if ( (turningDirection == 3 && ((targetAngle > tilt.heading() && fabs(targetAngle - tilt.heading()) >= 180) ||  (targetAngle < tilt.heading() && fabs(targetAngle - tilt.heading()) < 180))) || (turningDirection == 2 && ((targetAngle < tilt.heading() && fabs(targetAngle - tilt.heading()) >= 180 ) || (targetAngle > tilt.heading() && fabs(targetAngle - tilt.heading()) < 180))) ) {
+      setSpeed(speed);
+    } else {
+      setSpeed(-1*speed);
+    }
     this_thread::sleep_for(20);  
   }
   Brain.Screen.printAt(10, 100, "done turning");

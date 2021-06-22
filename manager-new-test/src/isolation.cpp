@@ -14,10 +14,15 @@ void blueIsolation() {
   driveAutoDist(4, 600, 70);
   turnTo(125);
   //scores it
-  driveToTower();
+  driveToTower(false);
   //get back to the line asshole
   driveToLine(0, 40, 900, 'R');
-  turnTo(323);
+  turnTo(322);
   driveAutoDist(1, 1500, 80);
-  score();
+  //scoring middle tower
+  scoringRollers.setVelocity(100, percentUnits::pct);
+  scoringRollers.spin(fwd);
+  while(ballZero.value(pct) > 64){}
+  scoringRollers.stop();
+  topRoller.spinFor(fwd, 0.8, seconds);
 }

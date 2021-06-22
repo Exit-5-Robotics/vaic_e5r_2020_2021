@@ -5,13 +5,14 @@
 //TOWER FIXING LOGIC
 bool haveBall = true;
 bool getBallStatus(){return haveBall;}
+void setBallStatus(bool status){haveBall = status;}
 
 int sortBalls(){
   bool foundBall = false;
   int ballsSorted = 0;
   while(ballsSorted < 3 && !foundBall){
     if(!adjustWIntake()){haveBall = false; return 0;} //if we return 0 then we didn't find any balls of our color in the robot
-    this_thread::sleep_for(2000);
+    this_thread::sleep_for(500);
     //seeing if that ball is our color
     if( (OUR_COLOR && colorSensor.color().rgb()/10000000 !=1) || (!OUR_COLOR && colorSensor.color().rgb()/10000000 ==1 )){ // we found our color ball, store it
       foundBall = true;
@@ -29,7 +30,7 @@ int sortBalls(){
     }
     ballsSorted++; 
   }
-  this_thread::sleep_for(2000);
+  this_thread::sleep_for(1000);
   //empty any leftovers
   intakeRollers.setVelocity(100, percent);
   intakeRollers.spin(fwd);
@@ -45,7 +46,7 @@ int sortBalls(){
   return 1;
 }
 
-void fixTower(){
+void fixTower(bool shouldSort){
   //if(checkDescore()){
       if(haveBall){
         thread scoring(score);
@@ -56,7 +57,7 @@ void fixTower(){
       int ballsSorted = 0;
       while(ballsSorted < 3 && !foundBall){
         if(!adjustWIntake()){break;} //if we return 0 then we didn't find any balls of our color in the robot
-        this_thread::sleep_for(1000);
+        this_thread::sleep_for(1500);
         //seeing if that ball is our color
         if( (OUR_COLOR && colorSensor.color().rgb()/10000000 !=1) || (!OUR_COLOR && colorSensor.color().rgb()/10000000 ==1 )){ // we found our color ball, store it
           foundBall = true;
@@ -68,7 +69,9 @@ void fixTower(){
         ballsSorted++; 
       }
     }
-    thread sort(sortBalls); // back away & do this
+    if(shouldSort){
+      thread sort(sortBalls); // back away & do this
+    }
   //}
 }
 
@@ -108,7 +111,7 @@ bool checkDescore(){
 
 //MORE LIKE NAV BUT ITS FINEEEEEE
 
-void driveToTower(){
+void driveToTower(bool shouldFix){
   pause();
   driveAuto(1);
   setSpeed(40);
@@ -116,7 +119,7 @@ void driveToTower(){
   while(!goal.pressing()){}
   intakeWheels.stop();
   pause();
-  fixTower();
+  fixTower(shouldFix);
 }
 
 void descoreTower(int towerNum){
@@ -125,7 +128,7 @@ void descoreTower(int towerNum){
     switch(towerNum){
       case 0:
       turnTo(220);
-      driveToTower();
+      driveToTower(true);
       driveAutoDist(0, 720, 50);
       turnTo(270);
       driveAutoDist(7, 700, 50);
@@ -133,7 +136,7 @@ void descoreTower(int towerNum){
       break;
       
       case 1:
-      driveToTower();
+      driveToTower(true);
       driveAutoDist(0, 200, 10); pause();
       driveAutoDist(8, 200, 10); pause();
       toStartingPoint(9, 270);
@@ -141,7 +144,7 @@ void descoreTower(int towerNum){
       
       case 2:
       turnTo(330);
-      driveToTower();
+      driveToTower(true);
       driveAutoDist(0, 720, 50);
       turnTo(270);
       driveAutoDist(4, 700, 50);
@@ -156,7 +159,7 @@ void descoreTower(int towerNum){
       
       case 5:
       turnTo(33);
-      driveToTower();
+      driveToTower(true);
       driveAutoDist(0, 720, 50);
       turnTo(90);
       driveAutoDist(7, 700, 50);
@@ -164,7 +167,7 @@ void descoreTower(int towerNum){
       break;
       
       case 6:
-      driveToTower();
+      driveToTower(true);
       driveAutoDist(0, 200, 10); pause();
       driveAutoDist(8, 200, 10); pause();
       toStartingPoint(9, 90);
@@ -172,7 +175,7 @@ void descoreTower(int towerNum){
       
       case 7:
       turnTo(150);
-      driveToTower();
+      driveToTower(true);
       driveAutoDist(0, 720, 50);
       turnTo(90);
       driveAutoDist(4, 700, 50);

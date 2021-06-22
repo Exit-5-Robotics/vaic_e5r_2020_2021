@@ -8,3 +8,4 @@ void scoreTower(int whichBall);
 void store(void);
 void getBall(void);
 void score(void);
+void poopEverything(void);

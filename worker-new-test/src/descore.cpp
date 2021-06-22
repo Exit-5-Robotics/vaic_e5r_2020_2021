@@ -56,7 +56,7 @@ void poop(int speed){
 
 void poopEverything(){
   getBall();
-  intakeArms.setVelocity(100, pct);
+  intakeArms.setVelocity(90, pct);
   bothRollers.setVelocity(100, pct);
   intakeArms.spin(forward);
   bothRollers.spin(forward);
@@ -120,9 +120,11 @@ void scoreTower(int whichBall){// 1: our color is bottom/first to intake ball, 2
 void driveToTower(){
   driveAuto(1);
   setSpeed(40);
+  intakeArms.setVelocity(70, pct);
+  intakeArms.spin(fwd);
   while(!goal.pressing()){}
+  intakeArms.stop();
   pause();
-  poopTower(100);
 }
 
 void descoreTower(int towerNum){

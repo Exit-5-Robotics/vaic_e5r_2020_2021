@@ -10,10 +10,10 @@ vex::message_link LinkA( PORT11, "vex_robotics_team_3063_A", linkType::worker );
 // vex::serial_link LinkD( PORT12, "vex_robotics_team_1234_B", linkType::worker );
 controller Controller1 = controller(primary);
 
-motor RF = motor(PORT12, ratio18_1, false);
-motor RB = motor(PORT14, ratio18_1, false);
-motor LF = motor(PORT18, ratio18_1, true);
-motor LB = motor(PORT13, ratio18_1, true);
+motor RF = motor(PORT1, ratio18_1, false);
+motor RB = motor(PORT15, ratio18_1, false);
+motor LF = motor(PORT6, ratio18_1, true);
+motor LB = motor(PORT16, ratio18_1, true);
 
 motor_group leftDrive(LB, LF);
 motor_group rightDrive(RB, RF);
@@ -25,11 +25,11 @@ motor intakeRight = motor(PORT8, ratio18_1, true);
 motor intakeLeft = motor(PORT19, ratio18_1, false);
 motor_group intakeArms (intakeLeft, intakeRight);
 motor_group pooper(roller, intakeLeft, intakeRight);
-motor storer = motor (PORT18, ratio18_1, true);
+motor storer = motor (PORT12, ratio18_1, true);
 motor_group bothRollers (roller, storer);
 motor shelf = motor(PORT11, true);
 
-inertial      tilt(PORT19);
+inertial      tilt(PORT14);
 line          ballChecker(Brain.ThreeWirePort.H);
 optical       forLine(PORT20);
 //distance      ballChecker(PORT2);

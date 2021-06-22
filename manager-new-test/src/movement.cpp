@@ -135,53 +135,7 @@ void toStartingPoint(int from, int endDir){ //8: approaching from right, 9: appr
     }
   }
   Brain.Screen.printAt(10, 100, "fastLine finished");
-  /*
-  setSpeed(8);
-
-  while(!done){
-     
-    if(rightLine.brightness() > lineColorR && from == 9){
-      //Brain.Screen.printAt(10, 100, "firstLine 9");
-      firstLine = true;
-    }
-    if(firstLine && leftLine.brightness() > lineColorL && from == 9){
-      //Brain.Screen.printAt(10, 120, "secondLine 9");
-      secondLine = true;
-      pause();
-    }
-    //from 8
-    if(leftLine.brightness() > lineColorL && from == 8){
-      //Brain.Screen.printAt(10, 100, "firstLine 8");
-      firstLine = true;
-    }
-    if(firstLine && rightLine.brightness() > lineColorR && from == 8){
-      //Brain.Screen.printAt(10, 120, "secondLine 8");
-      secondLine = true;
-      pause();
-    }
-    //double check
-    if(secondLine && rightLine.brightness() > lineColorR){
-      firstLine = false;
-      secondLine = false;
-      setSpeed(20);
-      if (from == 8){
-        driveAutoDist(8, 100, 20);
-        driveAuto(9);
-        from = 9;
-      } else{
-        driveAutoDist(9, 100, 20);
-        driveAuto(8);
-        from = 8;
-      }
-      setSpeed(5);
-    } else if (secondLine){
-      done = true;
-    }
-    
-  }*/
-  //turnTo(endDir);
   pause();
-  //toBestY();
 }
 
 void toFlipLine(){
@@ -216,7 +170,7 @@ void driveToLine(int dir, int speed, int reverseTime, char whichSensor){ //only 
         driveDirection = 1;
         driveAuto(1);
       }
-      setSpeed(10);
+      setSpeed(15);
       Brain.Timer.reset();
     }
   }
@@ -273,7 +227,7 @@ int adjustHold(void) {
 }
 
 int adjustWIntake(){
-  this_thread::sleep_for(1500);
+  this_thread::sleep_for(500);
   intakeRollers.setVelocity(100, pct);
   intakeRollers.spin(fwd);
   Brain.Timer.reset();
