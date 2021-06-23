@@ -31,6 +31,8 @@
 #include "drive.h"
 #include "towerFixing.h"
 #include <vex_color.h>
+#include "isolation.h"
+
 
 #define EMPTY 3
 #define BLUE 1

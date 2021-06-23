@@ -2,6 +2,11 @@
 
 using namespace vex;
 
+void fixArms(){
+  intakeArms.setVelocity(50, pct);
+  intakeArms.spinFor(fwd, 1, seconds);
+}
+
 void blueIsolation(){
   //setup
   shelf.setVelocity(20, pct);
@@ -25,10 +30,10 @@ void blueIsolation(){
   while(fabs(rightLine.value(percentUnits::pct) - getLineColorR()) > 10){}
   pause();
   turnTo(90);
-  driveAutoDist(8, 590, 30);
+  driveAutoDist(8, 550, 30);
   turnTo(90);
-  driveAutoDist(8, 590, 30);
-  turnTo(65);
+  driveAutoDist(8, 550, 30);
+  turnTo(53);
   //scoring second tower
   driveToTower();
   scoreTower(2);

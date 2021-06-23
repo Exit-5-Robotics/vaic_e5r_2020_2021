@@ -3,8 +3,22 @@
 using namespace vex;
 
 void mainLoop(){
-
+  //get to starting point
+  driveAutoDist(0, 500, 70);
+  //the loop commenses
+  int iteration = 1;
+  while(true){
+    driveAutoDist(8, 800, 70);
+    turnTo(iteration*90);
+    driveAutoDist(8, 800, 70);
+    iteration--;
+    if(iteration == -1){
+      iteration = 3;
+    }
+  }
 }
+
+
 
 /*
 void blueInteraction(){

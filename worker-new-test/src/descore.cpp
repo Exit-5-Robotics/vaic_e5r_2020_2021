@@ -50,8 +50,8 @@ bool checkDescore(){
 //POOP function just from the ground
 void poop(int speed){
   bothRollers.setVelocity(100, pct);
-  bothRollers.spinFor(forward, 0.8, seconds);
-  storer.spinFor(0.8, seconds);
+  bothRollers.spinFor(forward, 1, seconds);
+  storer.spinFor(1, seconds);
 }
 
 void poopEverything(){
@@ -60,7 +60,7 @@ void poopEverything(){
   bothRollers.setVelocity(100, pct);
   intakeArms.spin(forward);
   bothRollers.spin(forward);
-  wait(2.5, seconds);
+  wait(4.3, seconds);
   intakeArms.stop();
   bothRollers.stop();
 }
@@ -73,7 +73,7 @@ void score(){ //unshelves ball & scores
   storer.setVelocity(100, pct);
   intakeArms.setVelocity(100, pct);
 
-  shelf.spinFor(reverse, 0.25, seconds);
+  shelf.spinFor(reverse, 0.3, seconds);
   roller.spin(reverse);
   storer.spinFor(forward, 0.5, seconds);
   intakeArms.spin(reverse);

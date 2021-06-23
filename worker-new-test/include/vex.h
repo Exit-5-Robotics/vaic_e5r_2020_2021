@@ -28,6 +28,7 @@
 #include "drive.h"
 #include "movement.h"
 #include "navigation.h"
+#include "isolation.h"
 
 #include "robot-config.h"
 

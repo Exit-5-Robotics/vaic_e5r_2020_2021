@@ -194,7 +194,8 @@ void intake(bool useBot) { //uses only spinny orange wheels to intake many balls
   //intakeWheels.spinFor(fwd, 800, degrees, 100, vex::velocityUnits::pct);
   intakeWheels.spin(fwd);
   Brain.Screen.printAt(10, 120, "starting");
-  while (ballThree.value(analogUnits::mV) > 3300) {}
+  Brain.Timer.reset();
+  while (ballThree.value(analogUnits::mV) > 3300 || Brain.Timer.time() > 4000) {}
   Brain.Screen.printAt(10, 140, "done");
   intakeWheels.spinFor(fwd, 600, degrees, intakeDriveSpeed/2, vex::velocityUnits::pct);
   intakeWheels.stop();
@@ -225,7 +226,6 @@ void poop() {
 }
 
 int adjustHold() {
-  this_thread::sleep_for(500);
   intakeRollers.setVelocity(100, pct);
   botRoller.spin(fwd);
   Brain.Timer.reset();
