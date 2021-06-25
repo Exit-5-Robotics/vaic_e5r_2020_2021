@@ -64,9 +64,9 @@ void turnTo(int targetAngle){
   double previousError = 0;
   double errorChange;
 
-  if(angleDifference(targetAngle, turningDirection) < 8){
-    Kp = 2;
-  }
+  //if(angleDifference(targetAngle, turningDirection) < 8){
+    //Kp = 2;
+  //}
 
   while(angleDifference(targetAngle, turningDirection) > 0.5){
     error = angleDifference(targetAngle, turningDirection);

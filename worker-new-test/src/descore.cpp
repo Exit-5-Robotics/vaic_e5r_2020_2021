@@ -59,10 +59,12 @@ void poopEverything(){
   intakeArms.setVelocity(90, pct);
   bothRollers.setVelocity(100, pct);
   intakeArms.spin(forward);
+  storer.spin(fwd);
   bothRollers.spin(forward);
-  wait(4.3, seconds);
+  wait(3.3, seconds);
   intakeArms.stop();
   bothRollers.stop();
+  storer.stop();
 }
 
 //-------------------------- SCORING THE TWOERS ----------------------------

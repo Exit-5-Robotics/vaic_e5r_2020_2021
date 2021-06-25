@@ -48,11 +48,12 @@ void blueIsolation() {
   turnTo(91);
   this_thread::sleep_for(500);
   driveAutoDist(1, 475, 30);
-  driveToLine(1, 5, 5000, 'R');
+  driveToLine(1, 5, 6000, 'R');
   driveAutoDist(1, 100, 30);
   this_thread::sleep_for(500);
   driveAutoDist(8, 150, 20);
   turnTo(180);
   this_thread::sleep_for(500);
   driveToTower(false);
+  driveAutoDist(0, 30, 500);
 }
