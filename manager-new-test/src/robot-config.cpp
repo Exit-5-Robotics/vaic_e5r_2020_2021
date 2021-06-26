@@ -16,16 +16,16 @@ vex::distance dist(PORT5);
 inertial      tilt( PORT12 );
 
 motor         leftIntake(PORT3, ratio18_1, false);
-motor         rightIntake(PORT19, ratio18_1, true);
+motor         rightIntake(PORT10, ratio18_1, true);
 motor_group   intakeWheels( leftIntake, rightIntake );
 
-motor         botRoller(PORT20, ratio18_1, false);
-motor         topRoller(PORT10, ratio18_1, false);
+motor         botRoller(PORT19, ratio18_1, false);
+motor         topRoller(PORT20, ratio18_1, false);
 motor_group   scoringRollers(botRoller, topRoller);
 motor_group   intakeRollers(botRoller, leftIntake, rightIntake);
-motor         distMotor(PORT8, ratio18_1, true);
+//motor         distMotor(PORT8, ratio18_1, true);
 
-motor         LB(PORT16, ratio18_1, false);
+motor         LB(PORT13, ratio18_1, false);
 motor         LF(PORT2, ratio18_1, true);
 motor         RB(PORT17, ratio18_1, true);  // ???? why
 motor         RF(PORT18, ratio18_1, false);

@@ -5,19 +5,20 @@ using namespace vex;
 
 void mainLoop(){ // looping in a line across the field line
   //getting into position
+  driveAutoDist(0, 500, 30);
   turnTo(180);
-  driveAutoDist(9, 600, 30);
+  driveAutoDist(9, 500, 50);
   turnTo(270);
   while(true){
     //going to the right
-    driveAutoDist(9, 2500, 90);
+    driveAutoDist(9, 2500, 60);
     //making it look like this isnt a sabatoge ;)
     turnTo(315);
     intakeWheels.spinFor(fwd, 1000, msec);
     turnTo(270);
 
     //going to the left
-    driveAutoDist(8, 2500, 90);
+    driveAutoDist(8, 2500, 60);
     //making it look like this isnt a sabatoge ;)
     turnTo(225);
     intakeWheels.spinFor(fwd, 1000, msec);

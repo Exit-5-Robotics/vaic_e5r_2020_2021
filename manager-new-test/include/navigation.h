@@ -1,2 +1,1 @@
-void blueInteraction(void);
-void redInteraction(void);
+void mainLoop(void);

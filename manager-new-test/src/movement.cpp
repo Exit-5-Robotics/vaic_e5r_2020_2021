@@ -32,8 +32,10 @@ void reset(){
   rightLine.setLight(ledState::on);
   leftLine.setLight(ledState::on);
   this_thread::sleep_for(1000);
-  lineColorR = leftLine.brightness(true) *2.5; //~6500
-  lineColorL = rightLine.brightness(true) *2.5; //~6500
+  //lineColorR = leftLine.brightness(true) * 3 ; //~6500
+  lineColorR = 0.35; //~6500
+  // lineColorL = rightLine.brightness(true) * 3; //~6500
+  lineColorL = 0.22; //~6500
   Brain.Screen.printAt(10, 20, "lineColorR: %f", lineColorR);
   Brain.Screen.printAt(10, 40, "lineColorL: %f", lineColorL);
 }
@@ -163,7 +165,7 @@ void driveToLine(int dir, int speed, int reverseTime, char whichSensor){ //only 
   setSpeed(speed);
   while( (rightLine.brightness(true) < getLineColor('R') && whichSensor == 'R') || (leftLine.brightness(true) < getLineColor('L') && whichSensor == 'L') ){
     if(Brain.Timer.time(msec) >= reverseTime){ // in case the line is missed
-      if(driveDirection){
+      if(driveDirection == 1){
         driveDirection = 0;
         driveAuto(0);
       } else if(driveDirection == 0) {
