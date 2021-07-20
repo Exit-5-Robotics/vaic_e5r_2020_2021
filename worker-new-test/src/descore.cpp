@@ -59,10 +59,12 @@ void poopEverything(){
   intakeArms.setVelocity(90, pct);
   bothRollers.setVelocity(100, pct);
   intakeArms.spin(forward);
+  storer.spin(fwd);
   bothRollers.spin(forward);
-  wait(4.3, seconds);
+  wait(3.3, seconds);
   intakeArms.stop();
   bothRollers.stop();
+  storer.stop();
 }
 
 //-------------------------- SCORING THE TWOERS ----------------------------
@@ -75,11 +77,12 @@ void score(){ //unshelves ball & scores
 
   shelf.spinFor(reverse, 0.3, seconds);
   roller.spin(reverse);
-  storer.spinFor(forward, 0.5, seconds);
+  storer.spin(forward);
   intakeArms.spin(reverse);
   wait(2, seconds);
   intakeArms.stop();
   roller.stop();
+  storer.stop();
 }
 
 void store(){
@@ -95,7 +98,7 @@ void store(){
 
 void getBall(){
   pooper.setVelocity(100, pct);
-  while(ballChecker.value(pct) > 65){
+  while(ballChecker.value(pct) > 67){
     pooper.spin(forward);
   }
   pooper.stop();

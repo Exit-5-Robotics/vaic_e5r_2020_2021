@@ -92,11 +92,12 @@ void auto_Isolation(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-  if (OUR_COLOR == RED) {
-    redIsolation();
-  } else if (OUR_COLOR == BLUE) {
-    blueIsolation();
-  }
+  // if (OUR_COLOR == RED) {
+  //   redIsolation();
+  // } else if (OUR_COLOR == BLUE) {
+  //   blueIsolation();
+  // }
+  blueIsolation();
 }
 
 
@@ -112,7 +113,7 @@ void auto_Isolation(void) {
 
 void auto_Interaction(void) {
   
-  
+  mainLoop();
   // while (inventory[0] == EMPTY) {
     
   // }
@@ -168,34 +169,6 @@ void managerDuties(){
   reset();
   
   blueIsolation();
-  //blueInteraction();
-  /*
-  PLAN:
-    -use jetson only to see if we should descore
-    -run driveToTower, intake, & score no matter what
-    -check if we had a ball 
-      - if yes:
-        -back away and do the rest of this stuff in a thread while going back into position
-        -use vision sensor to go through collected balls individually
-          -use adjustHold to get it into position
-          -use vision to determine if it's out color
-            - if yes: store it in the top rollers & eject everything out using the intake so the top rollers can stay stationaru
-            - if no: poop
-    - if no:
-      - adjust hold to get individual balls into position
-      - if our color, score it
-      - in a thread while robot going back into position, poop out any other balls (just move intake & run poop for 5sec or somthing idk)
-  */
-
-  //turnTo(90);
-  
-  /*driveAutoDist(1, 360, 50);
-  turnTo(260);
-  driveAutoDist(9, 1000, 50);
-
-  toStartingPoint(9, 270);
-  toFlipLine();
-  descoreTower(5);*/
 }
 
 /*----------------------------------------------------------------------------*/
@@ -210,12 +183,12 @@ int main() {
     // Run at about 15Hz
     int32_t loop_time = 66;
 
-    thread t1(dashboardTask);
-    thread t2(managerDuties);
+    // thread t1(dashboardTask);
+    //thread t2(managerDuties);
     
     // thread distanceSensor(distSensorControl); // assumes dist sensor starts UP
-    thread prac(auto_Interaction);
-    prac.setPriority(100);
+    //thread prac(auto_Interaction);
+    //prac.setPriority(100);
 
     // Set up callbacks for autonomous and driver control periods.
     Competition.autonomous(autonomousMain);

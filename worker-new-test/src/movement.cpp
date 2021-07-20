@@ -19,8 +19,8 @@ void reset(){
   while(tilt.isCalibrating()){}
   tileColorL = leftLine.value(percentUnits::pct); //~2,750
   tileColorR = rightLine.value(percentUnits::pct); //~3,000
-  lineColorR = tileColorR *0.7; //~6500
-  lineColorL = tileColorL *0.5; //~6500
+  lineColorR = tileColorR *0.35; //~6500
+  lineColorL = tileColorL *0.3; //~6500
   tilt.resetHeading();
   Brain.Screen.printAt(10, 20, "lineColorR: %f", lineColorR);
   Brain.Screen.printAt(10, 40, "lineColorL: %f", lineColorL);
@@ -64,9 +64,9 @@ void turnTo(int targetAngle){
   double previousError = 0;
   double errorChange;
 
-  if(angleDifference(targetAngle, turningDirection) < 8){
-    Kp = 2;
-  }
+  //if(angleDifference(targetAngle, turningDirection) < 8){
+    //Kp = 2;
+  //}
 
   while(angleDifference(targetAngle, turningDirection) > 0.5){
     error = angleDifference(targetAngle, turningDirection);

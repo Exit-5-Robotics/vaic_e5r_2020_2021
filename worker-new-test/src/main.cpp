@@ -79,15 +79,16 @@ void auto_Isolation(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-  pooper.setVelocity(70, pct);
-  pooper.spinFor(forward, 10, seconds);
-  if (OUR_COLOR == RED) {
-    // red-side isolation code
-    // cannot go to negative x values
-  } else if (OUR_COLOR == BLUE) {
-    // blue-side isolation code
-    // cannot go to positive x values
-  }
+  // pooper.setVelocity(70, pct);
+  // pooper.spinFor(forward, 10, seconds);
+  // if (OUR_COLOR == RED) {
+  //   // red-side isolation code
+  //   // cannot go to negative x values
+  // } else if (OUR_COLOR == BLUE) {
+  //   // blue-side isolation code
+  //   // cannot go to positive x values
+  // }
+  blueIsolation();
 }
 
 /*---------------------------------------------------------------------------*/
@@ -132,8 +133,8 @@ void workerDuties(){
   }*/
   thread stats(updateSensors);
   reset();
-  
-  blueIsolation();
+  //driveAutoDist(0, 1400, 70);
+  //blueIsolation();
   //turnTo(90); TEST THE TURN TO & SWITCH TO MANAGER'S IF NECISSARY
   /*driveAutoDist(1, 360, 50);
   turnTo(260);
@@ -148,8 +149,9 @@ void auto_Interaction(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
-  Brain.Screen.printAt( 10, 90, "auto_Interaction" );
-  workerDuties();
+  // Brain.Screen.printAt( 10, 90, "auto_Interaction" );
+  // workerDuties();
+  mainLoop();
 
 }
 
@@ -202,7 +204,7 @@ int main() {
 
     // start the status update display
     thread t1(dashboardTask);
-    thread t2(workerDuties);
+    //thread t2(workerDuties);
 
     // Set up callbacks for autonomous and driver control periods.
     Competition.autonomous(autonomousMain);
@@ -215,7 +217,7 @@ int main() {
     //
     //FILE *fp = fopen("/dev/serial2","wb");
 
-    LinkA.received("object", get_obj);
+    //LinkA.received("object", get_obj);
 
     
 
