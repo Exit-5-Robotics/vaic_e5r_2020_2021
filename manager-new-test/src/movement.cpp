@@ -27,13 +27,14 @@ double getLineColor(char which){
 void reset(){
   tilt.calibrate();
   while(tilt.isCalibrating()){}
+  tilt.setHeading(0, vex::rotationUnits::deg);
   rightLine.setLightPower(100, percent);
   leftLine.setLightPower(100, percent);
   rightLine.setLight(ledState::on);
   leftLine.setLight(ledState::on);
   this_thread::sleep_for(1000);
   //lineColorR = leftLine.brightness(true) * 3 ; //~6500
-  lineColorR = 0.35; //~6500
+  lineColorR = 0.25; //~6500
   // lineColorL = rightLine.brightness(true) * 3; //~6500
   lineColorL = 0.22; //~6500
   Brain.Screen.printAt(10, 20, "lineColorR: %f", lineColorR);

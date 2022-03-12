@@ -2,12 +2,17 @@
 
 using namespace vex;
 
-
-void mainLoop(){ // looping in a line across the field line
-  //getting into position
+void mainLoop(){
+  driveAuto(1);
+  setSpeed(60);
+  this_thread::sleep_for(1000);
+  score();
+  pause();
   driveAutoDist(0, 500, 30);
-  turnTo(180);
-  driveAutoDist(9, 500, 50);
+}
+/*void mainLoop(){ // looping in a line across the field line
+  //getting into position
+  driveAutoDist(9, 800, 50);
   turnTo(270);
   while(true){
     //going to the right
@@ -24,7 +29,7 @@ void mainLoop(){ // looping in a line across the field line
     intakeWheels.spinFor(fwd, 1000, msec);
     turnTo(270);
   }
-}
+}*/
 
 /*
 void mainLoop(){ // circling around the field

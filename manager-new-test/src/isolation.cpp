@@ -20,6 +20,11 @@ void adjustLines(int dir){
   driveAutoDist(dir, 10, 20);
 }
 
+void keepSorting(){
+  this_thread::sleep_for(800);
+  sortBalls();
+}
+
 void blueIsolation() {
   // (-x, y) ball, then (-x, 0) ball, then (-x, -y) ball if time permits
   //get to line
@@ -32,7 +37,7 @@ void blueIsolation() {
   driveToLine(0, 30, 2000, 'R');
   adjustLines(0);
   thread adjusting(adjustHold);
-  turnTo(41);
+  turnTo(42);
   thread pushBack(intakeMore);
   driveAutoDist(1, 1450, 60);
   //scoring middle tower
@@ -62,5 +67,15 @@ void blueIsolation() {
   turnTo(180);
   this_thread::sleep_for(500);
   driveToTower(false);
-  driveAutoDist(0, 30, 500);
+  thread sort(keepSorting);
+  driveAutoDist(0, 500, 30);
+  this_thread::sleep_for(500);
+  turnTo(0);
+  driveAuto(1);
+  setSpeed(60);
+  this_thread::sleep_for(1000);
+  score();
+  this_thread::sleep_for(500);
+  pause();
+  driveAutoDist(0, 200, 30);
 }

@@ -98,6 +98,7 @@ void auto_Isolation(void) {
   // } else if (OUR_COLOR == BLUE) {
   //   blueIsolation();
   // }
+  reset();
   blueIsolation();
 }
 
@@ -168,7 +169,7 @@ void managerDuties(){
   }*/
   //thread stats(updateSensors);
   reset();
-  
+  //sortBalls();
   blueIsolation();
 }
 
@@ -185,14 +186,14 @@ int main() {
     int32_t loop_time = 66;
 
     // thread t1(dashboardTask);
-    //thread t2(managerDuties);
+    thread t2(managerDuties);
     
     // thread distanceSensor(distSensorControl); // assumes dist sensor starts UP
     //thread prac(auto_Interaction);
     //prac.setPriority(100);
 
     // Set up callbacks for autonomous and driver control periods.
-    Competition.autonomous(autonomousMain);
+    //Competition.autonomous(autonomousMain);
 
     // print through the controller to the terminal (vexos 1.0.12 is needed)
     // As USB is tied up with Jetson communications we cannot use

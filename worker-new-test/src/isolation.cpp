@@ -4,11 +4,25 @@ using namespace vex;
 
 void fixArms(){
   intakeArms.setVelocity(50, pct);
-  intakeArms.spinFor(fwd, 2, seconds);
+  intakeArms.spin(fwd);
 }
 
 void adjustLines(int dir){
   driveAutoDist(dir, 10, 20);
+}
+
+void justInCase(){
+  this_thread::sleep_for(4000);
+  intakeArms.stop();
+  intakeArms.setVelocity(90, pct);
+  bothRollers.setVelocity(100, pct);
+  intakeArms.spin(forward);
+  storer.spin(fwd);
+  bothRollers.spin(forward);
+  wait(2.5, seconds);
+  intakeArms.stop();
+  bothRollers.stop();
+  storer.stop();
 }
 
 void blueIsolation(){
@@ -31,9 +45,9 @@ void blueIsolation(){
   //go to second tower
   intakeArms.spin(reverse);
   driveAutoDist(0, 200, 30);
-  intakeArms.stop();
+  thread makeSure(justInCase);
   driveAuto(0); setSpeed(10);
-  thread resetArms(fixArms);
+  //thread resetArms(fixArms);
   while(rightLine.value(percentUnits::pct) > 40){}
   pause();
   adjustLines(0);
@@ -41,9 +55,9 @@ void blueIsolation(){
   driveAutoDist(8, 540, 30);
   turnTo(90);
   driveAutoDist(8, 540, 30);
-  turnTo(47);
+  turnTo(50);
   //scoring second tower
   driveToTower();
   scoreTower(2);
-  driveAutoDist(0, 200, 90);
+  driveAutoDist(0, 600, 90);
 }

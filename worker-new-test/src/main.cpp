@@ -88,6 +88,7 @@ void auto_Isolation(void) {
   //   // blue-side isolation code
   //   // cannot go to positive x values
   // }
+  reset();
   blueIsolation();
 }
 
@@ -133,6 +134,7 @@ void workerDuties(){
   }*/
   thread stats(updateSensors);
   reset();
+  blueIsolation();
   //driveAutoDist(0, 1400, 70);
   //blueIsolation();
   //turnTo(90); TEST THE TURN TO & SWITCH TO MANAGER'S IF NECISSARY

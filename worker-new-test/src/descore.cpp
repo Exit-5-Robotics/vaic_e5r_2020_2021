@@ -79,7 +79,7 @@ void score(){ //unshelves ball & scores
   roller.spin(reverse);
   storer.spin(forward);
   intakeArms.spin(reverse);
-  wait(2, seconds);
+  wait(3, seconds);
   intakeArms.stop();
   roller.stop();
   storer.stop();
@@ -102,6 +102,7 @@ void getBall(){
     pooper.spin(forward);
   }
   pooper.stop();
+  intakeArms.stop();
 }
 
 void scoreTower(int whichBall){// 1: our color is bottom/first to intake ball, 2: our color is middle/sendond to intake ball
